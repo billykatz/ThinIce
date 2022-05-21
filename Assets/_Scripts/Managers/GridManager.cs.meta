@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 1c6ac4329e9404d18baae9bfcf461ba7
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _iceTilePrefab: {fileID: 6023388124980461190, guid: f786dc44588e449cb9f334ef68a142cf, type: 3}
+  - _wallTilePrefab: {fileID: -650391582006392195, guid: 0a6cde2cf5c8b433583cd51143ac5d4a, type: 3}
+  - _cam: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

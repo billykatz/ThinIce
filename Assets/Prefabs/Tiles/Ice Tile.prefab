@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6831031853919215020
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4535035481049904059, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5321977072006793802, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_Name
+      value: Ice Tile
+      objectReference: {fileID: 0}
+    - target: {fileID: 8787914481195979253, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8787914481195979253, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8787914481195979253, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8787914481195979253, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8787914481195979253, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8787914481195979253, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8787914481195979253, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8787914481195979253, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8787914481195979253, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8787914481195979253, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8787914481195979253, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+--- !u!1 &1664017065637746662 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5321977072006793802, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+  m_PrefabInstance: {fileID: 6831031853919215020}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &4942905832548803099 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 1897152260257660855, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+  m_PrefabInstance: {fileID: 6831031853919215020}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6927413608552738327 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4535035481049904059, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+  m_PrefabInstance: {fileID: 6831031853919215020}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6023388124980461190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1664017065637746662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69e674f4105154c639a694d52272a20b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spriteRenderer: {fileID: 4942905832548803099}
+  _highlight: {fileID: 6927413608552738327}
+  _isWalkable: 1
+  TileName: Ice
+  OccupiedUnit: {fileID: 0}
+  _colorOne: {r: 0.3724635, g: 0.5795953, b: 0.8490566, a: 1}
+  _colorTwo: {r: 0.25698647, g: 0.4527219, b: 0.7075472, a: 1}

@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edf2265dbb013424db55c8c0c1251f69, type: 3}
   m_Name: MermaidCup
   m_EditorClassIdentifier: 
-  Faction: 0
+  Faction: 1
+  UnitPrefab: {fileID: 7314946588625592501, guid: 5543f6502105b4d1baacd305baba08bf, type: 3}
+  Health: 4

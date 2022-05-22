@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: Puffin
   m_EditorClassIdentifier: 
   Faction: 0
+  UnitPrefab: {fileID: 5966231436134390362, guid: 22dceead3fbf14dd6b7a8d71cd70f17b, type: 3}
+  Health: 4

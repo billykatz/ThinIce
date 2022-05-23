@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Modify-Add-Two
   m_EditorClassIdentifier: 
   CardType: 0
-  BaseCard: {fileID: 0}
+  BaseCard: {fileID: 7368038690331312316, guid: 2931901c065b74d00ac87e379ad01dc6, type: 3}
   ModifyOperation: 0
   ModifyAmount: 2

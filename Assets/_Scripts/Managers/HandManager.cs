@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class HandManager : MonoBehaviour
@@ -20,7 +21,7 @@ public class HandManager : MonoBehaviour
         this.cards = new List<CombinedCard>();
     }
 
-    public void DrawHand() {
+    public async void DrawHand() {
         Debug.Log("HandManager: Start drawing a card");
         int index = 0;
         while (cards.Count < 3) {
@@ -35,6 +36,8 @@ public class HandManager : MonoBehaviour
             combinedCard.transform.position = movementPlaceHolder.position;
 
             index++;
+
+            await Task.Delay(100);
         }
         Debug.Log("HandManager: Finishing drawing a card");
     }

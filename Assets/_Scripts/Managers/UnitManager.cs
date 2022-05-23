@@ -25,6 +25,12 @@ public class UnitManager : MonoBehaviour
 
     }
 
+    public BaseHero SpawnHeroUnit() {
+        var randomPrefab =  GetRandomUnit<BaseUnit>(Faction.Hero);
+        var spawnedUnit = Instantiate(randomPrefab);
+        return (BaseHero)spawnedUnit;
+    }
+
     private T GetRandomUnit<T>(Faction faction) where T: BaseUnit {
         return (T)_units.Where(u=>u.Faction==faction).OrderBy(o=>Random.value).First().UnitPrefab;
     }

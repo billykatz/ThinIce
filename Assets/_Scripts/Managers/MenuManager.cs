@@ -10,13 +10,16 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject _floatingTileDetailView;
     [SerializeField] private GameObject _floatingUnitDetailView;
     [SerializeField] private GameObject _floatingTurnPhaseView;
+    [SerializeField] private GameObject _floatingTurnTutorialView;
 
     private void Awake() {
         Instance = this;
     }
 
     public void ShowTurnPhase(GameState gameState) {
+        _floatingTurnTutorialView.SetActive(false);
         string turnPhase = "";
+        string turnTutorial = "";
         switch (gameState) {
             case GameState.GenerateGrid:
                 turnPhase = "Generate Grid";
@@ -32,6 +35,7 @@ public class MenuManager : MonoBehaviour
                 break;
             case GameState.PlaceHero:
                 turnPhase = "Place Hero";
+                turnTutorial = "Place Buck in the highlighted area";
                 break;
             case GameState.CreateDeck:
                 turnPhase = "Create Deck";
@@ -41,12 +45,18 @@ public class MenuManager : MonoBehaviour
                 break;
             case GameState.HeroTurn:
                 turnPhase = "Hero Turn";
+                turnTutorial = "Place Buck in the highlighted area";
                 break;
             case GameState.EnemyTurn:
                 turnPhase = "Enemy Turn";
                 break;
         }
         _floatingTurnPhaseView.GetComponentInChildren<Text>().text = turnPhase;
+
+        if (turnTutorial != "") {
+            _floatingTurnTutorialView.SetActive(true);
+            _floatingTurnTutorialView.GetComponentInChildren<Text>().text = turnTutorial;
+        }
 
     }
 

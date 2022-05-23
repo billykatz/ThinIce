@@ -6,14 +6,18 @@ public abstract class Tile : MonoBehaviour
 {
     [SerializeField] protected SpriteRenderer _spriteRenderer;
     [SerializeField] private GameObject _highlight;
+    [SerializeField] private GameObject _startingPositionHighlight;
     [SerializeField] private bool _isWalkable;
     [SerializeField] public string TileName;
+
+    private int x, y;
 
     public BaseUnit OccupiedUnit;
     public bool isWalkable => (OccupiedUnit == null) && _isWalkable;
 
     public virtual void Init(int x, int y) {
-        
+        this.x = x;
+        this.y = y;
         
     }
 
@@ -36,6 +40,18 @@ public abstract class Tile : MonoBehaviour
         }
 
         MenuManager.Instance.ShowSelectedTile(null);
+    }
+
+    private void OnMouseDown() {
+        GridManager.Instance.TileWasTapped(x, y);
+    }
+
+    public void HighlightStartingPlayerPosition() {
+        _startingPositionHighlight.SetActive(true);
+    }
+
+    public void RemoveHighlightStartingPlayerPosition() {
+        _startingPositionHighlight.SetActive(false);
     }
     
 

@@ -22,19 +22,20 @@ public class GameManager : MonoBehaviour
     }
 
     public async void EndGameState(GameState currentGameState) {
-        await Task.Delay(2000);
+        await Task.Delay(1000);
         switch (currentGameState) {
             case GameState.GenerateGrid:
                 ChangeState(GameState.SpawnEnemies);
                 break;
             case GameState.SpawnEnemies:
-                ChangeState(GameState.CreateDeck);
+                ChangeState(GameState.PlaceHero);
                 break;
             case GameState.SpawnHazards:
                 break;
             case GameState.SpawnItems:
                 break;
             case GameState.PlaceHero:
+                ChangeState(GameState.CreateDeck);
                 break;
             case GameState.CreateDeck:
                 ChangeState(GameState.DrawHand);
@@ -65,6 +66,7 @@ public class GameManager : MonoBehaviour
             case GameState.SpawnItems:
                 break;
             case GameState.PlaceHero:
+                GridManager.Instance.HighlightPlayerStartingPositions();
                 break;
             case GameState.CreateDeck:
                 DeckManager.Instance.CreateDeck();

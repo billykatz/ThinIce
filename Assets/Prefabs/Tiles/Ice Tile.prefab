@@ -76,6 +76,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4535035481049904059, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
   m_PrefabInstance: {fileID: 6831031853919215020}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2483257662028156370 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8987776281186603134, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+  m_PrefabInstance: {fileID: 6831031853919215020}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6023388124980461190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90,6 +95,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 4942905832548803099}
   _highlight: {fileID: 6927413608552738327}
+  _startingPositionHighlight: {fileID: 2483257662028156370}
   _isWalkable: 1
   TileName: Ice
   OccupiedUnit: {fileID: 0}

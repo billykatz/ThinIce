@@ -12,5 +12,6 @@ public class IceTile : Tile
     {
         var computedColor = (x + y) % 2 == 1 ? _colorOne : _colorTwo;
         _spriteRenderer.color = computedColor;
+        base.Init(x, y);
     }
 }

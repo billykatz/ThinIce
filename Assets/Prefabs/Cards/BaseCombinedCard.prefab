@@ -130,8 +130,7 @@ MonoBehaviour:
   _spriteRenderer: {fileID: 0}
   movementCard: {fileID: 0}
   modifierCard: {fileID: 0}
-  movementSprite: {fileID: 4484306076493007991}
-  modifierSprite: {fileID: 2223667207035182138}
+  cardParent: {fileID: 0}
 --- !u!1 &7911113686251721336
 GameObject:
   m_ObjectHideFlags: 0

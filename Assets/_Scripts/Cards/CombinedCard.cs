@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class CombinedCard : BaseCard
 {
-    public MovementCard movementCard;
-    public ModifierCard modifierCard;
+    private MovementCard movementCard;
+    private ModifierCard modifierCard;
 
     public GameObject cardParent;
 

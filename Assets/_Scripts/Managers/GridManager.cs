@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class GridManager : MonoBehaviour
@@ -76,18 +77,29 @@ public class GridManager : MonoBehaviour
         return _tiles.Where(t => t.Value.isWalkable && !PotentialPlayerStartingPositions().Contains(t.Key)).OrderBy(o=>Random.value).First().Value;
     }
 
-    public void TileWasTapped(int x, int y) {
+    public async void TileWasTapped(int x, int y) {
+        Vector2 tappedCoord = new Vector2(x, y);
         if (GameManager.Instance.GameState == GameState.PlaceHero) {
-            Debug.Log($"Tile at {x}, {y} was tapped");
-            BaseHero hero = UnitManager.Instance.SpawnHeroUnit();
-            _tiles[new Vector2(x, y)].SetUnit(hero);
+            if (PotentialPlayerStartingPositions().Contains(tappedCoord)) {
+                Debug.Log($"Tile at {x}, {y} was tapped");
+                BaseHero hero = UnitManager.Instance.SpawnHeroUnit();
+                _tiles[tappedCoord].SetUnit(hero);
 
-            // remove the special highlights
-            RemoveHighlightPlayerStartingPositions();
+                // remove the special highlights
+                RemoveHighlightPlayerStartingPositions();
 
 
-            // we are done placing the hero, move the game along
-            GameManager.Instance.EndGameState(GameState.PlaceHero);
+                // we are done placing the hero, move the game along
+                GameManager.Instance.EndGameState(GameState.PlaceHero);
+            } else {
+                RemoveHighlightPlayerStartingPositions();
+                await Task.Delay(100);
+                HighlightPlayerStartingPositions();
+                await Task.Delay(50);
+                RemoveHighlightPlayerStartingPositions();
+                await Task.Delay(100);
+                HighlightPlayerStartingPositions();
+            }
         }
     }
 }

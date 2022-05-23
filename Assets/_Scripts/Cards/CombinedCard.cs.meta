@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 585b3283dfbc54bc797724a20935d664
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _spriteRenderer: {instanceID: 0}
+  - movementCard: {instanceID: 0}
+  - modifierCard: {instanceID: 0}
+  - cardPrefab: {fileID: 7511337809837108667, guid: f2358e680460d431f85b48af0b1a5d33, type: 3}
+  - movementSprite: {instanceID: 0}
+  - modifierSprite: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

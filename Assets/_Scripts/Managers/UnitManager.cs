@@ -21,6 +21,8 @@ public class UnitManager : MonoBehaviour
 
         randomSpawnTile.SetUnit(spawnedUnit);
 
+        GameManager.Instance.EndGameState(GameState.SpawnEnemies);
+
     }
 
     private T GetRandomUnit<T>(Faction faction) where T: BaseUnit {

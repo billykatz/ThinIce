@@ -9,9 +9,45 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] private GameObject _floatingTileDetailView;
     [SerializeField] private GameObject _floatingUnitDetailView;
+    [SerializeField] private GameObject _floatingTurnPhaseView;
 
     private void Awake() {
         Instance = this;
+    }
+
+    public void ShowTurnPhase(GameState gameState) {
+        string turnPhase = "";
+        switch (gameState) {
+            case GameState.GenerateGrid:
+                turnPhase = "Generate Grid";
+                break;
+            case GameState.SpawnEnemies:
+                turnPhase = "Spawn Enemies";
+                break;
+            case GameState.SpawnHazards:
+                turnPhase = "Spawn Hazards";
+                break;
+            case GameState.SpawnItems:
+                turnPhase = "Spawn Items";
+                break;
+            case GameState.PlaceHero:
+                turnPhase = "Place Hero";
+                break;
+            case GameState.CreateDeck:
+                turnPhase = "Create Deck";
+                break;
+            case GameState.DrawHand:
+                turnPhase = "Draw Hand";
+                break;
+            case GameState.HeroTurn:
+                turnPhase = "Hero Turn";
+                break;
+            case GameState.EnemyTurn:
+                turnPhase = "Enemy Turn";
+                break;
+        }
+        _floatingTurnPhaseView.GetComponentInChildren<Text>().text = turnPhase;
+
     }
 
     public void ShowSelectedUnit(BaseUnit unit) {

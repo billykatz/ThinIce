@@ -84,3 +84,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 1839730710662317029}
+  movement: 00000000

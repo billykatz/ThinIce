@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System;
 using UnityEngine;
 
@@ -20,18 +21,25 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.GenerateGrid);
     }
 
-    public void EndGameState(GameState currentGameState) {
+    public async void EndGameState(GameState currentGameState) {
+        await Task.Delay(2000);
         switch (currentGameState) {
             case GameState.GenerateGrid:
                 ChangeState(GameState.SpawnEnemies);
                 break;
             case GameState.SpawnEnemies:
+                ChangeState(GameState.CreateDeck);
                 break;
             case GameState.SpawnHazards:
                 break;
             case GameState.SpawnItems:
                 break;
             case GameState.PlaceHero:
+                break;
+            case GameState.CreateDeck:
+                ChangeState(GameState.DrawHand);
+                break;
+            case GameState.DrawHand:
                 break;
             case GameState.HeroTurn:
                 break;
@@ -44,6 +52,7 @@ public class GameManager : MonoBehaviour
 
     void ChangeState(GameState newState) {
         GameState = newState;
+        MenuManager.Instance.ShowTurnPhase(newState);
         switch (newState) {
             case GameState.GenerateGrid:
                 GridManager.Instance.GenerateGrid();
@@ -56,6 +65,12 @@ public class GameManager : MonoBehaviour
             case GameState.SpawnItems:
                 break;
             case GameState.PlaceHero:
+                break;
+            case GameState.CreateDeck:
+                DeckManager.Instance.CreateDeck();
+                break;
+            case GameState.DrawHand:
+                HandManager.Instance.DrawHand();
                 break;
             case GameState.HeroTurn:
                 break;
@@ -73,6 +88,8 @@ public enum GameState {
     SpawnHazards = 2,
     SpawnItems = 3,
     PlaceHero = 4,
-    HeroTurn = 5,
-    EnemyTurn = 6
+    CreateDeck = 5,
+    DrawHand = 6,
+    HeroTurn = 7,
+    EnemyTurn = 8
 }

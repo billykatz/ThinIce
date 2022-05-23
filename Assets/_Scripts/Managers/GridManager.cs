@@ -35,7 +35,7 @@ public class GridManager : MonoBehaviour
 
 
         // put the camera at the center of our grid
-        _cam.transform.position = new Vector3((float)_width /2 - 0.5f, (float)_height / 2 - 0.5f, -10);
+        _cam.transform.position = new Vector3((float)_width /2 - 0.5f, (float)_height / 2 - 1.5f, -10);
 
         GameManager.Instance.EndGameState(GameState.GenerateGrid);
     }

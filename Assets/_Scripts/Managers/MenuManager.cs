@@ -9,6 +9,10 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] private Canvas mainCanvas;
     [SerializeField] private GameObject cardDetailView;
+    [SerializeField] private Image cardDetailMovementPlaceholder;
+    [SerializeField] private Image cardDetailModifyPlaceholder;
+    [SerializeField] private Text cardDetailMovementText;
+    [SerializeField] private Text cardDetailModifierText;
 
     [SerializeField] private GameObject _floatingTileDetailView;
     [SerializeField] private GameObject _floatingUnitDetailView;
@@ -86,6 +90,14 @@ public class MenuManager : MonoBehaviour
 
     public void ShowCardDetailView(CombinedCard card) {
         cardDetailView.SetActive(true);
+
+        // set the sprites
+        cardDetailMovementPlaceholder.sprite = card.movementCard._spriteRenderer.sprite;
+        cardDetailModifyPlaceholder.sprite = card.modifierCard._spriteRenderer.sprite;
+
+        // set the effect descriptions
+        cardDetailMovementText.text = card.movementCard.effectDescription;
+        cardDetailModifierText.text = card.modifierCard.effectDescription;
     }
 
     public void HideCardDetailView() {

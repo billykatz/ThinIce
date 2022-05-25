@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Movement Card", menuName = "Movement Card")]
 public class ScriptableMovementCard : ScriptableCard
 {
-    public List<Movement> movement;
 }
 
 public enum Movement {
@@ -16,7 +15,7 @@ public enum Movement {
     UpLeft = 4, 
     UpRight = 5, 
     DownRight = 6, 
-    DownLeft = 7
-
-
+    DownLeft = 7,
+    LeftOrRight = 8,
+    UpOrDown = 9
 }

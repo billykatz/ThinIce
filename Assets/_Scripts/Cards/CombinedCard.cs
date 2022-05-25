@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class CombinedCard : BaseCard, MouseInteractionDelegate
 {
-    private MovementCard movementCard;
-    private ModifierCard modifierCard;
+    public MovementCard movementCard;
+    public ModifierCard modifierCard;
 
     public GameObject cardParent;
 

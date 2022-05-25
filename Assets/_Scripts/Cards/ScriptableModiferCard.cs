@@ -5,8 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Modifier Card", menuName = "Modifier Card")]
 public class ScriptableModiferCard : ScriptableCard
 {
-    public ModifyOperation ModifyOperation;
-    public int ModifyAmount;
 }
 
 public enum ModifyOperation {

@@ -11,7 +11,8 @@ public interface MouseInteractionDelegate {
 
 public class BaseCard : MonoBehaviour
 {
-    [SerializeField] protected SpriteRenderer _spriteRenderer;
+    [SerializeField] public SpriteRenderer _spriteRenderer;
+    public string effectDescription;
 
     public MouseInteractionDelegate interactionDelegate;
 

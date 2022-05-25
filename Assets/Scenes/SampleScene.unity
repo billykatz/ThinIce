@@ -250,6 +250,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCanvas: {fileID: 1721600842}
   cardDetailView: {fileID: 1228925944}
+  cardDetailMovementPlaceholder: {fileID: 1463171712}
+  cardDetailModifyPlaceholder: {fileID: 1525949242}
+  cardDetailMovementText: {fileID: 962279849}
+  cardDetailModifierText: {fileID: 1241620594}
   _floatingTileDetailView: {fileID: 2090247875}
   _floatingUnitDetailView: {fileID: 1004587548}
   _floatingTurnPhaseView: {fileID: 1914206143}
@@ -378,6 +382,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 87371570}
+  effectDescription: 
   modifyOperation: 0
   modifyAmount: 2
 --- !u!212 &87371570
@@ -754,6 +759,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 465937805}
+  effectDescription: 
   modifyOperation: 0
   modifyAmount: 2
 --- !u!212 &465937805
@@ -935,6 +941,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 604451089}
+  effectDescription: 
   movement: 00000000
 --- !u!212 &604451089
 SpriteRenderer:
@@ -1235,6 +1242,17 @@ Transform:
   m_Father: {fileID: 1342414795}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &962279849 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 234057164400624477, guid: 81891766268734f7096dd53a5d432c60, type: 3}
+  m_PrefabInstance: {fileID: 234057164689822464}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &995633316
 GameObject:
   m_ObjectHideFlags: 0
@@ -1527,6 +1545,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 234057163495389433, guid: 81891766268734f7096dd53a5d432c60, type: 3}
   m_PrefabInstance: {fileID: 234057164689822464}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1241620594 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 234057165436991825, guid: 81891766268734f7096dd53a5d432c60, type: 3}
+  m_PrefabInstance: {fileID: 234057164689822464}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1342414794
 GameObject:
   m_ObjectHideFlags: 0
@@ -1647,6 +1676,17 @@ Transform:
   m_Father: {fileID: 1342414795}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1463171712 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 234057164726070659, guid: 81891766268734f7096dd53a5d432c60, type: 3}
+  m_PrefabInstance: {fileID: 234057164689822464}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1487249088
 GameObject:
   m_ObjectHideFlags: 0
@@ -1692,6 +1732,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 1487249091}
+  effectDescription: 
   movement: 00000000
 --- !u!212 &1487249091
 SpriteRenderer:
@@ -1823,6 +1864,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1520255395}
   m_CullTransparentMesh: 1
+--- !u!114 &1525949242 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 234057164810399882, guid: 81891766268734f7096dd53a5d432c60, type: 3}
+  m_PrefabInstance: {fileID: 234057164689822464}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1694836045
 GameObject:
   m_ObjectHideFlags: 0
@@ -2096,6 +2148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 1781787770}
+  effectDescription: 
   modifyOperation: 0
   modifyAmount: 2
 --- !u!212 &1781787770
@@ -2387,6 +2440,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 1913120773}
+  effectDescription: 
   movement: 00000000
 --- !u!212 &1913120773
 SpriteRenderer:

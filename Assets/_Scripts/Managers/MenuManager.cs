@@ -91,8 +91,4 @@ public class MenuManager : MonoBehaviour
     public void HideCardDetailView() {
         cardDetailView.SetActive(false);
     }
-
-    private void OnMouseDown() {
-        Debug.Log("Mouse down on empty space");
-    }
 }

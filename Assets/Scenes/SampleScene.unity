@@ -1288,6 +1288,7 @@ MonoBehaviour:
   - {fileID: 68223659}
   - {fileID: 114326732}
   - {fileID: 335402403}
+  m_EventSystem: {fileID: 1972820265}
 --- !u!1 &1004587548
 GameObject:
   m_ObjectHideFlags: 0
@@ -2526,7 +2527,7 @@ GameObject:
   - component: {fileID: 1972820265}
   - component: {fileID: 1972820264}
   m_Layer: 0
-  m_Name: EventSystem
+  m_Name: Event Sytem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

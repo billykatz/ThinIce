@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using UnityEngine.EventSystems;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HandManager : MonoBehaviour
 {
@@ -81,13 +83,26 @@ public class HandManager : MonoBehaviour
         }
     }
 
+    [SerializeField] EventSystem m_EventSystem;
+
     private void Update() {
         if (Input.GetMouseButtonDown(0)) {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
-            if (hit.collider == null) {
-                DeselectAll();
+            PointerEventData pointerEventData = new PointerEventData(m_EventSystem);
+            pointerEventData.position = Input.mousePosition;
+            var raycastResults = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointerEventData, raycastResults);
+            if(raycastResults.Count > 0)
+            {
+                Debug.Log("Yes UI hit");
+            } else {
+                Debug.Log("No UI hit");
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
+                if (hit.collider == null) {
+                    DeselectAll();
+                }
             }
+
         }
     }
 

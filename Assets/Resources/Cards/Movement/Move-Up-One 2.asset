@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Move-Up-One 2
   m_EditorClassIdentifier: 
   CardType: 0
-  BaseCard: {fileID: 8356671501872615403, guid: 5dce8bdc012574bf984b7699ccd81107, type: 3}
+  BaseCard: {fileID: -3544472047178009297, guid: 5dce8bdc012574bf984b7699ccd81107, type: 3}
   movement: 00000000

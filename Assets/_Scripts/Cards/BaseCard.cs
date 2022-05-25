@@ -5,6 +5,8 @@ using UnityEngine;
 
 public interface MouseInteractionDelegate {
     public void OnMouseDown();
+    public void OnMouseEnter();
+    public void OnMouseExit();
 }
 
 public class BaseCard : MonoBehaviour
@@ -21,6 +23,24 @@ public class BaseCard : MonoBehaviour
         if (interactionDelegate != null) {
            interactionDelegate.OnMouseDown(); 
         }
+
+    }
+
+    private void OnMouseExit() {
+        if (interactionDelegate != null) {
+           interactionDelegate.OnMouseExit(); 
+        }
+
+    }
+
+     private void OnMouseEnter() {
+        if (interactionDelegate != null) {
+           interactionDelegate.OnMouseEnter(); 
+        }
+
+    }
+
+    public virtual void PlayCard() {
 
     }
 }

@@ -55,6 +55,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Movement-One-Up
       objectReference: {fileID: 0}
+    - target: {fileID: 4879572151981303477, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4879572151981303477, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
+      propertyPath: m_TagString
+      value: FullCardHighlight
+      objectReference: {fileID: 0}
     - target: {fileID: 5353068498584004555, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
       propertyPath: m_Size.x
       value: 1.5023665
@@ -79,6 +87,14 @@ PrefabInstance:
       propertyPath: m_SpriteTilingProperty.oldSize.y
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 6331263355240211359, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
+      propertyPath: _spriteRenderer
+      value: 
+      objectReference: {fileID: 1839730710662317029}
+    - target: {fileID: 6331263355240211359, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
+      propertyPath: movement.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7633192807651122711, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -95,7 +111,7 @@ SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 7633192807651122711, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
   m_PrefabInstance: {fileID: 8099307485660913138}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8356671501872615403
+--- !u!114 &-3544472047178009297
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -109,3 +125,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 1839730710662317029}
   movement: 00000000
+  fullCardHighlight: {fileID: 8804299710613165459, guid: 6b5953e795fd8407896a7cab1f99e24a, type: 3}

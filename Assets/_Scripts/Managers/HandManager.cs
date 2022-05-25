@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using UnityEngine;
 
 public class HandManager : MonoBehaviour
@@ -15,10 +16,13 @@ public class HandManager : MonoBehaviour
     [SerializeField] private List<Transform> MovementCardSlotPlaceholders;
     [SerializeField] private List<Transform> ModiferCardSlotPlaceholders;
 
+    private int selectedIndex;
+
     private void Awake() {
         Instance = this;
 
         this.cards = new List<CombinedCard>();
+        selectedIndex = -1;
     }
 
     public async void DrawHand() {
@@ -47,5 +51,45 @@ public class HandManager : MonoBehaviour
             DeckManager.Instance.DiscardCard(card);
         }
     }
+
+    public void DeselectAll() {
+        foreach(CombinedCard card in cards) {
+            card.SetSelectedBackground(false);
+        }
+        MenuManager.Instance.HideCardDetailView();
+        selectedIndex = -1;
+    }
+
+    public void DidSelectCard(int index) {
+        DeselectAll();
+        selectedIndex = index;
+        cards[index].SetSelectedBackground(true);
+        MenuManager.Instance.ShowCardDetailView(cards[index]);
+    }
+
+    public void DidHoverOverCard(int index) {
+        if (selectedIndex == -1) {
+            MenuManager.Instance.ShowCardDetailView(cards[index]);
+            cards[index].SetSelectedBackground(true);
+        }
+    }
+
+    public void DidStopHoverOverCard(int index) {
+        if (selectedIndex == -1) {
+            MenuManager.Instance.HideCardDetailView();
+            cards[index].SetSelectedBackground(false);
+        }
+    }
+
+    private void Update() {
+        if (Input.GetMouseButtonDown(0)) {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
+            if (hit.collider == null) {
+                DeselectAll();
+            }
+        }
+    }
+
 
 }

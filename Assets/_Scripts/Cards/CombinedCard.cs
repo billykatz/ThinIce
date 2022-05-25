@@ -9,6 +9,8 @@ public class CombinedCard : BaseCard, MouseInteractionDelegate
 
     public GameObject cardParent;
 
+    private int index;
+
     public void Create(MovementCard movementCard, ModifierCard modifierCard) {
         this.movementCard = movementCard;
         this.modifierCard = modifierCard;
@@ -23,6 +25,7 @@ public class CombinedCard : BaseCard, MouseInteractionDelegate
 
         cardParent = new GameObject();
         cardParent.name = $"Combined Card {index}";
+        this.index = index;
 
         movementCard.transform.SetParent(cardParent.transform);
         modifierCard.transform.SetParent(cardParent.transform);
@@ -32,6 +35,22 @@ public class CombinedCard : BaseCard, MouseInteractionDelegate
     }
 
     void MouseInteractionDelegate.OnMouseDown() {
-        Debug.Log("I was touched- Combined card");
+        HandManager.Instance.DidSelectCard(index);
+    }
+
+    void MouseInteractionDelegate.OnMouseEnter() {
+        HandManager.Instance.DidHoverOverCard(index);
+    }
+
+    void MouseInteractionDelegate.OnMouseExit() {
+        HandManager.Instance.DidStopHoverOverCard(index);
+    }
+
+    public void SetSelectedBackground(bool onOff) {
+        if (onOff) {
+            movementCard.SetFullCardHighlight(true);
+        } else {
+            movementCard.SetFullCardHighlight(false);
+        }
     }
 }

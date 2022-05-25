@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     }
 
     public async void EndGameState(GameState currentGameState) {
-        await Task.Delay(1000);
+        await Task.Delay(100);
         switch (currentGameState) {
             case GameState.GenerateGrid:
                 ChangeState(GameState.SpawnEnemies);
@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
                 ChangeState(GameState.DrawHand);
                 break;
             case GameState.DrawHand:
+                ChangeState(GameState.HeroTurn);
                 break;
             case GameState.HeroTurn:
                 break;

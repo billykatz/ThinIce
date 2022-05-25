@@ -7,6 +7,9 @@ public class MenuManager : MonoBehaviour
 {
     public static MenuManager Instance;
 
+    [SerializeField] private Canvas mainCanvas;
+    [SerializeField] private GameObject cardDetailView;
+
     [SerializeField] private GameObject _floatingTileDetailView;
     [SerializeField] private GameObject _floatingUnitDetailView;
     [SerializeField] private GameObject _floatingTurnPhaseView;
@@ -14,6 +17,8 @@ public class MenuManager : MonoBehaviour
 
     private void Awake() {
         Instance = this;
+        cardDetailView.SetActive(true);
+        cardDetailView.SetActive(false);
     }
 
     public void ShowTurnPhase(GameState gameState) {
@@ -45,7 +50,7 @@ public class MenuManager : MonoBehaviour
                 break;
             case GameState.HeroTurn:
                 turnPhase = "Hero Turn";
-                turnTutorial = "Place Buck in the highlighted area";
+                turnTutorial = "Play two cards";
                 break;
             case GameState.EnemyTurn:
                 turnPhase = "Enemy Turn";
@@ -77,5 +82,17 @@ public class MenuManager : MonoBehaviour
         }
         _floatingTileDetailView.GetComponentInChildren<Text>().text = tile.TileName;
         _floatingTileDetailView.SetActive(true);
+    }
+
+    public void ShowCardDetailView(CombinedCard card) {
+        cardDetailView.SetActive(true);
+    }
+
+    public void HideCardDetailView() {
+        cardDetailView.SetActive(false);
+    }
+
+    private void OnMouseDown() {
+        Debug.Log("Mouse down on empty space");
     }
 }

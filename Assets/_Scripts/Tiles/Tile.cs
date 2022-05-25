@@ -44,6 +44,7 @@ public abstract class Tile : MonoBehaviour
 
     private void OnMouseDown() {
         GridManager.Instance.TileWasTapped(x, y);
+        HandManager.Instance.DeselectAll();
     }
 
     public void HighlightStartingPlayerPosition() {

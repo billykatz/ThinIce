@@ -5,11 +5,8 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - _spriteRenderer: {instanceID: 0}
-  - movementCard: {instanceID: 0}
-  - modifierCard: {instanceID: 0}
-  - cardPrefab: {fileID: 7511337809837108667, guid: f2358e680460d431f85b48af0b1a5d33, type: 3}
-  - movementSprite: {instanceID: 0}
-  - modifierSprite: {instanceID: 0}
+  - selectedBackground: {fileID: 8804299710613165459, guid: 6b5953e795fd8407896a7cab1f99e24a, type: 3}
+  - cardParent: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

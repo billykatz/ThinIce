@@ -128,8 +128,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 0}
-  movementCard: {fileID: 0}
-  modifierCard: {fileID: 0}
   cardParent: {fileID: 0}
 --- !u!1 &7911113686251721336
 GameObject:

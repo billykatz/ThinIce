@@ -11,6 +11,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Modify-CardBack
       objectReference: {fileID: 0}
+    - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_Size.x
+      value: 1.5112164
+      objectReference: {fileID: 0}
+    - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_Size.y
+      value: 0.75422275
+      objectReference: {fileID: 0}
+    - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_Offset.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.0049155504
+      objectReference: {fileID: 0}
+    - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 5932559725543664733, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
       propertyPath: m_Sprite
       value: 

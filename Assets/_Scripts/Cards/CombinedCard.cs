@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CombinedCard : BaseCard
+public class CombinedCard : BaseCard, MouseInteractionDelegate
 {
     private MovementCard movementCard;
     private ModifierCard modifierCard;
@@ -18,6 +18,9 @@ public class CombinedCard : BaseCard
         movementCard = Instantiate(movementCard);
         modifierCard = Instantiate(modifierCard);
 
+        movementCard.SetInteractionDelegate(this);
+        modifierCard.SetInteractionDelegate(this);
+
         cardParent = new GameObject();
         cardParent.name = $"Combined Card {index}";
 
@@ -26,5 +29,9 @@ public class CombinedCard : BaseCard
         modifierCard.transform.position = new Vector3(modifierCard.transform.position.x, modifierCard.transform.position.y-1.25f, modifierCard.transform.position.z);
 
         return cardParent;
+    }
+
+    void MouseInteractionDelegate.OnMouseDown() {
+        Debug.Log("I was touched- Combined card");
     }
 }

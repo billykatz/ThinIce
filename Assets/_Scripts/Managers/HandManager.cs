@@ -18,6 +18,8 @@ public class HandManager : MonoBehaviour
     [SerializeField] private List<Transform> MovementCardSlotPlaceholders;
     [SerializeField] private List<Transform> ModiferCardSlotPlaceholders;
 
+    [SerializeField] EventSystem m_EventSystem;
+
     private int selectedIndex;
 
     private void Awake() {
@@ -83,8 +85,7 @@ public class HandManager : MonoBehaviour
         }
     }
 
-    [SerializeField] EventSystem m_EventSystem;
-
+    // Looks for clicks on the screen to handle deselection.  If the player clicks or taps on the UI then nothing is deselcted so the player can still tap on the card detail view.
     private void Update() {
         if (Input.GetMouseButtonDown(0)) {
             PointerEventData pointerEventData = new PointerEventData(m_EventSystem);
@@ -93,9 +94,9 @@ public class HandManager : MonoBehaviour
             EventSystem.current.RaycastAll(pointerEventData, raycastResults);
             if(raycastResults.Count > 0)
             {
-                Debug.Log("Yes UI hit");
+                // purposefully left blank
             } else {
-                Debug.Log("No UI hit");
+                Debug.Log("No UI hit - therefore we can handle deselection");
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
                 if (hit.collider == null) {

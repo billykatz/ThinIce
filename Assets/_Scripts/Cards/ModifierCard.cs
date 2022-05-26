@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class ModifierCard : BaseCard
 {
-    [SerializeField] ModifyOperation modifyOperation;
-    [SerializeField] int modifyAmount;
+    [SerializeField] public ModifyOperation modifyOperation;
+    [SerializeField] public int modifyAmount;
 }

@@ -62,6 +62,7 @@ public class HandManager : MonoBehaviour
         }
         MenuManager.Instance.HideCardDetailView();
         selectedIndex = -1;
+        PlayerManager.Instance.HidePreview();
     }
 
     public void DidSelectCard(int index) {
@@ -69,6 +70,7 @@ public class HandManager : MonoBehaviour
         selectedIndex = index;
         cards[index].SetSelectedBackground(true);
         MenuManager.Instance.ShowCardDetailView(cards[index]);
+        PlayerManager.Instance.ShowPreview(cards[index], ModifyTarget.Attack);
     }
 
     public void DidHoverOverCard(int index) {

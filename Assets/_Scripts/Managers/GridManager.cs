@@ -110,22 +110,22 @@ public class GridManager : MonoBehaviour
                 // move left
                 Debug.Log("moved left");
                 currentlyMoving = true;
-                MoveHero(GridMovement.Left);
+                ArrowTapped(GridMovement.Left);
             } else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) {
                 // move up
                 Debug.Log("moved up");
                 currentlyMoving = true;
-                MoveHero(GridMovement.Up);
+                ArrowTapped(GridMovement.Up);
             } else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) {
                 // move down
                 Debug.Log("moved down");
                 currentlyMoving = true;
-                MoveHero(GridMovement.Down);
+                ArrowTapped(GridMovement.Down);
             }  else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) {
                 // move right
                 Debug.Log("moved right");
                 currentlyMoving = true;
-                MoveHero(GridMovement.Right);
+                ArrowTapped(GridMovement.Right);
             }
         } else {
             if (Input.GetKeyDown(KeyCode.P)) {

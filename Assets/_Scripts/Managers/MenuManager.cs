@@ -212,7 +212,7 @@ public class MenuManager : MonoBehaviour
     }
 
     private void Update() {
-        if (this.isActiveAndEnabled) {
+        if (cardDetailView.activeInHierarchy) {
             if (Input.GetKeyDown(KeyCode.Z)) {
                 ArmorButtonSelected();
             } else if (Input.GetKeyDown(KeyCode.X)) {

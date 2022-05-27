@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GridManager : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class GridManager : MonoBehaviour
 
     [SerializeField] private Transform _cam;
 
+    [SerializeField] private GameObject arrowController;
 
     private Dictionary<Vector2, Tile> _tiles;
 
@@ -225,11 +227,42 @@ public class GridManager : MonoBehaviour
         // show helper text
         MenuManager.Instance.PlayCardInstructions(card, movementCardIndex);
         
-        // wait for input
+
+
+        // wait for input (arrow keys can control movement)
         waitingForInput = true;
         currentlyMoving = false;
 
+        ShowMovementArrows(card, movementIndex);
+
     }
+
+    private MovementArrowController movementArrowController;
+    private GameObject movementArrowGameObject;
+
+    private void ShowMovementArrows(CombinedCard card, int movementIndex) {
+        movementArrowGameObject = Instantiate(arrowController);
+        movementArrowController = movementArrowGameObject.GetComponent<MovementArrowController>();
+
+        movementArrowController.SetArrows(card.movementCard.GetGridMovement(movementIndex));
+        movementArrowController.OnArrowTapped += ArrowTapped;
+
+        Tile playerTile = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Value;
+
+        if (playerTile == null) {
+            return;
+        }
+
+        // put the arrows on the player's tile
+        movementArrowGameObject.transform.position = playerTile.transform.position;
+    }
+
+    public void ArrowTapped(GridMovement gridMovement) {
+        MoveHero(gridMovement);
+        movementArrowController.OnArrowTapped -= ArrowTapped;
+        Destroy(movementArrowGameObject);
+    }
+
 
     private void FinishPlayingCard() {
         Debug.Log($"Is finished playing cards");

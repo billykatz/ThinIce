@@ -12,6 +12,45 @@ public class MovementCard : BaseCard
         child.SetActive(onOff);
     }
 
+    public List<GridMovement> GetGridMovement(int movementIndex) {
+        List<GridMovement> gridMovements = new List<GridMovement>();
+        switch (movement[movementIndex].movementType) {
+            case MovementType.Up:
+                gridMovements.Add(GridMovement.Up);
+                break;
+            case MovementType.Down:
+                gridMovements.Add(GridMovement.Down);
+                break;
+            case MovementType.Left:
+                gridMovements.Add(GridMovement.Left);
+                break;
+            case MovementType.Right:
+                gridMovements.Add(GridMovement.Right);
+                break;
+            case MovementType.UpLeft:
+                break;
+            case MovementType.UpRight:
+                break;
+            case MovementType.DownRight:
+                break;
+            case MovementType.DownLeft:
+                break;
+            case MovementType.LeftOrRight:
+                gridMovements.Add(GridMovement.Left);
+                gridMovements.Add(GridMovement.Right);
+                break;
+            case MovementType.UpOrDown:
+                gridMovements.Add(GridMovement.Up);
+                gridMovements.Add(GridMovement.Down);
+                break;
+            case MovementType.Any:
+                break;
+            case MovementType.Teleport:
+                break;
+        }
+        return gridMovements;
+    }
+
     public bool CanMoveForGridMovement(GridMovement gridMovement, int movementIndex) {
         switch (movement[movementIndex].movementType) {
             case MovementType.Up:

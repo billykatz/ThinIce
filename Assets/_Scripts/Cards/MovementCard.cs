@@ -6,6 +6,7 @@ using UnityEngine;
 public class MovementCard : BaseCard
 {
     public List<Movement> movement;
+    public int movementIndex = 0;
 
     public void SetFullCardHighlight(bool onOff) {
         GameObject child = transform.Find("FullCardHighlight").gameObject;

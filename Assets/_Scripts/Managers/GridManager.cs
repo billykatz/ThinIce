@@ -105,7 +105,7 @@ public class GridManager : MonoBehaviour
     }
 
     private void Update() {
-        if (waitingForInput && !currentlyMoving) {
+        if (!currentlyMoving) {
             if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) {
                 // move left
                 Debug.Log("moved left");
@@ -129,50 +129,65 @@ public class GridManager : MonoBehaviour
             }
         } else {
             if (Input.GetKeyDown(KeyCode.P)) {
-                Debug.Log($"waiting for input {waitingForInput}.  Currently Moving? {currentlyMoving}");
+                Debug.Log($"Currently Moving? {currentlyMoving}");
                 // waitingForInput = true;
             }
         }
         
     }
 
+    private bool ValidMove(GridMovement movement) {
+
+        Tile playerTile = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Value;
+
+        if (playerTile == null) { 
+            return false;
+        }
+
+        return currentCard.movementCard.CanMoveForGridMovement(movement, movementCardIndex);
+    } 
+
     private void MoveHero(GridMovement movement) {
         // current palyer
         Tile playerTile = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Value;
 
-        if (playerTile == null) { 
-            Debug.Log($"player tile is null.");
-            waitingForInput = true;
-            currentlyMoving = false;
-            return; 
-        }
+        if (ValidMove(movement)) {
+            Debug.Log($"GridManager: Valid movement.");
 
-        if (currentCard.movementCard.CanMoveForGridMovement(movement, movementCardIndex)) {
-            Debug.Log($"Valid movement.");
-            // valid move
             Vector2 newPlayerPosition = TileAfterMovement(movement);
-            _tiles[newPlayerPosition].SetUnit(playerTile.OccupiedUnit);
-            playerTile.OccupiedUnit = null;
+            if (DidInitiateCombat(newPlayerPosition)) {
+                
+                // we need to might and then finish the movement.
+                CardRuleStep newStep = new CardRuleStep();
+                newStep.state = CardRuleState.Combat;
+                newStep.attackerUnit = playerTile.OccupiedUnit;
+                newStep.defenderUnit = _tiles[newPlayerPosition].OccupiedUnit;
 
-            // update movement index
-            movementCardIndex++;
-
-
-            if (movementCardIndex >= currentCard.movementCard.movement.Count) {
-                Debug.Log($"Card should be done.");
-                FinishPlayingCard();
+                Debug.Log($"GridManager: Did initiate combat {playerTile.OccupiedUnit} {_tiles[newPlayerPosition].OccupiedUnit}");
+                CardRuleManager.Instance.StartCardRuleStep(newStep);
 
             } else {
-                Debug.Log($"nmore stuff to happen.");
-                ShowMovementHelper(currentCard, movementCardIndex);
-                waitingForInput = true;
-                currentlyMoving = false;
+                Debug.Log($"GridManager: Did finish moving");
+                // valid move no combat
+                _tiles[newPlayerPosition].SetUnit(playerTile.OccupiedUnit);
+                playerTile.OccupiedUnit = null;
+
+                // send it back to the CardRule contoller
+                CardRuleManager.Instance.DidCompleteMovement();
             }
         } else {
             // invalid move
-            Debug.Log($"Invalid move");
-            waitingForInput = true;
+            Debug.Log($"GridManager: Invalid move");
             currentlyMoving = false;
+        }
+    }
+
+    private bool DidInitiateCombat(Vector2 targetTile) {
+        if (_tiles[targetTile].OccupiedUnit != null && _tiles[targetTile].OccupiedUnit.Faction != Faction.Hero) {
+            //  combat
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -209,28 +224,16 @@ public class GridManager : MonoBehaviour
     }  
 
 
-    private bool waitingForInput;
     private int movementCardIndex = 0;
     private CombinedCard currentCard;
     private bool currentlyMoving;
-    public void PlayedCard(CombinedCard card) {
-        Debug.Log($"First call to play card {card}");
-        // keep track of the card
-        currentCard = card;
-
-        // show text 
-        ShowMovementHelper(card, movementCardIndex);
-    }
 
     public void ShowMovementHelper(CombinedCard card, int movementIndex) {
-
+        currentCard = card;
         // show helper text
         MenuManager.Instance.PlayCardInstructions(card, movementCardIndex);
-        
-
 
         // wait for input (arrow keys can control movement)
-        waitingForInput = true;
         currentlyMoving = false;
 
         ShowMovementArrows(card, movementIndex);
@@ -258,20 +261,11 @@ public class GridManager : MonoBehaviour
     }
 
     public void ArrowTapped(GridMovement gridMovement) {
+        if (ValidMove(gridMovement)) {
+            movementArrowController.OnArrowTapped -= ArrowTapped;
+            Destroy(movementArrowGameObject);
+        }
         MoveHero(gridMovement);
-        movementArrowController.OnArrowTapped -= ArrowTapped;
-        Destroy(movementArrowGameObject);
-    }
-
-
-    private void FinishPlayingCard() {
-        Debug.Log($"Is finished playing cards");
-        waitingForInput = false;
-        movementCardIndex = 0;
-        currentlyMoving = false;
-
-        HandManager.Instance.DidFinishPlayingCard(currentCard);
-        currentCard = null;
     }
 }
 public enum GridMovement {

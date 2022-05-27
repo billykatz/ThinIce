@@ -95,11 +95,12 @@ public class HandManager : MonoBehaviour
 
         // let the player move their character
         Debug.Log($"HandManager: {card}");
-        GridManager.Instance.PlayedCard(card);
+        CardRuleManager.Instance.PlayCard(card, target);
     }
 
     public void DidFinishPlayingCard(CombinedCard card) {
         // update our cards
+        Debug.Log($"HandManager: Did finish playing card");
         List<CombinedCard> newCards = new List<CombinedCard>();
         int shift = 0;
         for (int i = 0; i < cards.Count; i++) {

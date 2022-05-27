@@ -81,6 +81,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8987776281186603134, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
   m_PrefabInstance: {fileID: 6831031853919215020}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4184708527139773079 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7268705880744216379, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+  m_PrefabInstance: {fileID: 6831031853919215020}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &6023388124980461190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,6 +109,7 @@ MonoBehaviour:
   _startingPositionHighlight: {fileID: 2483257662028156370}
   _isWalkable: 1
   TileName: Ice
+  debugText: {fileID: 4184708527139773079}
   OccupiedUnit: {fileID: 0}
   _colorOne: {r: 0.3724635, g: 0.5795953, b: 0.8490566, a: 1}
   _colorTwo: {r: 0.25698647, g: 0.4527219, b: 0.7075472, a: 1}

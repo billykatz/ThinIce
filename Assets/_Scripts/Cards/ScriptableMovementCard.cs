@@ -6,16 +6,3 @@ using UnityEngine;
 public class ScriptableMovementCard : ScriptableCard
 {
 }
-
-public enum Movement {
-    Up = 0,
-    Down = 1,
-    Left = 2,
-    Right = 3,
-    UpLeft = 4, 
-    UpRight = 5, 
-    DownRight = 6, 
-    DownLeft = 7,
-    LeftOrRight = 8,
-    UpOrDown = 9
-}

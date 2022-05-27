@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public interface MouseInteractionDelegate {
     public void OnMouseDown();
@@ -12,6 +13,7 @@ public interface MouseInteractionDelegate {
 public class BaseCard : MonoBehaviour
 {
     [SerializeField] public SpriteRenderer _spriteRenderer;
+
     public string effectDescription;
 
     public MouseInteractionDelegate interactionDelegate;

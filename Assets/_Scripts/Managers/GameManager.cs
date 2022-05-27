@@ -41,9 +41,16 @@ public class GameManager : MonoBehaviour
                 ChangeState(GameState.DrawHand);
                 break;
             case GameState.DrawHand:
-                ChangeState(GameState.HeroTurn);
+                ChangeState(GameState.HeroTurnPlayCardOne);
                 break;
-            case GameState.HeroTurn:
+            case GameState.HeroTurnPlayCardOne:
+                ChangeState(GameState.HeroTurnPlayCardTwo);
+                break;
+            case GameState.HeroTurnPlayCardTwo:
+                ChangeState(GameState.HeroTurnCleanUp);
+                break;
+            case GameState.HeroTurnCleanUp:
+                ChangeState(GameState.EnemyTurn);
                 break;
             case GameState.EnemyTurn:
                 break;
@@ -75,9 +82,15 @@ public class GameManager : MonoBehaviour
             case GameState.DrawHand:
                 HandManager.Instance.DrawHand();
                 break;
-            case GameState.HeroTurn:
+            case GameState.HeroTurnPlayCardOne:
+                break;
+            case GameState.HeroTurnPlayCardTwo:
+                break;
+            case GameState.HeroTurnCleanUp:
+                HandManager.Instance.EndPlayerTurn();
                 break;
             case GameState.EnemyTurn:
+                ChangeState(GameState.DrawHand);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, "You added a state and forgot to handle it here");
@@ -93,6 +106,8 @@ public enum GameState {
     PlaceHero = 4,
     CreateDeck = 5,
     DrawHand = 6,
-    HeroTurn = 7,
-    EnemyTurn = 8
+    HeroTurnPlayCardOne = 7,
+    HeroTurnPlayCardTwo = 8,
+    HeroTurnCleanUp = 9,
+    EnemyTurn = 10
 }

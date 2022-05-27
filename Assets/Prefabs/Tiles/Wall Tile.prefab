@@ -89,6 +89,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8987776281186603134, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
   m_PrefabInstance: {fileID: 4437753064434327549}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6433868821417629894 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7268705880744216379, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+  m_PrefabInstance: {fileID: 4437753064434327549}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &-650391582006392195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106,4 +117,5 @@ MonoBehaviour:
   _startingPositionHighlight: {fileID: 4696390258798710659}
   _isWalkable: 0
   TileName: Wall
+  debugText: {fileID: 6433868821417629894}
   OccupiedUnit: {fileID: 0}

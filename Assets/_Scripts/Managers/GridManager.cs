@@ -88,7 +88,6 @@ public class GridManager : MonoBehaviour
                 // remove the special highlights
                 RemoveHighlightPlayerStartingPositions();
 
-
                 // we are done placing the hero, move the game along
                 GameManager.Instance.EndGameState(GameState.PlaceHero);
             } else {
@@ -100,6 +99,151 @@ public class GridManager : MonoBehaviour
                 await Task.Delay(100);
                 HighlightPlayerStartingPositions();
             }
+        } 
+    }
+
+    private void Update() {
+        if (waitingForInput && !currentlyMoving) {
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) {
+                // move left
+                Debug.Log("moved left");
+                currentlyMoving = true;
+                MoveHero(GridMovement.Left);
+            } else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) {
+                // move up
+                Debug.Log("moved up");
+                currentlyMoving = true;
+                MoveHero(GridMovement.Up);
+            } else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) {
+                // move down
+                Debug.Log("moved down");
+                currentlyMoving = true;
+                MoveHero(GridMovement.Down);
+            }  else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) {
+                // move right
+                Debug.Log("moved right");
+                currentlyMoving = true;
+                MoveHero(GridMovement.Right);
+            }
+        } else {
+            if (Input.GetKeyDown(KeyCode.P)) {
+                Debug.Log($"waiting for input {waitingForInput}.  Currently Moving? {currentlyMoving}");
+                // waitingForInput = true;
+            }
+        }
+        
+    }
+
+    private void MoveHero(GridMovement movement) {
+        // current palyer
+        Tile playerTile = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Value;
+
+        if (playerTile == null) { 
+            Debug.Log($"player tile is null.");
+            waitingForInput = true;
+            currentlyMoving = false;
+            return; 
+        }
+
+        if (currentCard.movementCard.CanMoveForGridMovement(movement, movementCardIndex)) {
+            Debug.Log($"Valid movement.");
+            // valid move
+            Vector2 newPlayerPosition = TileAfterMovement(movement);
+            _tiles[newPlayerPosition].SetUnit(playerTile.OccupiedUnit);
+            playerTile.OccupiedUnit = null;
+
+            // update movement index
+            movementCardIndex++;
+
+
+            if (movementCardIndex >= currentCard.movementCard.movement.Count) {
+                Debug.Log($"Card should be done.");
+                FinishPlayingCard();
+
+            } else {
+                Debug.Log($"nmore stuff to happen.");
+                ShowMovementHelper(currentCard, movementCardIndex);
+                waitingForInput = true;
+                currentlyMoving = false;
+            }
+        } else {
+            // invalid move
+            Debug.Log($"Invalid move");
+            waitingForInput = true;
+            currentlyMoving = false;
         }
     }
+
+
+    private Vector2 TileAfterMovement(GridMovement movement) {
+        Vector2 playerPosition = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Key;
+
+        Debug.Log($"Player is at {(int)playerPosition.x}, {(int)playerPosition.y}");
+
+        // this assumes that there will be no rounding erros for the float values
+        int coordX = (int)playerPosition.x;
+        int coordY = (int)playerPosition.y;
+
+        if (movement == GridMovement.Left) {
+            coordX = Mathf.Max(0, coordX-1);
+            Debug.Log($"Movement is left. New PP is {(int)coordX}, {(int)coordY}");
+
+        } else if (movement == GridMovement.Right) {
+            coordX = Mathf.Min(_width-1, coordX+1);
+            Debug.Log($"Movement is right. New PP is {(int)coordX}, {(int)coordY}");
+
+        } else if (movement == GridMovement.Up) {
+            coordY = Mathf.Min(_height-1, coordY+1);
+            Debug.Log($"Movement is Up. New PP is {(int)coordX}, {(int)coordY}");
+
+        } else if (movement == GridMovement.Down-1) {
+            coordY = Mathf.Max(0, coordY);
+            Debug.Log($"Movement is Down. New PP is {(int)coordX}, {(int)coordY}");
+
+        }
+
+        
+        return new Vector2(coordX, coordY);
+    }  
+
+
+    private bool waitingForInput;
+    private int movementCardIndex = 0;
+    private CombinedCard currentCard;
+    private bool currentlyMoving;
+    public void PlayedCard(CombinedCard card) {
+        Debug.Log($"First call to play card {card}");
+        // keep track of the card
+        currentCard = card;
+
+        // show text 
+        ShowMovementHelper(card, movementCardIndex);
+    }
+
+    public void ShowMovementHelper(CombinedCard card, int movementIndex) {
+
+        // show helper text
+        MenuManager.Instance.PlayCardInstructions(card, movementCardIndex);
+        
+        // wait for input
+        waitingForInput = true;
+        currentlyMoving = false;
+
+    }
+
+    private void FinishPlayingCard() {
+        Debug.Log($"Is finished playing cards");
+        waitingForInput = false;
+        movementCardIndex = 0;
+        currentlyMoving = false;
+
+        HandManager.Instance.DidFinishPlayingCard(currentCard);
+        currentCard = null;
+    }
+}
+public enum GridMovement {
+    Left = 0,
+    Right = 1, 
+    Up = 2,
+    Down = 3
 }

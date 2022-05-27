@@ -40,7 +40,22 @@ public class DeckManager : MonoBehaviour
 
     }
     private void ShuffleDiscardIntoDraw() {
-        drawPile = discardPile.OrderBy(o=>Random.value).ToList();
+        // separate the cards into movement cards and modifier card. Also shuffles the deck
+        List<ScriptableCard> movementCards = _startingDeck.Where(t=>t.CardType == CardType.Movement).OrderBy(o=>Random.value).ToList();
+        List<ScriptableCard> modifierCards = _startingDeck.Where(t=>t.CardType == CardType.Modifier).OrderBy(o=>Random.value).ToList();
+
+        List<CombinedCard> combinedCards = new List<CombinedCard>();
+        for (int i = 0; i < movementCards.Count; i++) {
+            MovementCard movementCard = (MovementCard)movementCards[i].BaseCard;
+            ModifierCard modifierCard = (ModifierCard)modifierCards[i].BaseCard;
+
+            CombinedCard newCard = new CombinedCard();
+            newCard.Create(movementCard, modifierCard);
+            combinedCards.Add(newCard);
+
+        }
+
+        drawPile = combinedCards;
         discardPile = new List<CombinedCard>();
     }
 

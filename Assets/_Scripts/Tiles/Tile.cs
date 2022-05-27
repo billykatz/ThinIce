@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public abstract class Tile : MonoBehaviour
 {
@@ -9,6 +11,7 @@ public abstract class Tile : MonoBehaviour
     [SerializeField] private GameObject _startingPositionHighlight;
     [SerializeField] private bool _isWalkable;
     [SerializeField] public string TileName;
+    [SerializeField] public TextMeshPro debugText;
 
     private int x, y;
 
@@ -18,6 +21,8 @@ public abstract class Tile : MonoBehaviour
     public virtual void Init(int x, int y) {
         this.x = x;
         this.y = y;
+
+        debugText.text = $"x:{x}, y:{y}";
         
     }
 

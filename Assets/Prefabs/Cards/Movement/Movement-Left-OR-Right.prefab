@@ -21,7 +21,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1801880933360553825, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
       propertyPath: movement.Array.data[1]
-      value: 3
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1801880933360553825, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
+      propertyPath: movement.Array.data[0].movementType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1801880933360553825, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
+      propertyPath: movement.Array.data[0].movementChoice
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3569991509079110789, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
       propertyPath: m_RootOrder

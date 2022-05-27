@@ -9,7 +9,7 @@ public class CombinedCard : BaseCard, MouseInteractionDelegate
 
     public GameObject cardParent;
 
-    private int index;
+    public int index;
 
     public void Create(MovementCard movementCard, ModifierCard modifierCard) {
         this.movementCard = movementCard;
@@ -52,5 +52,9 @@ public class CombinedCard : BaseCard, MouseInteractionDelegate
         } else {
             movementCard.SetFullCardHighlight(false);
         }
+    }
+
+    public void DestroyCard() {
+        Destroy(cardParent);
     }
 }

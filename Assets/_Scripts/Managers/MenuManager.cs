@@ -102,6 +102,13 @@ public class MenuManager : MonoBehaviour
 
     }
 
+    public void SetTextForEnemyTurn(string unitName, string intentions) {
+        _floatingTurnPhaseView.SetActive(true);
+        _floatingTurnPhaseView.GetComponentInChildren<Text>().text = $"{unitName} takes a turn";
+        _floatingTurnTutorialView.SetActive(true);
+        _floatingTurnTutorialView.GetComponentInChildren<Text>().text = $"{intentions}";
+    }
+
     public void ShowSelectedUnit(BaseUnit unit) {
         if (unit == null) {
             _floatingUnitDetailView.SetActive(false);

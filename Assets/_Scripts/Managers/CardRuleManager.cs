@@ -44,11 +44,6 @@ public class CardRuleManager : MonoBehaviour
     }
 
     public void DidCompleteCombat() {
-        // if there are any more moves the player can just move
-
-        // if the enemy died then the player moves onto their square
-
-        // if the enemy did not die then and theplayer is our of move then the palyer moves back to the square they came from
 
         // kill or dont kill the enemy
         if (GridManager.Instance.CheckForDeadEnemy()) {
@@ -60,7 +55,8 @@ public class CardRuleManager : MonoBehaviour
             DidCompleteMovement();
         }
 
-        PlayerManager.Instance.HeroUnitCreated();
+        // the player should have updated stats so let the player manager know
+        PlayerManager.Instance.HeroUnitUpdated();
 
     }
 

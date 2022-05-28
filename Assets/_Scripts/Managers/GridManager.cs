@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class GridManager : MonoBehaviour
 {
     public static GridManager Instance;
-    [SerializeField] private int _width, _height;
+    public int _width, _height;
     [SerializeField] private Tile _iceTilePrefab;
     [SerializeField] private Tile _wallTilePrefab;
 
@@ -148,10 +148,31 @@ public class GridManager : MonoBehaviour
         return currentCard.movementCard.CanMoveForGridMovement(movement, 0);
     } 
 
+    public bool IsOccupied(Vector2 coord) {
+        return _tiles[coord].OccupiedUnit != null || !_tiles[coord].isWalkable;
+    }
+
+    public void MoveUnit(BaseUnit unit, Tile fromTile, Vector2 toCoord) {
+        // update the tiles
+        _tiles[toCoord].SetUnit(unit);
+
+        // remove the old state
+        fromTile.OccupiedUnit = null;
+    }
+
     public BaseUnit GetHeroUnit() {
-        // current palyer
+        // current player unit
+        return GetHeroTile().OccupiedUnit;
+    }
+    public Tile GetHeroTile() {
+        // current player tile
         Tile playerTile = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Value;
-        return playerTile.OccupiedUnit;
+        return playerTile;
+    }
+
+    public List<Tile> GetEnemyUnits() {
+        // grab all the enemy tiles
+        return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy).Select(s=>s.Value).ToList();
     }
 
     private void MoveHero(GridMovement movement) {
@@ -160,6 +181,7 @@ public class GridManager : MonoBehaviour
 
         if (ValidMove(movement)) {
             Debug.Log($"GridManager: Valid movement.");
+            waitingForInput = false;
 
             Vector2 newPlayerPosition = TileAfterMovement(movement);
             if (DidInitiateCombat(newPlayerPosition)) {
@@ -175,10 +197,14 @@ public class GridManager : MonoBehaviour
 
             } else {
                 Debug.Log($"GridManager: Did finish moving");
-                // valid move no combat
-                _tiles[newPlayerPosition].SetUnit(playerTile.OccupiedUnit);
-                playerTile.OccupiedUnit = null;
+                if (!_tiles[newPlayerPosition].isWalkable) {
+                    // dont let player go into walls
 
+                } else {
+                    // valid move no combat
+                    _tiles[newPlayerPosition].SetUnit(playerTile.OccupiedUnit);
+                    playerTile.OccupiedUnit = null;
+                }
                 // send it back to the CardRule contoller
                 CardRuleManager.Instance.DidCompleteMovement();
             }
@@ -254,6 +280,8 @@ public class GridManager : MonoBehaviour
     private CombinedCard currentCard;
     private bool currentlyMoving;
 
+    private bool waitingForInput;
+
     public void ShowMovementHelper(CombinedCard card, int movementIndex) {
         currentCard = card;
         // show helper text
@@ -261,6 +289,7 @@ public class GridManager : MonoBehaviour
 
         // wait for input (arrow keys can control movement)
         currentlyMoving = false;
+        waitingForInput = true;
 
         ShowMovementArrows(card, movementIndex);
 
@@ -287,6 +316,7 @@ public class GridManager : MonoBehaviour
     }
 
     public void ArrowTapped(GridMovement gridMovement) {
+        if (!waitingForInput) { return; }
         if (ValidMove(gridMovement)) {
             movementArrowController.OnArrowTapped -= ArrowTapped;
             Destroy(movementArrowGameObject);

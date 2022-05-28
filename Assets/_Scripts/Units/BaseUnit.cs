@@ -13,4 +13,16 @@ public class BaseUnit : MonoBehaviour
     public int health;
     public int attack;
     public int armor;
+
+    public virtual bool ShouldAttack(Tile currentTile, Tile playerTile) {
+        return false;
+    }
+
+    public virtual List<Vector2> AttackTiles(Tile currentTile) {
+        return new List<Vector2>();
+    }
+
+    public virtual List<Vector2> WantToMoveTo(Tile currentTile, Tile playerTile) {
+        return new List<Vector2>();
+    }
 }

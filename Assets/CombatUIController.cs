@@ -98,24 +98,26 @@ public class CombatUIController : MonoBehaviour
         // decrement attack if it is a player
         if (_config.attackerIsPlayer) {
             int endValue = _config.attackerEndAttackStat;
-            StartCoroutine(DecrementStat(attackStatText, _config.attackerAttackStat, endValue, animationComplete));
+            StartCoroutine(DecrementStat(attackStatText, _config.attackerAttackStat, endValue, animationComplete, 0));
             animationCount++;
         }
 
         // decrement armor
         if (_config.defenderHasArmor) {
+            Debug.Log($"CombatUIController: Defender has armor. {_config.defenderEndArmorStat}");
             int endValue = _config.defenderEndArmorStat;
-            StartCoroutine(DecrementStat(armorStatText, _config.attackerAttackStat, endValue, animationComplete));
+            StartCoroutine(DecrementStat(armorStatText, _config.defenderArmorStat, endValue, animationComplete, 0));
             animationCount++;
         }
 
         // decrement health after armor is depleted
         int healthEndValue = _config.defenderEndHealthStat;
         if (_config.defenderHasArmor) {
-            StartCoroutine(DecrementStat(healthStatTextHasArmor, _config.defenderHealthStat, healthEndValue, animationComplete));
+            var initialPause = _config.defenderArmorStat - _config.defenderEndArmorStat;
+            StartCoroutine(DecrementStat(healthStatTextHasArmor, _config.defenderHealthStat, healthEndValue, animationComplete, 0.33f*initialPause));
             animationCount++;
         } else {
-            StartCoroutine(DecrementStat(healthStatTextNoArmor, _config.defenderHealthStat, healthEndValue, animationComplete));
+            StartCoroutine(DecrementStat(healthStatTextNoArmor, _config.defenderHealthStat, healthEndValue, animationComplete, 0));
             animationCount++;
         }
     }
@@ -132,12 +134,14 @@ public class CombatUIController : MonoBehaviour
         } 
     }
 
-    private IEnumerator DecrementStat(Text stat, int startValue, int endValue, Action callback) {
+    private IEnumerator DecrementStat(Text stat, int startValue, int endValue, Action callback, float initalPause) {
         int difference = startValue - endValue;
 
         if (difference <= 0) {
             yield return new WaitForSeconds(0);
         }
+
+        yield return new WaitForSeconds(initalPause);
 
         for (int i = 0; i < difference; i++) {
             yield return new WaitForSeconds(0.33f);

@@ -35,17 +35,21 @@ public class CombatManager : MonoBehaviour
         config.defenderName = defenderUnit.UnitName;
         config.defenderSprite = defenderUnit.sprite;
 
+        // hacky for now
+        config.defenderHasArmor = attackerUnit.Faction != Faction.Hero;
+
         // combat math
         config.attackerIsPlayer = attackerUnit.Faction == Faction.Hero;
 
         config.attackerEndAttackStat = attackerUnit.attack;
         if (attackerUnit.Faction == Faction.Hero) {
+            // players lose attack stat when they attack
             config.attackerEndAttackStat = Mathf.Max(0, defenderUnit.armor - defenderUnit.health);
         }
 
         config.defenderEndArmorStat = Mathf.Max(0, defenderUnit.armor - attackerUnit.attack);
 
-        config.defenderEndHealthStat = Mathf.Max(0, (defenderUnit.health + defenderUnit.armor) - attackerUnit.attack);
+        config.defenderEndHealthStat = Mathf.Max(0, Mathf.Min(defenderUnit.health, (defenderUnit.health + defenderUnit.armor) - attackerUnit.attack));
 
 
         Debug.Log($"CombatManager: Did Configure with config {config}");
@@ -67,7 +71,11 @@ public class CombatManager : MonoBehaviour
         defendingUnit.armor = _config.defenderEndArmorStat;
 
         // and then complete the move or wahtever
-        CardRuleManager.Instance.DidCompleteCombat();
+        if (_config.attackerIsPlayer) {
+            CardRuleManager.Instance.DidCompleteCombat();
+        } else {
+            PlayerManager.Instance.HeroUnitUpdated();
+        }
 
    }
 }

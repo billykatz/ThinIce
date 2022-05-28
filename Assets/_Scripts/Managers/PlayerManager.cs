@@ -57,7 +57,7 @@ public class PlayerManager : MonoBehaviour
         attackText.text = $"-";
     }
 
-    public void HeroUnitCreated() {
+    public void HeroUnitUpdated() {
         heroUnit = GridManager.Instance.GetHeroUnit();
 
         healthText.text = $"{heroUnit.health}";

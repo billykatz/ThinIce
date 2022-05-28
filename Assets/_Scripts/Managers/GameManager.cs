@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
             case GameState.SpawnItems:
                 break;
             case GameState.PlaceHero:
-                PlayerManager.Instance.HeroUnitCreated();
+                PlayerManager.Instance.HeroUnitUpdated();
                 ChangeState(GameState.CreateDeck);
                 break;
             case GameState.CreateDeck:
@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
                 ChangeState(GameState.EnemyTurn);
                 break;
             case GameState.EnemyTurn:
+                ChangeState(GameState.DrawHand);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(currentGameState), currentGameState, "You added a state and forgot to handle it here");
@@ -68,6 +69,7 @@ public class GameManager : MonoBehaviour
                 GridManager.Instance.GenerateGrid();
                 break;
             case GameState.SpawnEnemies:
+                UnitManager.Instance.SpawnEnemyUnit();
                 UnitManager.Instance.SpawnEnemyUnit();
                 break;
             case GameState.SpawnHazards:
@@ -91,7 +93,7 @@ public class GameManager : MonoBehaviour
                 HandManager.Instance.EndPlayerTurn();
                 break;
             case GameState.EnemyTurn:
-                ChangeState(GameState.DrawHand);
+                EnemiesManager.Instance.StartEnemiesTurns();
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, "You added a state and forgot to handle it here");

@@ -13,7 +13,12 @@ public abstract class Tile : MonoBehaviour
     [SerializeField] public string TileName;
     [SerializeField] public TextMeshPro debugText;
 
-    private int x, y;
+    public int x, y;
+    public Vector2 coord {
+        get {
+            return new Vector2((float)x, (float)y);
+        }
+    }
 
     public BaseUnit OccupiedUnit;
     public bool isWalkable => (OccupiedUnit == null) && _isWalkable;

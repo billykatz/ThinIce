@@ -15,8 +15,15 @@ public class CombatManager : MonoBehaviour
        Instance = this;
    }
 
+   private BaseUnit attackingUnit;
+   private BaseUnit defendingUnit;
+
+   private CombatUIConfiguration _config;
+
    public void ShowCombat(BaseUnit attackerUnit, BaseUnit defenderUnit) {
         combatUIGameObject.SetActive(true);
+        attackingUnit = attackerUnit;
+        defendingUnit = defenderUnit;
 
         CombatUIConfiguration config = new CombatUIConfiguration();
         config.attackerAttackStat = attackerUnit.attack;
@@ -42,6 +49,7 @@ public class CombatManager : MonoBehaviour
 
 
         Debug.Log($"CombatManager: Did Configure with config {config}");
+        _config = config;
         combatUIController.Configure(config);
    }
 
@@ -51,6 +59,15 @@ public class CombatManager : MonoBehaviour
         // wait a quarter of a second
         await Task.Delay(250);
 
-        
+        // and then remove the combat ui
+        combatUIGameObject.SetActive(false);
+
+        attackingUnit.attack = _config.attackerEndAttackStat;
+        defendingUnit.health = _config.defenderEndHealthStat;
+        defendingUnit.armor = _config.defenderEndArmorStat;
+
+        // and then complete the move or wahtever
+        CardRuleManager.Instance.DidCompleteCombat();
+
    }
 }

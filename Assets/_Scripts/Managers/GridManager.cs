@@ -86,6 +86,7 @@ public class GridManager : MonoBehaviour
                 Debug.Log($"Tile at {x}, {y} was tapped");
                 BaseHero hero = UnitManager.Instance.SpawnHeroUnit();
                 _tiles[tappedCoord].SetUnit(hero);
+                hero.OccupiedTile = _tiles[tappedCoord];
 
                 // remove the special highlights
                 RemoveHighlightPlayerStartingPositions();
@@ -144,7 +145,7 @@ public class GridManager : MonoBehaviour
             return false;
         }
 
-        return currentCard.movementCard.CanMoveForGridMovement(movement, movementCardIndex);
+        return currentCard.movementCard.CanMoveForGridMovement(movement, 0);
     } 
 
     private void MoveHero(GridMovement movement) {
@@ -191,7 +192,28 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    public bool CheckForDeadEnemy() {
+        List<KeyValuePair<Vector2, Tile>> deadEnemyList = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.health == 0).ToList();
+        if (deadEnemyList.Count > 0) {
+            return true;
+        }
+        return false;
+    }
 
+    public void KillEnemyAndMovePlayer() {
+        Vector2 deadEnemy = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.health == 0).ToList().First().Key;
+        Tile playerTile = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Value;
+        Debug.Log("There is a dead enemy");
+        if (deadEnemy != null && playerTile != null) {
+            Debug.Log("Enemy is dead and player is moving to their square");
+            // destroy the unit that is there
+            Destroy(_tiles[deadEnemy].OccupiedUnit.gameObject);
+            // move the player to the unit
+            _tiles[deadEnemy].SetUnit(playerTile.OccupiedUnit);
+            // remove player from old tile
+            playerTile.OccupiedUnit = null;
+        }
+    }
     private Vector2 TileAfterMovement(GridMovement movement) {
         Vector2 playerPosition = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Key;
 
@@ -223,15 +245,13 @@ public class GridManager : MonoBehaviour
         return new Vector2(coordX, coordY);
     }  
 
-
-    private int movementCardIndex = 0;
     private CombinedCard currentCard;
     private bool currentlyMoving;
 
     public void ShowMovementHelper(CombinedCard card, int movementIndex) {
         currentCard = card;
         // show helper text
-        MenuManager.Instance.PlayCardInstructions(card, movementCardIndex);
+        MenuManager.Instance.PlayCardInstructions(card, movementIndex);
 
         // wait for input (arrow keys can control movement)
         currentlyMoving = false;

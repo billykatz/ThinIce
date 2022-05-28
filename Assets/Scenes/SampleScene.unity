@@ -1458,6 +1458,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &761257430 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4598776047221122748, guid: da070ed37ebc84bf8ba6c42dbc00b029, type: 3}
+  m_PrefabInstance: {fileID: 1408712823}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &793769512 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5906508687189400010, guid: da070ed37ebc84bf8ba6c42dbc00b029, type: 3}
@@ -2553,6 +2558,10 @@ PrefabInstance:
       propertyPath: attackStatText
       value: 
       objectReference: {fileID: 1216232975}
+    - target: {fileID: 4009545183590115654, guid: da070ed37ebc84bf8ba6c42dbc00b029, type: 3}
+      propertyPath: attackerStatParent
+      value: 
+      objectReference: {fileID: 761257430}
     - target: {fileID: 4485889911924462128, guid: da070ed37ebc84bf8ba6c42dbc00b029, type: 3}
       propertyPath: m_Name
       value: CombatUI

@@ -60,6 +60,8 @@ public class CardRuleManager : MonoBehaviour
             DidCompleteMovement();
         }
 
+        PlayerManager.Instance.HeroUnitCreated();
+
     }
 
     public void StartCardRuleStep(CardRuleStep step) {

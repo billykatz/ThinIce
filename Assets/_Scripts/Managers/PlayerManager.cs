@@ -13,11 +13,8 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance;
 
-    public int hp;
     public int maxHp;
     public int minHp;
-    public int armor;
-    public int attack;
     public int maxArmor;
     public int minArmor;
     public int maxAttack;
@@ -38,13 +35,34 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private Color decreaseColor;
     [SerializeField] private Color noChangeColor;
 
+    private BaseUnit heroUnit;
 
-    private void Awake() {
+    private int armor {
+        get {
+            return heroUnit.armor;
+        }
+    }
+
+    private int attack {
+        get {
+            return heroUnit.attack;
+        }
+    }
+
+    private void Start() {
         Instance = this;
 
-        healthText.text = $"{hp}";
-        armorText.text = $"{armor}";
-        attackText.text = $"{attack}";
+        healthText.text = $"-";
+        armorText.text = $"-";
+        attackText.text = $"-";
+    }
+
+    public void HeroUnitCreated() {
+        heroUnit = GridManager.Instance.GetHeroUnit();
+
+        healthText.text = $"{heroUnit.health}";
+        armorText.text = $"{heroUnit.armor}";
+        attackText.text = $"{heroUnit.attack}";
     }
 
     public void ShowPreview(CombinedCard card, ModifyTarget target) {
@@ -121,8 +139,8 @@ public class PlayerManager : MonoBehaviour
         }
         attackText.text = $"{newAttack}";
 
-        armor = newArmor;
-        attack = newAttack;
+        heroUnit.armor = newArmor;
+        heroUnit.attack = newAttack;
         yield return new WaitForSeconds(2.5f);
 
         armorText.color = noChangeColor;

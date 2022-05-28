@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
             case GameState.SpawnItems:
                 break;
             case GameState.PlaceHero:
+                PlayerManager.Instance.HeroUnitCreated();
                 ChangeState(GameState.CreateDeck);
                 break;
             case GameState.CreateDeck:

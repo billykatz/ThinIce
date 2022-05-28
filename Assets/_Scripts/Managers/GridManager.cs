@@ -148,6 +148,12 @@ public class GridManager : MonoBehaviour
         return currentCard.movementCard.CanMoveForGridMovement(movement, 0);
     } 
 
+    public BaseUnit GetHeroUnit() {
+        // current palyer
+        Tile playerTile = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Value;
+        return playerTile.OccupiedUnit;
+    }
+
     private void MoveHero(GridMovement movement) {
         // current palyer
         Tile playerTile = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Value;

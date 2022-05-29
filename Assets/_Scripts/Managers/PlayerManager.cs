@@ -49,7 +49,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    private void Start() {
+    private void Awake() {
         Instance = this;
 
         healthText.text = $"-";

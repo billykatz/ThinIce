@@ -73,3 +73,6 @@ crashlytics-build.properties
 
 # Apple stuff
 .DS_Store
+
+# Builds
+Thin-Ice-Webgl-prototype/

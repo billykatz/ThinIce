@@ -145,7 +145,7 @@ public class GridManager : MonoBehaviour
             return false;
         }
 
-        return currentCard.movementCard.CanMoveForGridMovement(movement, 0);
+        return currentCard.movementCard.CanMoveForGridMovement(movement, currentCard.movementCard.movementIndex);
     } 
 
     public bool IsOccupied(Vector2 coord) {
@@ -267,8 +267,8 @@ public class GridManager : MonoBehaviour
             coordY = Mathf.Min(_height-1, coordY+1);
             Debug.Log($"Movement is Up. New PP is {(int)coordX}, {(int)coordY}");
 
-        } else if (movement == GridMovement.Down-1) {
-            coordY = Mathf.Max(0, coordY);
+        } else if (movement == GridMovement.Down) {
+            coordY = Mathf.Max(0, coordY-1);
             Debug.Log($"Movement is Down. New PP is {(int)coordX}, {(int)coordY}");
 
         }

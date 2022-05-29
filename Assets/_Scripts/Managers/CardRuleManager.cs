@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ public class CardRuleManager : MonoBehaviour
     private CardRuleState cardRuleState;
 
     private CombinedCard currentCard;
+
+    public static event Action combatAnimationComplete;
 
     private void Awake() {
         Instance = this;
@@ -44,7 +47,7 @@ public class CardRuleManager : MonoBehaviour
     }
 
     public void DidCompleteCombat() {
-
+        combatAnimationComplete -= DidCompleteCombat;
         // kill or dont kill the enemy
         if (GridManager.Instance.CheckForDeadEnemy()) {
             // kill it and move the player to that tile
@@ -58,6 +61,10 @@ public class CardRuleManager : MonoBehaviour
         // the player should have updated stats so let the player manager know
         PlayerManager.Instance.HeroUnitUpdated();
 
+    }
+
+    public void OnDisable() {
+        combatAnimationComplete -= DidCompleteCombat;
     }
 
     public void StartCardRuleStep(CardRuleStep step) {
@@ -76,7 +83,8 @@ public class CardRuleManager : MonoBehaviour
                 Debug.Log("CardRuleManager: DidStartCombat");
                 Debug.Log($"CardRuleManager: attacker {step.attackerUnit}");
                 Debug.Log($"CardRuleManager: defender {step.defenderUnit}");
-                CombatManager.Instance.ShowCombat(step.attackerUnit, step.defenderUnit);
+                combatAnimationComplete += DidCompleteCombat;
+                CombatManager.Instance.ShowCombat(step.attackerUnit, step.defenderUnit, combatAnimationComplete);
                 break;
             case CardRuleState.Hazard:
                 break;

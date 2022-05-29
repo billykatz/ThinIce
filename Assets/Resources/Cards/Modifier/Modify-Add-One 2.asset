@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 802496ae4666843ff85292fbea196277, type: 3}
-  m_Name: Move-Up-One
+  m_Script: {fileID: 11500000, guid: 57e6dd40ee30d4f718794fa2ad756e6f, type: 3}
+  m_Name: Modify-Add-One 2
   m_EditorClassIdentifier: 
-  CardType: 0
-  BaseCard: {fileID: 7595061383620350611, guid: 5dce8bdc012574bf984b7699ccd81107, type: 3}
+  CardType: 1
+  BaseCard: {fileID: -8490539296955501415, guid: 5dbd99444ed9b4bdb86ece7a43d9f890, type: 3}

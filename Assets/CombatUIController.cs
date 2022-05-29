@@ -20,6 +20,8 @@ public struct CombatUIConfiguration {
     public int attackerEndAttackStat;
     public int defenderEndHealthStat;
     public int defenderEndArmorStat;
+
+    public Action animationCompleteCallback;
 }
 public class CombatUIController : MonoBehaviour
 {

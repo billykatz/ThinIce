@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ public class CombatManager : MonoBehaviour
 
    private CombatUIConfiguration _config;
 
-   public void ShowCombat(BaseUnit attackerUnit, BaseUnit defenderUnit) {
+   public void ShowCombat(BaseUnit attackerUnit, BaseUnit defenderUnit, Action callback) {
         combatUIGameObject.SetActive(true);
         attackingUnit = attackerUnit;
         defendingUnit = defenderUnit;
@@ -51,6 +52,7 @@ public class CombatManager : MonoBehaviour
 
         config.defenderEndHealthStat = Mathf.Max(0, Mathf.Min(defenderUnit.health, (defenderUnit.health + defenderUnit.armor) - attackerUnit.attack));
 
+        config.animationCompleteCallback = callback;
 
         Debug.Log($"CombatManager: Did Configure with config {config}");
         _config = config;
@@ -72,10 +74,12 @@ public class CombatManager : MonoBehaviour
 
         // and then complete the move or wahtever
         if (_config.attackerIsPlayer) {
-            CardRuleManager.Instance.DidCompleteCombat();
+            // CardRuleManager.Instance.DidCompleteCombat();
         } else {
             PlayerManager.Instance.HeroUnitUpdated();
         }
+
+        _config.animationCompleteCallback.Invoke();
 
    }
 }

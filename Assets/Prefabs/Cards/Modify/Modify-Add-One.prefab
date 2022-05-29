@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8792814203411152327
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3050438058911645587, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_Name
+      value: Modify-Add-One
+      objectReference: {fileID: 0}
+    - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 5932559725543664733, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 14eb8a25515374bd189e11f416bcc8d3, type: 3}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+--- !u!1 &5787983888313090644 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3050438058911645587, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+  m_PrefabInstance: {fileID: 8792814203411152327}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &2905655524131672474 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 5932559725543664733, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+  m_PrefabInstance: {fileID: 8792814203411152327}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-8490539296955501415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5787983888313090644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b890b666cb81e40bf8e30069dc44ad54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spriteRenderer: {fileID: 2905655524131672474}
+  effectDescription: +1 to ARMOR or ATTACK
+  modifyOperation: 0
+  modifyAmount: 1

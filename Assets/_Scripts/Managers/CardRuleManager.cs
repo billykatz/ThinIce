@@ -13,6 +13,7 @@ public class CardRuleManager : MonoBehaviour
     public static event Action combatAnimationComplete;
 
     private void Awake() {
+        Debug.Log("Card Rule Manager Awake()");
         Instance = this;
         cardRuleState = CardRuleState.Start;
     }

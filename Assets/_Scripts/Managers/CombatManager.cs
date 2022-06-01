@@ -14,6 +14,7 @@ public class CombatManager : MonoBehaviour
 
    private void Awake() {
        Instance = this;
+       Debug.Log("Combat Manager Awake()");
    }
 
    private BaseUnit attackingUnit;

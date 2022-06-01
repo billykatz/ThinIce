@@ -10,6 +10,7 @@ public class UnitManager : MonoBehaviour
 
     private void Awake() {
         Instance = this;
+        Debug.Log("Game Manager Awake()");
 
         _units = Resources.LoadAll<ScriptableUnit>("Units").ToList();
     }

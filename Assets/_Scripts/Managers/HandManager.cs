@@ -27,9 +27,11 @@ public class HandManager : MonoBehaviour
 
     private void Awake() {
         Instance = this;
+        Debug.Log("Hand Manager Awake()");
 
         this.cards = new List<CombinedCard>();
         selectedIndex = -1;
+
     }
 
     public async void DrawHand() {

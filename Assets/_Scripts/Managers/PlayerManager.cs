@@ -50,6 +50,7 @@ public class PlayerManager : MonoBehaviour
     }
 
     private void Awake() {
+        Debug.Log("PlayerManager Awake()");
         Instance = this;
 
         healthText.text = $"-";

@@ -13,6 +13,7 @@ public class DeckManager : MonoBehaviour
 
     private void Awake() {
         Instance = this;
+        Debug.Log("Deck Manager Awake()");
 
         _startingDeck = Resources.LoadAll<ScriptableCard>("Cards").ToList();
     }

@@ -16,6 +16,7 @@ public class EnemiesManager : MonoBehaviour
 
     private void Awake() {
         Instance = this;
+        Debug.Log("Enemies Manager Awake()");
     }
 
     public async void DoEnemyTurn(Action callback) {

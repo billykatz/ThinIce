@@ -39,6 +39,9 @@ public class MenuManager : MonoBehaviour
 
     private void Awake() {
         Instance = this;
+
+        Debug.Log("Menu Manager Awake()");
+
         cardDetailView.SetActive(true);
         cardDetailView.SetActive(false);
 

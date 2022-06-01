@@ -13,15 +13,19 @@ public class GameManager : MonoBehaviour
     void Awake() {
         Instance = this;
 
+        Debug.Log("Game Manager Awake()");
+
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Game Manager Start()");
         ChangeState(GameState.GenerateGrid);
     }
 
     public async void EndGameState(GameState currentGameState) {
+        Debug.Log($"Game Manager: End Game State {currentGameState}");
         await Task.Delay(100);
         switch (currentGameState) {
             case GameState.GenerateGrid:
@@ -62,6 +66,7 @@ public class GameManager : MonoBehaviour
     }
 
     void ChangeState(GameState newState) {
+        Debug.Log($"Game Manager: Start Game State {newState}");
         GameState = newState;
         MenuManager.Instance.ShowTurnPhase(newState);
         switch (newState) {

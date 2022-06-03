@@ -22,6 +22,8 @@ public class CombatManager : MonoBehaviour
 
    private CombatUIConfiguration _config;
 
+   public static event Action<BaseUnit> OnUnitDidDie;
+
    public void ShowCombat(BaseUnit attackerUnit, BaseUnit defenderUnit, Action callback) {
         combatUIGameObject.SetActive(true);
         attackingUnit = attackerUnit;
@@ -78,6 +80,13 @@ public class CombatManager : MonoBehaviour
             // CardRuleManager.Instance.DidCompleteCombat();
         } else {
             PlayerManager.Instance.HeroUnitUpdated();
+        }
+
+        if (OnUnitDidDie != null) {
+            if (defendingUnit.health <= 0) {
+                Debug.Log($"{defendingUnit.UnitName} did die");
+                OnUnitDidDie.Invoke(defendingUnit);
+            }
         }
 
         _config.animationCompleteCallback.Invoke();

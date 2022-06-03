@@ -28,6 +28,10 @@ public class EnemiesManager : MonoBehaviour
 
         bool enemyAttacked = false;
 
+        if (enemyTiles.Count <= 0) { 
+            EnemyTurnDone();
+            return; 
+        }
         Tile tile = enemyTiles[enemyTurnIndex];
 
         BaseUnit enemyUnit = tile.OccupiedUnit;

@@ -188,7 +188,7 @@ public class GridManager : MonoBehaviour
             Vector2 newPlayerPosition = TileAfterMovement(movement);
             if (DidInitiateCombat(newPlayerPosition)) {
                 
-                // we need to might and then finish the movement.
+                // we need to fight and then finish the movement.
                 CardRuleStep newStep = new CardRuleStep();
                 newStep.state = CardRuleState.Combat;
                 newStep.attackerUnit = playerTile.OccupiedUnit;

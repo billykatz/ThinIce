@@ -99,6 +99,6 @@ MonoBehaviour:
   Faction: 1
   UnitName: Mermaid Cup
   sprite: {fileID: 21300000, guid: 32d564a2c7a2540049cdc374bad16d7d, type: 3}
-  health: 4
+  health: 2
   attack: 2
   armor: 0

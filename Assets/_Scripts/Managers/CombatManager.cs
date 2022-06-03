@@ -48,7 +48,7 @@ public class CombatManager : MonoBehaviour
         config.attackerEndAttackStat = attackerUnit.attack;
         if (attackerUnit.Faction == Faction.Hero) {
             // players lose attack stat when they attack
-            config.attackerEndAttackStat = Mathf.Max(0, defenderUnit.armor - defenderUnit.health);
+            config.attackerEndAttackStat = Mathf.Max(0, attackerUnit.attack - (defenderUnit.armor + defenderUnit.health));
         }
 
         config.defenderEndArmorStat = Mathf.Max(0, defenderUnit.armor - attackerUnit.attack);

@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4146832ad62f1449790ffe5011cbdb75, type: 3}
   m_Name: Level-One
   m_EditorClassIdentifier: 
-  numberOfEnemiesToKill: 3
+  numberOfEnemiesToKill: 2
   numberOfCardsToPlay: 0
+  totalObjectives: 0

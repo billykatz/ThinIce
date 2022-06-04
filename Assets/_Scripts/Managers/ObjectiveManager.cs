@@ -16,6 +16,11 @@ public class ObjectiveManager : MonoBehaviour
     private int numberEnemiesKilled = 0;
     private int numPlayedCards = 0;
 
+    private int completedObjectives = 0;
+
+    private bool completedKillMonsterObjective = false;
+    private bool completedPlayedCardsObjective = false;
+
     private void Awake() {
         Instance = this;
 
@@ -26,19 +31,18 @@ public class ObjectiveManager : MonoBehaviour
     private void Start() {
         objective1.gameObject.SetActive(false);
         objective2.gameObject.SetActive(false);
-        foreach (ScriptableLevelRules rule in levelRules) {
+        ScriptableLevelRules rule = levelRules[GameManager.Instance.levelIndex];
             
-            if (rule.numberOfEnemiesToKill > 0) {
-                objective1.gameObject.SetActive(true);
-                objective1.SetObjectiveText($"Destroy {rule.numberOfEnemiesToKill} enemies");
-                objective1.SetProgressText($"({numberEnemiesKilled}/{rule.numberOfEnemiesToKill})");
-            }
+        if (rule.numberOfEnemiesToKill > 0) {
+            objective1.gameObject.SetActive(true);
+            objective1.SetObjectiveText($"Destroy {rule.numberOfEnemiesToKill} enemies");
+            objective1.SetProgressText($"({numberEnemiesKilled}/{rule.numberOfEnemiesToKill})");
+        }
 
-            if (rule.numberOfCardsToPlay > 0) {
-                objective2.gameObject.SetActive(true);
-                objective2.SetObjectiveText($"Play {rule.numberOfCardsToPlay} or fewer cards");
-                objective2.SetProgressText($"({numPlayedCards}/{rule.numberOfCardsToPlay})");
-            }
+        if (rule.numberOfCardsToPlay > 0) {
+            objective2.gameObject.SetActive(true);
+            objective2.SetObjectiveText($"Play {rule.numberOfCardsToPlay} or fewer cards");
+            objective2.SetProgressText($"({numPlayedCards}/{rule.numberOfCardsToPlay})");
         }
 
         // listen for dead units
@@ -46,28 +50,33 @@ public class ObjectiveManager : MonoBehaviour
     }
 
     private void UpdateProgressText() {
-        foreach (ScriptableLevelRules rule in levelRules) {
-            objective1.SetProgressText($"({numberEnemiesKilled}/{rule.numberOfEnemiesToKill})");
-            objective2.SetProgressText($"({numPlayedCards}/{rule.numberOfCardsToPlay})");
-        }
+        ScriptableLevelRules rule = levelRules[GameManager.Instance.levelIndex];
+        objective1.SetProgressText($"({numberEnemiesKilled}/{rule.numberOfEnemiesToKill})");
+        objective2.SetProgressText($"({numPlayedCards}/{rule.numberOfCardsToPlay})");
     }
 
     private void CheckForWin() {
-        foreach (ScriptableLevelRules rule in levelRules) {
-            if (rule.numberOfEnemiesToKill > 0) {
-                if (numberEnemiesKilled >= rule.numberOfEnemiesToKill) {
-                    // player win
-                }
-
-
+        ScriptableLevelRules rule = levelRules[GameManager.Instance.levelIndex];
+        if (rule.numberOfEnemiesToKill > 0) {
+            if (numberEnemiesKilled >= rule.numberOfEnemiesToKill && !completedKillMonsterObjective) {
+                // player win
+                objective1.SetToggle(true);
+                completedKillMonsterObjective = true;
+                completedObjectives++;
             }
 
-            if (rule.numberOfCardsToPlay > 0) {
-                if (numPlayedCards <= rule.numberOfCardsToPlay) {
-                    // this one is a little weirder
-                }
-            
+
+        }
+
+        if (rule.numberOfCardsToPlay > 0) {
+            if (numPlayedCards <= rule.numberOfCardsToPlay && !completedPlayedCardsObjective) {
+                // this one is a little weirder
             }
+        
+        }
+
+        if (completedObjectives >= rule.totalObjectives) {
+            WinLoseManager.Instance.GameWin();
         }
     }
 
@@ -76,8 +85,10 @@ public class ObjectiveManager : MonoBehaviour
         if (unit.Faction == Faction.Enemy) {
             numberEnemiesKilled++;
             UpdateProgressText();
+            CheckForWin();
         } else {
             // player died
+            WinLoseManager.Instance.GameLose();
         }
     }
 

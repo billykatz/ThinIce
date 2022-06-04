@@ -234,6 +234,10 @@ public class GridManager : MonoBehaviour
         return false;
     }
 
+    public void CheckForDeadUnits() {
+        return;
+    }
+
     public void KillEnemyAndMovePlayer() {
         Vector2 deadEnemy = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.health == 0).ToList().First().Key;
         Tile playerTile = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Value;

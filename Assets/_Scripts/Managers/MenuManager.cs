@@ -95,6 +95,10 @@ public class MenuManager : MonoBehaviour
             case GameState.EnemyTurn:
                 turnPhase = "Enemy Turn";
                 break;
+            case GameState.EndTurn:
+                turnPhase = "Ending Turn";
+                break;
+
         }
         _floatingTurnPhaseView.GetComponentInChildren<Text>().text = turnPhase;
 

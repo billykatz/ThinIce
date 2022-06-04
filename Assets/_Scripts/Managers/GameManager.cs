@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
 
     public GameState GameState;
 
+    public int levelIndex = 0;
+
     void Awake() {
         Instance = this;
 
@@ -58,6 +60,9 @@ public class GameManager : MonoBehaviour
                 ChangeState(GameState.EnemyTurn);
                 break;
             case GameState.EnemyTurn:
+                ChangeState(GameState.EndTurn);
+                break;
+            case GameState.EndTurn:
                 ChangeState(GameState.DrawHand);
                 break;
             default:
@@ -100,6 +105,9 @@ public class GameManager : MonoBehaviour
             case GameState.EnemyTurn:
                 EnemiesManager.Instance.StartEnemiesTurns();
                 break;
+            case GameState.EndTurn:
+                WaveManager.Instance.EndTurn();
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, "You added a state and forgot to handle it here");
         }
@@ -117,5 +125,6 @@ public enum GameState {
     HeroTurnPlayCardOne = 7,
     HeroTurnPlayCardTwo = 8,
     HeroTurnCleanUp = 9,
-    EnemyTurn = 10
+    EnemyTurn = 10,
+    EndTurn = 11
 }

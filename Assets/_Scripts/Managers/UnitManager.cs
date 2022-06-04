@@ -26,6 +26,19 @@ public class UnitManager : MonoBehaviour
 
     }
 
+    public void SpawnEnemyWave(int numEnemies) {
+
+        for (int i = 0; i < numEnemies; i++) {
+            var randomPrefab =  GetRandomUnit<BaseUnit>(Faction.Enemy);
+            var spawnedUnit = Instantiate(randomPrefab);
+            var randomSpawnTile = GridManager.Instance.GetEnemySpawnTile();
+
+            randomSpawnTile.SetUnit(spawnedUnit);
+        }
+
+
+    }
+
     public BaseHero SpawnHeroUnit() {
         var randomPrefab =  GetRandomUnit<BaseUnit>(Faction.Hero);
         var spawnedUnit = Instantiate(randomPrefab);

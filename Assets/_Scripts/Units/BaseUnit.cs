@@ -1,7 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using UnityEngine.Playables;
 
 public class BaseUnit : MonoBehaviour
 {
@@ -14,6 +13,8 @@ public class BaseUnit : MonoBehaviour
     public int health;
     public int attack;
     public int armor;
+
+    [SerializeField] public PlayableDirector PlayableDirector;
     public virtual bool ShouldAttack(Tile currentTile, Tile playerTile) {
         return false;
     }
@@ -24,5 +25,10 @@ public class BaseUnit : MonoBehaviour
 
     public virtual List<Vector2> WantToMoveTo(Tile currentTile, Tile playerTile) {
         return new List<Vector2>();
+    }
+    
+    public void Play()
+    {
+        PlayableDirector.Play();
     }
 }

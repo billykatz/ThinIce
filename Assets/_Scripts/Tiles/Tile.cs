@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
 
 public abstract class Tile : MonoBehaviour
 {
+    [SerializeField] private PlayableDirector PlayableDirector;
+    
     [SerializeField] protected SpriteRenderer _spriteRenderer;
     [SerializeField] private GameObject _highlight;
     [SerializeField] private GameObject _startingPositionHighlight;
@@ -29,6 +33,15 @@ public abstract class Tile : MonoBehaviour
 
         debugText.text = $"x:{x}, y:{y}";
         
+    }
+
+    public void PlayMoveDownAnimation()
+    {
+        PlayableDirector.Play();
+        if (OccupiedUnit is BaseEnemy)
+        {
+            OccupiedUnit.Play();
+        }
     }
 
     private void OnMouseEnter() {

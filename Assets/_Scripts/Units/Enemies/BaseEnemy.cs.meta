@@ -3,7 +3,10 @@ guid: e845804d168fc471487f51cb1ab05ac6
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - OccupiedTile: {instanceID: 0}
+  - sprite: {instanceID: 0}
+  - _gameSettings: {fileID: 11400000, guid: 570dfd3063ab9334188059939b8179d4, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

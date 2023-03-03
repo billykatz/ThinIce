@@ -3203,6 +3203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a74d06a8fbda4cd4a2ac0c61a6f6a18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameSettings: {fileID: 11400000, guid: 570dfd3063ab9334188059939b8179d4, type: 2}
   GameState: 0
   levelIndex: 0
 --- !u!1 &1097241413

@@ -97,8 +97,10 @@ public class GridManager : MonoBehaviour
             _tiles[coord] = spawnTile;   
             spawnTile.PlayEntranceAnimation();
         }
-        _gameSettings.VisibleRows++;
         
+        _gameSettings.VisibleRows++;
+        _visibleRows = _gameSettings.VisibleRows;
+
     }
 
 
@@ -309,7 +311,7 @@ public class GridManager : MonoBehaviour
                     
                     
                 }
-                // send it back to the CardRule contoller
+                // send it back to the CardRule controller
                 CardRuleManager.Instance.DidCompleteMovement();
             }
         } else {
@@ -321,12 +323,13 @@ public class GridManager : MonoBehaviour
 
     private void MovePlayerUpGrid()
     {
+
+        GenerateRow();
+        
         foreach (KeyValuePair<Vector2, Tile> kv in _tiles)
         {
             kv.Value.PlayMoveDownAnimation();
         }
-        
-        GenerateRow();
     }
 
     private bool DidInitiateCombat(Vector2 targetTile) {

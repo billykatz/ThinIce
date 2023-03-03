@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1801880933360553825, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
       propertyPath: effectDescription
-      value: Move UP then UP
+      value: Move UP or Down
       objectReference: {fileID: 0}
     - target: {fileID: 1801880933360553825, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
       propertyPath: movement.Array.size

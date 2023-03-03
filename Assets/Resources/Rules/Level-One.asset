@@ -16,7 +16,8 @@ MonoBehaviour:
   numberOfCardsToPlay: 0
   totalObjectives: 1
   LevelNumber: 1
-  LevelLength: 6
-  CurrentNumberRows: 6
+  LevelLength: 8
+  CurrentNumberRows: 8
   Width: 4
   StartingRows: 4
+  BaseChanceSpawnWall: 0.25

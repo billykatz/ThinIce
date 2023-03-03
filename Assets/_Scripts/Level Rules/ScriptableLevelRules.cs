@@ -15,6 +15,8 @@ public class ScriptableLevelRules : ScriptableObject
 
     public int Width;
     public int StartingRows;
+    
+    public float BaseChanceSpawnWall;
 
 
 }

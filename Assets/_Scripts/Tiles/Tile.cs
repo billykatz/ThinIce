@@ -6,6 +6,14 @@ using TMPro;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
+[System.Serializable]
+public enum TileType
+{
+    Ice = 1,
+    Wall = 2, 
+    Goal = 3
+}
+
 public abstract class Tile : MonoBehaviour
 {
     [SerializeField] private PlayableDirector PlayableDirector;
@@ -17,6 +25,8 @@ public abstract class Tile : MonoBehaviour
     [SerializeField] private bool _isWalkable;
     [SerializeField] public string TileName;
     [SerializeField] public TextMeshPro debugText;
+    
+    [SerializeField] public TileType tileType;
 
     public int x, y;
     public Vector2 coord {

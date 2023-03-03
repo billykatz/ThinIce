@@ -14,7 +14,7 @@ PrefabInstance:
     - target: {fileID: 1341803659626195208, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_PlayableAsset
       value: 
-      objectReference: {fileID: 11400000, guid: b2fcacc9dba61d14094d0be9370ff4f2, type: 2}
+      objectReference: {fileID: 11400000, guid: 48e598b078f7e83428f5d2ec16f879de, type: 2}
     - target: {fileID: 1341803659626195208, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_SceneBindings.Array.size
       value: 2
@@ -57,7 +57,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5321977072006793802, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_Name
-      value: Ice Tile
+      value: Tile 3 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7268705880744216379, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_text
+      value: x:3, y:4
       objectReference: {fileID: 0}
     - target: {fileID: 8787914481195979253, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_RootOrder
@@ -125,17 +129,15 @@ MonoBehaviour:
   PlayableDirector: {fileID: 5499941978410661028}
   MoveDownTimeline: {fileID: 11400000, guid: 48e598b078f7e83428f5d2ec16f879de, type: 2}
   EntranceTimeline: {fileID: 11400000, guid: b2fcacc9dba61d14094d0be9370ff4f2, type: 2}
-  _spriteRenderer: {fileID: 4942905832548803099}
   _highlight: {fileID: 6927413608552738327}
   _startingPositionHighlight: {fileID: 2483257662028156370}
   _isWalkable: 1
   TileName: Ice
   debugText: {fileID: 4184708527139773079}
-  x: 0
-  y: 0
+  tileType: 1
+  x: 3
+  y: 4
   OccupiedUnit: {fileID: 0}
-  _colorOne: {r: 0.3724635, g: 0.5795953, b: 0.8490566, a: 1}
-  _colorTwo: {r: 0.25698647, g: 0.4527219, b: 0.7075472, a: 1}
 --- !u!1 &2483257662028156370 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8987776281186603134, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
@@ -152,11 +154,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!212 &4942905832548803099 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 1897152260257660855, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
-  m_PrefabInstance: {fileID: 6831031853919215020}
-  m_PrefabAsset: {fileID: 0}
 --- !u!320 &5499941978410661028 stripped
 PlayableDirector:
   m_CorrespondingSourceObject: {fileID: 1341803659626195208, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}

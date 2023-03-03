@@ -85,13 +85,13 @@ public class GridManager : MonoBehaviour
         float posY = _tiles[topLeftTileCoord].transform.position.y + 1;
 
         bool isEndRow = _levelRules.LevelLength == _levelRules.CurrentNumberRows + 1;
-        
+
         for (int x = 0; x < _width; x++)
         {
             // the coord
             Vector2 coord = new Vector2(x, _levelRules.CurrentNumberRows);
             Vector2 pos = new Vector2(x, posY);
-            var spawnTile = Instantiate(isEndRow ? _goalTilePrefab : _iceTilePrefab, pos, Quaternion.identity);
+            Tile spawnTile = Instantiate(GenerateTile(coord, isEndRow), pos, Quaternion.identity);
             spawnTile.name = $"Tile {x} {coord.y}";
             spawnTile.Init(x, (int)coord.y);
                 
@@ -101,8 +101,36 @@ public class GridManager : MonoBehaviour
         
         _levelRules.CurrentNumberRows++;
         _visibleRows = _levelRules.CurrentNumberRows;
-
     }
+
+    private Tile GenerateTile(Vector2 coord, bool isEndRow)
+    {
+        if (isEndRow)
+        {
+            return _goalTilePrefab;
+        }
+
+        float baseChanceWall = _levelRules.BaseChanceSpawnWall;
+
+        for (int i = (int)coord.x-1; i > 0; i--)
+        {
+            Vector2 neighbor = new Vector2(i, coord.y);
+            if (_tiles[neighbor].tileType == TileType.Wall)
+            {
+                baseChanceWall -= .1f;
+            }
+        }
+
+        if (Random.value < baseChanceWall)
+        {
+            return _wallTilePrefab;
+        }
+        else
+        {
+            return _iceTilePrefab;
+        }
+    }
+    
 
 
     public void HighlightPlayerStartingPositions() {

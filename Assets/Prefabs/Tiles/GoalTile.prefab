@@ -89,14 +89,20 @@ MonoBehaviour:
   PlayableDirector: {fileID: 5542114356067868875}
   MoveDownTimeline: {fileID: 11400000, guid: 48e598b078f7e83428f5d2ec16f879de, type: 2}
   EntranceTimeline: {fileID: 11400000, guid: b2fcacc9dba61d14094d0be9370ff4f2, type: 2}
-  _highlight: {fileID: 1706289240766088073}
-  _startingPositionHighlight: {fileID: 1706289240766088073}
+  _highlight: {fileID: 6960645598929730168}
+  _startingPositionHighlight: {fileID: 2507517757983889853}
   _isWalkable: 1
   TileName: Goal
   debugText: {fileID: 4226946600760463096}
+  tileType: 3
   x: 0
   y: 0
   OccupiedUnit: {fileID: 0}
+--- !u!1 &2507517757983889853 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8987776281186603134, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+  m_PrefabInstance: {fileID: 6806769676577802691}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4226946600760463096 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7268705880744216379, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
@@ -111,5 +117,10 @@ MonoBehaviour:
 --- !u!320 &5542114356067868875 stripped
 PlayableDirector:
   m_CorrespondingSourceObject: {fileID: 1341803659626195208, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+  m_PrefabInstance: {fileID: 6806769676577802691}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6960645598929730168 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4535035481049904059, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
   m_PrefabInstance: {fileID: 6806769676577802691}
   m_PrefabAsset: {fileID: 0}

@@ -2308,8 +2308,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c6ac4329e9404d18baae9bfcf461ba7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gameSettings: {fileID: 11400000, guid: 570dfd3063ab9334188059939b8179d4, type: 2}
+  _levelRules: {fileID: 11400000, guid: c4bfff5581b194063bf3187711c53ad4, type: 2}
   _iceTilePrefab: {fileID: 6023388124980461190, guid: f786dc44588e449cb9f334ef68a142cf, type: 3}
+  _goalTilePrefab: {fileID: 5870669357127528183, guid: e9838a8f9bc2c88459a92a7c517eaa8c, type: 3}
   _wallTilePrefab: {fileID: -650391582006392195, guid: 0a6cde2cf5c8b433583cd51143ac5d4a, type: 3}
   _cam: {fileID: 519420032}
   arrowController: {fileID: 8850347746501693185, guid: ea2842442abc449e6ac275601e85e828, type: 3}
@@ -3203,7 +3204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a74d06a8fbda4cd4a2ac0c61a6f6a18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gameSettings: {fileID: 11400000, guid: 570dfd3063ab9334188059939b8179d4, type: 2}
+  _levelRules: {fileID: 11400000, guid: c4bfff5581b194063bf3187711c53ad4, type: 2}
   GameState: 0
   levelIndex: 0
 --- !u!1 &1097241413
@@ -3822,7 +3823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d7f25a49c2fd4a2692b5bf8e7cb781c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gameSettings: {fileID: 11400000, guid: 570dfd3063ab9334188059939b8179d4, type: 2}
+  _levelRules: {fileID: 11400000, guid: c4bfff5581b194063bf3187711c53ad4, type: 2}
 --- !u!1 &1298095970
 GameObject:
   m_ObjectHideFlags: 0

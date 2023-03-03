@@ -9,34 +9,18 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1801880933360553825, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
       propertyPath: effectDescription
-      value: Move UP or DOWN then move LEFT or RIGHT
+      value: Move UP then LEFT or RIGHT
       objectReference: {fileID: 0}
     - target: {fileID: 1801880933360553825, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
       propertyPath: movement.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1801880933360553825, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
-      propertyPath: movement.Array.data[0].movementType
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 1801880933360553825, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
       propertyPath: movement.Array.data[1].movementType
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1801880933360553825, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
-      propertyPath: movement.Array.data[2].movementType
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1801880933360553825, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
-      propertyPath: movement.Array.data[0].movementChoice
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1801880933360553825, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
       propertyPath: movement.Array.data[1].movementChoice
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1801880933360553825, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
-      propertyPath: movement.Array.data[2].movementChoice
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3569991509079110789, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
@@ -85,7 +69,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4095633265374228190, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
       propertyPath: m_Name
-      value: Movement-Up-or-down-then-left-or-right
+      value: Movement-Up-Then-Left-or-Right
       objectReference: {fileID: 0}
     - target: {fileID: 5353068498584004555, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.x
@@ -98,6 +82,6 @@ PrefabInstance:
     - target: {fileID: 7633192807651122711, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 5ec6bf1b33739684ca15e476f5e4ac59, type: 3}
+      objectReference: {fileID: 21300000, guid: a63608995907149b4a3fbd8687f54f58, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}

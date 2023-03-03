@@ -10,8 +10,9 @@ using Random = UnityEngine.Random;
 public class GridManager : MonoBehaviour
 {
     public static GridManager Instance;
-    [SerializeField] private GameSettings _gameSettings;
+    [SerializeField] private ScriptableLevelRules _levelRules;
     [SerializeField] private Tile _iceTilePrefab;
+    [SerializeField] private Tile _goalTilePrefab;
     [SerializeField] private Tile _wallTilePrefab;
     [SerializeField] private Transform _cam;
     [SerializeField] private GameObject arrowController;
@@ -35,10 +36,8 @@ public class GridManager : MonoBehaviour
 
     private void Start()
     {
-        
-        
-        _visibleRows = _gameSettings.VisibleRows;
-        _width = _gameSettings.Width;
+        _visibleRows = _levelRules.StartingRows;
+        _width = _levelRules.Width;
     }
 
 
@@ -51,13 +50,7 @@ public class GridManager : MonoBehaviour
     // grab all the enemy tiles
     public List<Tile> GetEnemyUnits() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy).Select(s=>s.Value).ToList(); }
     
-    public bool CheckForDeadEnemy() {
-        List<KeyValuePair<Vector2, Tile>> deadEnemyList = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.health == 0).ToList();
-        if (deadEnemyList.Count > 0) {
-            return true;
-        }
-        return false;
-    }
+    public bool CheckForDeadEnemy() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.health == 0).Count() > 0; }
 
     public void GenerateGrid() {
         _tiles = new Dictionary<Vector2, Tile>();
@@ -81,16 +74,24 @@ public class GridManager : MonoBehaviour
 
     public void GenerateRow()
     {
+        bool stopGenerating = _levelRules.LevelLength == _levelRules.CurrentNumberRows;
+        if (stopGenerating)
+        {
+            return;
+        }
+        
         // increase the number of rows
-        Vector2 topLeftTileCoord = new Vector2(0, _gameSettings.VisibleRows-1);
+        Vector2 topLeftTileCoord = new Vector2(0, _levelRules.CurrentNumberRows-1);
         float posY = _tiles[topLeftTileCoord].transform.position.y + 1;
+
+        bool isEndRow = _levelRules.LevelLength == _levelRules.CurrentNumberRows + 1;
         
         for (int x = 0; x < _width; x++)
         {
             // the coord
-            Vector2 coord = new Vector2(x, _gameSettings.VisibleRows);
+            Vector2 coord = new Vector2(x, _levelRules.CurrentNumberRows);
             Vector2 pos = new Vector2(x, posY);
-            var spawnTile = Instantiate(_iceTilePrefab, pos, Quaternion.identity);
+            var spawnTile = Instantiate(isEndRow ? _goalTilePrefab : _iceTilePrefab, pos, Quaternion.identity);
             spawnTile.name = $"Tile {x} {coord.y}";
             spawnTile.Init(x, (int)coord.y);
                 
@@ -98,8 +99,8 @@ public class GridManager : MonoBehaviour
             spawnTile.PlayEntranceAnimation();
         }
         
-        _gameSettings.VisibleRows++;
-        _visibleRows = _gameSettings.VisibleRows;
+        _levelRules.CurrentNumberRows++;
+        _visibleRows = _levelRules.CurrentNumberRows;
 
     }
 
@@ -311,8 +312,16 @@ public class GridManager : MonoBehaviour
                     
                     
                 }
-                // send it back to the CardRule controller
-                CardRuleManager.Instance.DidCompleteMovement();
+
+                if (GetHeroTile() is GoalTile)
+                {
+                    WinLoseManager.Instance.GameWin();
+                }
+                else
+                {
+                    // send it back to the CardRule controller
+                    CardRuleManager.Instance.DidCompleteMovement();
+                }
             }
         } else {
             // invalid move
@@ -367,6 +376,9 @@ public class GridManager : MonoBehaviour
             coordY = Mathf.Max(0, coordY-1);
             Debug.Log($"Movement is Down. New PP is {(int)coordX}, {(int)coordY}");
 
+        } else if (movement == GridMovement.None)
+        {
+            // intentionally left blank
         }
         
         return new Vector2(coordX, coordY);
@@ -376,7 +388,8 @@ public class GridManager : MonoBehaviour
         movementArrowGameObject = Instantiate(arrowController);
         movementArrowController = movementArrowGameObject.GetComponent<MovementArrowController>();
 
-        movementArrowController.SetArrows(card.movementCard.GetGridMovement(movementIndex));
+        List<GridMovement> gridMovements = card.movementCard.GetGridMovement(movementIndex);
+        movementArrowController.SetArrows(gridMovements);
         movementArrowController.OnArrowTapped += ArrowTapped;
 
         Tile playerTile = GetHeroTile();
@@ -387,6 +400,13 @@ public class GridManager : MonoBehaviour
 
         // put the arrows on the player's tile
         movementArrowGameObject.transform.position = playerTile.OccupiedUnit.transform.position;
+
+        // dont wait for input for the "stay in place"
+        //TODO we should auto move the player if they choose a card with no choice
+        if (gridMovements.Contains(GridMovement.None))
+        {
+            ArrowTapped(GridMovement.None);
+        }
     }
 
     public void ArrowTapped(GridMovement gridMovement) {

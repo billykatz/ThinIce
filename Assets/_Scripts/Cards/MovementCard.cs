@@ -48,6 +48,9 @@ public class MovementCard : BaseCard
                 break;
             case MovementType.Teleport:
                 break;
+            case MovementType.None:
+                gridMovements.Add(GridMovement.None);
+                break;
         }
         return gridMovements;
     }
@@ -78,6 +81,8 @@ public class MovementCard : BaseCard
                 return true;
             case MovementType.Teleport:
                 return false;
+            case MovementType.None:
+                return true;
         }
         return false;
     }
@@ -108,6 +113,8 @@ public class MovementCard : BaseCard
                 return "Move 1 tile in any direction";
             case MovementType.Teleport:
                 return "Move to any tile";
+            case MovementType.None:
+                return "Stay in place";
         }
 
         return "Error";
@@ -139,5 +146,6 @@ public enum MovementType {
     LeftOrRight = 8,
     UpOrDown = 9,
     Any = 10,
-    Teleport = 11
+    Teleport = 11,
+    None = 12
 }

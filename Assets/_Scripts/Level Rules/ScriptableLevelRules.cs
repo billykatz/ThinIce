@@ -9,10 +9,12 @@ public class ScriptableLevelRules : ScriptableObject
     public int numberOfCardsToPlay;
     public int totalObjectives;
 
-    public int wave2TurnNumber;
-    public int wave3TurnNumber;
-    public int wave2NumberEnemies;
-    public int wave3NumberEnemies;
+    public int LevelNumber;
+    public int LevelLength;
+    public int CurrentNumberRows;
+
+    public int Width;
+    public int StartingRows;
 
 
 }

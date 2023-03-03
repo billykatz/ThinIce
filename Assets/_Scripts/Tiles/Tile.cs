@@ -12,7 +12,6 @@ public abstract class Tile : MonoBehaviour
     [SerializeField] private PlayableAsset MoveDownTimeline;
     [SerializeField] private PlayableAsset EntranceTimeline;
     
-    [SerializeField] protected SpriteRenderer _spriteRenderer;
     [SerializeField] private GameObject _highlight;
     [SerializeField] private GameObject _startingPositionHighlight;
     [SerializeField] private bool _isWalkable;

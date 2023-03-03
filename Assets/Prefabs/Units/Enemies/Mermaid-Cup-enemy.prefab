@@ -107,7 +107,7 @@ MonoBehaviour:
   attack: 2
   armor: 0
   PlayableDirector: {fileID: 3975027853560709365}
-  _gameSettings: {fileID: 11400000, guid: 570dfd3063ab9334188059939b8179d4, type: 2}
+  _levelRules: {fileID: 11400000, guid: c4bfff5581b194063bf3187711c53ad4, type: 2}
 --- !u!320 &3975027853560709365
 PlayableDirector:
   m_ObjectHideFlags: 0

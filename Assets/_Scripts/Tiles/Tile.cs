@@ -9,6 +9,8 @@ using UnityEngine.Timeline;
 public abstract class Tile : MonoBehaviour
 {
     [SerializeField] private PlayableDirector PlayableDirector;
+    [SerializeField] private PlayableAsset MoveDownTimeline;
+    [SerializeField] private PlayableAsset EntranceTimeline;
     
     [SerializeField] protected SpriteRenderer _spriteRenderer;
     [SerializeField] private GameObject _highlight;
@@ -37,11 +39,18 @@ public abstract class Tile : MonoBehaviour
 
     public void PlayMoveDownAnimation()
     {
+        PlayableDirector.playableAsset = MoveDownTimeline;
         PlayableDirector.Play();
         if (OccupiedUnit is BaseEnemy)
         {
             OccupiedUnit.Play();
         }
+    }
+    
+    public void PlayEntranceAnimation()
+    {
+        PlayableDirector.playableAsset = EntranceTimeline;
+        PlayableDirector.Play();
     }
 
     private void OnMouseEnter() {

@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class GridManager : MonoBehaviour
 {
@@ -27,14 +29,19 @@ public class GridManager : MonoBehaviour
 
     private void Awake() {
         Instance = this;
-        
-        _visibleRows = _gameSettings.VisibleRows;
-        _width = _gameSettings.Width;
 
         Debug.Log("Grid Manager Awake()");
     }
-    
-    
+
+    private void Start()
+    {
+        
+        
+        _visibleRows = _gameSettings.VisibleRows;
+        _width = _gameSettings.Width;
+    }
+
+
     // current player unit
     public BaseUnit GetHeroUnit() { return GetHeroTile().OccupiedUnit; }
     
@@ -70,6 +77,28 @@ public class GridManager : MonoBehaviour
         _cam.transform.position = new Vector3((float)_width /2 - 0.5f, (float)_visibleRows / 2 - 1.75f, -10);
 
         GameManager.Instance.EndGameState(GameState.GenerateGrid);
+    }
+
+    public void GenerateRow()
+    {
+        // increase the number of rows
+        Vector2 topLeftTileCoord = new Vector2(0, _gameSettings.VisibleRows-1);
+        float posY = _tiles[topLeftTileCoord].transform.position.y + 1;
+        
+        for (int x = 0; x < _width; x++)
+        {
+            // the coord
+            Vector2 coord = new Vector2(x, _gameSettings.VisibleRows);
+            Vector2 pos = new Vector2(x, posY);
+            var spawnTile = Instantiate(_iceTilePrefab, pos, Quaternion.identity);
+            spawnTile.name = $"Tile {x} {coord.y}";
+            spawnTile.Init(x, (int)coord.y);
+                
+            _tiles[coord] = spawnTile;   
+            spawnTile.PlayEntranceAnimation();
+        }
+        _gameSettings.VisibleRows++;
+        
     }
 
 
@@ -296,6 +325,8 @@ public class GridManager : MonoBehaviour
         {
             kv.Value.PlayMoveDownAnimation();
         }
+        
+        GenerateRow();
     }
 
     private bool DidInitiateCombat(Vector2 targetTile) {

@@ -8,12 +8,15 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    public GameSettings _gameSettings;
+
     public GameState GameState;
 
     public int levelIndex = 0;
 
     void Awake() {
         Instance = this;
+        _gameSettings.VisibleRows = 4;
 
         Debug.Log("Game Manager Awake()");
 

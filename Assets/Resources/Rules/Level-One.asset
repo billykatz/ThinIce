@@ -21,3 +21,5 @@ MonoBehaviour:
   Width: 4
   StartingRows: 4
   BaseChanceSpawnWall: 0.25
+  BaseChanceSpawnEnemy: 0.1
+  ChanceDeltaSpawnEnemy: 0.1

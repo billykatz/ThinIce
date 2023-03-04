@@ -124,14 +124,14 @@ public class EnemiesManager : MonoBehaviour
         enemyTurnComplete -= EnemyTurnDone;
         enemyTurnIndex++;
         if (enemyTurnIndex >= enemyTiles.Count) {
-            EndEnemitesTurn();
+            EndAllEnemiesTurn();
         } else {
             DoEnemyTurn(enemyTurnComplete);
         }
 
     }
 
-    public void EndEnemitesTurn() {
+    public void EndAllEnemiesTurn() {
         GameManager.Instance.EndGameState(GameState.EnemyTurn);
     }
 }

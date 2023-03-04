@@ -23,7 +23,8 @@ public class GridManager : MonoBehaviour
     private bool currentlyMoving;
     private bool waitingForInput;
     private int _consecutiveGeneratedRocks;
-    
+    private bool _stopGenerating { get { return _levelRules.LevelLength <= _levelRules.CurrentNumberRows; } }
+
     private Dictionary<Vector2, Tile> _tiles;
     private CombinedCard currentCard;
     private MovementArrowController movementArrowController;
@@ -76,8 +77,7 @@ public class GridManager : MonoBehaviour
     public void GenerateRow()
     {
         // dont create rows if we are at the level length max
-        bool stopGenerating = _levelRules.LevelLength == _levelRules.CurrentNumberRows;
-        if (stopGenerating)
+        if (_stopGenerating)
         {
             return;
         }
@@ -145,9 +145,11 @@ public class GridManager : MonoBehaviour
         }
 
         // update the state of the level
-        _levelRules.CurrentNumberRows++;
         _visibleRows = _levelRules.CurrentNumberRows;
+        _levelRules.CurrentNumberRows++;
+        
     }
+
 
 
     public void HighlightPlayerStartingPositions() {
@@ -218,7 +220,7 @@ public class GridManager : MonoBehaviour
 
 
     /// <summary>
-    /// Destorys the enemy prefab and updates the player's state
+    /// Destroys the enemy prefab and updates the player's state
     /// </summary>
     public void KillEnemyAndMovePlayer() {
         Vector2 deadEnemy = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.health == 0).ToList().First().Key;
@@ -229,12 +231,21 @@ public class GridManager : MonoBehaviour
             
             // destroy the unit that is there
             Destroy(_tiles[deadEnemy].OccupiedUnit.gameObject);
+
+            // special case where we move up and kill an enemy
+            if (deadEnemy.y == playerTile.y + 1)
+            {
+                MovePlayerUpGrid(GetHeroUnit(), playerTile, _tiles[deadEnemy]);
+            }
+            else
+            {
+                // move the player to the unit
+                _tiles[deadEnemy].SetUnit(playerTile.OccupiedUnit);
+                
+                // remove player from old tile
+                playerTile.OccupiedUnit = null;
+            }
             
-            // move the player to the unit
-            _tiles[deadEnemy].SetUnit(playerTile.OccupiedUnit);
-            
-            // remove player from old tile
-            playerTile.OccupiedUnit = null;
         }
     }
     
@@ -343,21 +354,15 @@ public class GridManager : MonoBehaviour
                     // if we are moving up then move the board down
                     if (movement == GridMovement.Up)
                     {
-                        MovePlayerUpGrid();
-                        // we dont want to move the player up the screen, so just make the assignments here
-                        _tiles[newPlayerPosition].OccupiedUnit = playerUnit;
-                        playerUnit.OccupiedTile = _tiles[newPlayerPosition];
+                        MovePlayerUpGrid(playerUnit, playerTile, _tiles[newPlayerPosition]);
                     }
                     else
                     {
-                        
                         _tiles[newPlayerPosition].SetUnit(playerUnit);
                     }
-                    
-                    
-                    
                 }
 
+                // TODO: Remove hack that we call this from the grid manager
                 if (GetHeroTile() is GoalTile)
                 {
                     WinLoseManager.Instance.GameWin();
@@ -371,18 +376,79 @@ public class GridManager : MonoBehaviour
         } else {
             // invalid move
             Debug.Log($"GridManager: Invalid move");
-            currentlyMoving = false;
         }
+        
+        currentlyMoving = false;
     }
 
-    private void MovePlayerUpGrid()
+    /// <summary>
+    /// We want to move the player up the grid and then do the following:
+    /// - move all the tiles down to simulate that the player is moving up
+    /// - generate a new row
+    /// - potentially spawn enemies.  
+    /// </summary>
+    private void MovePlayerUpGrid(BaseUnit playerUnit, Tile oldPlayerTile, Tile newPlayerTile)
     {
+        // we dont want to move the player up the screen, so just make the assignments here
+        newPlayerTile.OccupiedUnit = playerUnit;
+        playerUnit.OccupiedTile = newPlayerTile;
+        oldPlayerTile.OccupiedUnit = null;
+
+        if (_stopGenerating)
+        {
+            playerUnit.transform.position = newPlayerTile.transform.position;
+            return;
+        }
 
         GenerateRow();
+        SpawnEnemies();
         
         foreach (KeyValuePair<Vector2, Tile> kv in _tiles)
         {
             kv.Value.PlayMoveDownAnimation();
+        }
+    }
+
+    private int _consecutiveRowsWithSpawnedEnemy = 0;
+    private void SpawnEnemies()
+    {
+        if (_stopGenerating)
+        {
+            return;
+        }
+        // check to see if we should spawn an enemy
+        float baseChanceSpawnEnemy = _levelRules.BaseChanceSpawnEnemy;
+        // increase or decrease the chanxe to spawn an enemy based on how many rows have been generated with an enemy or not
+        baseChanceSpawnEnemy += (_levelRules.ChanceDeltaSpawnEnemy * _consecutiveRowsWithSpawnedEnemy);
+        bool spawnEnemy = Random.value < baseChanceSpawnEnemy;
+        if (spawnEnemy)
+        {
+            // yes we spawned an enemy, make this value lower so it is less likely to spawn one in the future
+            _consecutiveRowsWithSpawnedEnemy--;
+        }
+        else
+        {
+            // no we didnt spawn one, ok, make this value higher so there is a better chance an enemy comes in the future
+            _consecutiveRowsWithSpawnedEnemy++;
+        }
+
+        if (spawnEnemy)
+        {
+            BaseUnit enemy = UnitManager.Instance.CreateEnemyUnit();
+            bool hasSpawned = false;
+            while (!hasSpawned)
+            {
+                
+                int randomX = Random.Range(0, _width);
+
+                Vector2 enemyCoord = new Vector2(randomX, _visibleRows);
+                if (_tiles[enemyCoord].tileType == TileType.Ice)
+                {
+                    BaseUnit instanitatedUnit = Instantiate(enemy, _tiles[enemyCoord].transform.position, Quaternion.identity);
+                    _tiles[enemyCoord].SetUnit(instanitatedUnit);
+                    hasSpawned = true;
+                }
+            }
         }
     }
 
@@ -413,8 +479,9 @@ public class GridManager : MonoBehaviour
             coordX = Mathf.Min(_width-1, coordX+1);
             Debug.Log($"Movement is right. New PP is {(int)coordX}, {(int)coordY}");
 
-        } else if (movement == GridMovement.Up) {
-            coordY = Mathf.Min(_visibleRows-1, coordY+1);
+        } else if (movement == GridMovement.Up)
+        {
+            coordY += 1;// Mathf.Min(_visibleRows-1, coordY+1);
             Debug.Log($"Movement is Up. New PP is {(int)coordX}, {(int)coordY}");
 
         } else if (movement == GridMovement.Down) {

@@ -25,6 +25,10 @@ public class UnitManager : MonoBehaviour
         GameManager.Instance.EndGameState(GameState.SpawnEnemies);
 
     }
+    
+    public BaseUnit CreateEnemyUnit() {
+        return GetRandomUnit<BaseUnit>(Faction.Enemy);
+    }
 
     public void SpawnEnemyWave(int numEnemies) {
 

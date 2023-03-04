@@ -22,6 +22,7 @@ public class GridManager : MonoBehaviour
     private int _visibleRows;
     private bool currentlyMoving;
     private bool waitingForInput;
+    private int _consecutiveGeneratedRocks;
     
     private Dictionary<Vector2, Tile> _tiles;
     private CombinedCard currentCard;
@@ -74,63 +75,79 @@ public class GridManager : MonoBehaviour
 
     public void GenerateRow()
     {
+        // dont create rows if we are at the level length max
         bool stopGenerating = _levelRules.LevelLength == _levelRules.CurrentNumberRows;
         if (stopGenerating)
         {
             return;
         }
         
-        // increase the number of rows
+        // get the top left tile and calculate the new position for our Y coord.
         Vector2 topLeftTileCoord = new Vector2(0, _levelRules.CurrentNumberRows-1);
         float posY = _tiles[topLeftTileCoord].transform.position.y + 1;
+        
+        // store data about the new row
+        Dictionary<Vector2, TileType> newRow = new Dictionary<Vector2, TileType>();
 
-        bool isEndRow = _levelRules.LevelLength == _levelRules.CurrentNumberRows + 1;
-
+        // generate a ice tile prefab for each coord
         for (int x = 0; x < _width; x++)
         {
             // the coord
             Vector2 coord = new Vector2(x, _levelRules.CurrentNumberRows);
-            Vector2 pos = new Vector2(x, posY);
-            Tile spawnTile = Instantiate(GenerateTile(coord, isEndRow), pos, Quaternion.identity);
-            spawnTile.name = $"Tile {x} {coord.y}";
-            spawnTile.Init(x, (int)coord.y);
-                
-            _tiles[coord] = spawnTile;   
-            spawnTile.PlayEntranceAnimation();
-        }
-        
-        _levelRules.CurrentNumberRows++;
-        _visibleRows = _levelRules.CurrentNumberRows;
-    }
-
-    private Tile GenerateTile(Vector2 coord, bool isEndRow)
-    {
-        if (isEndRow)
-        {
-            return _goalTilePrefab;
+            newRow[coord] = TileType.Ice;   
         }
 
+        // now we want to generate rocks
+        // we hard code this to generate at most 2 rocks
         float baseChanceWall = _levelRules.BaseChanceSpawnWall;
-
-        for (int i = (int)coord.x-1; i > 0; i--)
+        bool spawnWall = Random.value < baseChanceWall;
+        // bool spawnAnotherWall = Random.value < baseChanceWall;
+        HashSet<Vector2> wallSet = new HashSet<Vector2>();
+        int numWalls = spawnWall ? 1 : 0;
+        // numWalls += (spawnAnotherWall ? 1 : 0);
+        if (numWalls > 0)
         {
-            Vector2 neighbor = new Vector2(i, coord.y);
-            if (_tiles[neighbor].tileType == TileType.Wall)
+            _consecutiveGeneratedRocks++;
+            // quick and dirty way to prevent a unescapable level
+            if (_consecutiveGeneratedRocks >= _width)
             {
-                baseChanceWall -= .1f;
+                numWalls = 0;
             }
-        }
-
-        if (Random.value < baseChanceWall)
-        {
-            return _wallTilePrefab;
         }
         else
         {
-            return _iceTilePrefab;
+            // TODO: might be worth considering increasing the change to spawn a wall here
+            _consecutiveGeneratedRocks = 0;
         }
+        while (wallSet.Count < numWalls)
+        {
+            int coordX = Random.Range(0, _width);
+            Vector2 coord = new Vector2(coordX, _levelRules.CurrentNumberRows);
+            wallSet.Add(coord);
+            newRow[coord] = TileType.Wall;
+            Debug.Log("Infinite loop, oops");
+        }
+
+        // Ice, Walls and Goals are the only 3 tile types so now we can instantiate them
+        bool isEndRow = _levelRules.LevelLength == _levelRules.CurrentNumberRows + 1;
+        foreach (Vector2 coordKey in newRow.Keys)
+        {
+            // the coord
+            Vector2 newPosition = new Vector2(coordKey.x, posY);
+            TileType tileType = newRow[coordKey];
+            Tile prefab = tileType == TileType.Ice ? _iceTilePrefab : _wallTilePrefab;
+            Tile spawnTile = Instantiate(isEndRow ? _goalTilePrefab : prefab, newPosition, Quaternion.identity);
+            spawnTile.name = $"Tile {coordKey.x} {coordKey.y}";
+            spawnTile.Init(coordKey);
+            _tiles[coordKey] = spawnTile;
+            
+            spawnTile.PlayEntranceAnimation();
+        }
+
+        // update the state of the level
+        _levelRules.CurrentNumberRows++;
+        _visibleRows = _levelRules.CurrentNumberRows;
     }
-    
 
 
     public void HighlightPlayerStartingPositions() {

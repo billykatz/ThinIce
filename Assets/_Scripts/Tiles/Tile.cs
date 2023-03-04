@@ -38,6 +38,10 @@ public abstract class Tile : MonoBehaviour
     public BaseUnit OccupiedUnit;
     public bool isWalkable => (OccupiedUnit == null) && _isWalkable;
 
+    public virtual void Init(Vector2 coord) {
+        Init((int)coord.x, (int)coord.y);
+        
+    }
     public virtual void Init(int x, int y) {
         this.x = x;
         this.y = y;

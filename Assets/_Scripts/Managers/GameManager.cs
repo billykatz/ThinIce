@@ -8,13 +8,15 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    public ScriptableLevelRules _levelRules;
+
     public GameState GameState;
 
     public int levelIndex = 0;
 
     void Awake() {
         Instance = this;
-
+        _levelRules.CurrentNumberRows = _levelRules.StartingRows;
         Debug.Log("Game Manager Awake()");
 
     }
@@ -65,6 +67,8 @@ public class GameManager : MonoBehaviour
             case GameState.EndTurn:
                 ChangeState(GameState.DrawHand);
                 break;
+            case GameState.LevelWin:
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(currentGameState), currentGameState, "You added a state and forgot to handle it here");
         }
@@ -108,6 +112,9 @@ public class GameManager : MonoBehaviour
             case GameState.EndTurn:
                 WaveManager.Instance.EndTurn();
                 break;
+            case GameState.LevelWin:
+                WinLoseManager.Instance.GameWin();
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, "You added a state and forgot to handle it here");
         }
@@ -126,5 +133,6 @@ public enum GameState {
     HeroTurnPlayCardTwo = 8,
     HeroTurnCleanUp = 9,
     EnemyTurn = 10,
-    EndTurn = 11
+    EndTurn = 11,
+    LevelWin = 12
 }

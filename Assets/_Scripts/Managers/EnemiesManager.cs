@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 public class EnemiesManager : MonoBehaviour
 {
+    
+    [SerializeField] private ScriptableLevelRules _levelRules;
     public static EnemiesManager Instance;
     private List<Tile> enemyTiles;
     private int enemyTurnIndex = 0;
@@ -21,8 +23,8 @@ public class EnemiesManager : MonoBehaviour
 
     public async void DoEnemyTurn(Action callback) {
         Tile heroTile = GridManager.Instance.GetHeroTile();
-        int width = GridManager.Instance._width;
-        int height = GridManager.Instance._height;
+        int width = _levelRules.Width;
+        int height = _levelRules.CurrentNumberRows;
 
         enemyTurnComplete += EnemyTurnDone;
 
@@ -110,7 +112,7 @@ public class EnemiesManager : MonoBehaviour
     }
     public void StartEnemiesTurns() {
         
-        // get the enemies fromt he grid manager
+        // get the enemies from the grid manager
         enemyTiles = GridManager.Instance.GetEnemyUnits();
         enemyTurnIndex = 0;
 
@@ -122,14 +124,14 @@ public class EnemiesManager : MonoBehaviour
         enemyTurnComplete -= EnemyTurnDone;
         enemyTurnIndex++;
         if (enemyTurnIndex >= enemyTiles.Count) {
-            EndEnemitesTurn();
+            EndAllEnemiesTurn();
         } else {
             DoEnemyTurn(enemyTurnComplete);
         }
 
     }
 
-    public void EndEnemitesTurn() {
+    public void EndAllEnemiesTurn() {
         GameManager.Instance.EndGameState(GameState.EnemyTurn);
     }
 }

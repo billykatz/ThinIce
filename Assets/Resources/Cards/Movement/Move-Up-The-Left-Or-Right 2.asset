@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 802496ae4666843ff85292fbea196277, type: 3}
-  m_Name: Move-up-or-down-then-left-or-right
+  m_Name: Move-Up-The-Left-Or-Right 2
   m_EditorClassIdentifier: 
   CardType: 0
-  BaseCard: {fileID: 5634740753262986461, guid: 0d501eb94c4834416b4e4a2485768bae, type: 3}
+  BaseCard: {fileID: 5634740753262986461, guid: 016589ec4d5cdbd44945bf7053accd52, type: 3}

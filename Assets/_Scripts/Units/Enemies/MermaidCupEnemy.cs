@@ -34,8 +34,8 @@ public class MermaidCupEnemy : BaseEnemy
     {
         // get attack tiles from the player tile to know where we want to be.
         List<Vector2> idealAttackTiles = AttackTiles(playerTile);  
-        int width = GridManager.Instance._width;
-        int height = GridManager.Instance._height;
+        int width = _levelRules.Width;
+        int height = _levelRules.CurrentNumberRows;
         return idealAttackTiles.Where(coord => coord.IsInBounds(width, height)).OrderBy(coord => Vector2.Distance(currentTile.coord, coord)).ToList();
 
 

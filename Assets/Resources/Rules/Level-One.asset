@@ -15,7 +15,11 @@ MonoBehaviour:
   numberOfEnemiesToKill: 3
   numberOfCardsToPlay: 0
   totalObjectives: 1
-  wave2TurnNumber: 4
-  wave3TurnNumber: 12
-  wave2NumberEnemies: 1
-  wave3NumberEnemies: 2
+  LevelNumber: 1
+  LevelLength: 8
+  CurrentNumberRows: 8
+  Width: 4
+  StartingRows: 4
+  BaseChanceSpawnWall: 0.25
+  BaseChanceSpawnEnemy: 0.1
+  ChanceDeltaSpawnEnemy: 0.1

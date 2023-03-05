@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1341803659626195208, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_PlayableAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 48e598b078f7e83428f5d2ec16f879de, type: 2}
     - target: {fileID: 1897152260257660855, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_Color.b
       value: 0.5644357
@@ -22,6 +26,10 @@ PrefabInstance:
     - target: {fileID: 5321977072006793802, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_Name
       value: Wall Tile
+      objectReference: {fileID: 0}
+    - target: {fileID: 7268705880744216379, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_text
+      value: x:0, y:4
       objectReference: {fileID: 0}
     - target: {fileID: 8787914481195979253, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_RootOrder
@@ -67,21 +75,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8991394790833631315, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e5ee2fd1401d39b4ebd92519038a3792, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
---- !u!1 &8380465624375055799 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5321977072006793802, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
-  m_PrefabInstance: {fileID: 4437753064434327549}
-  m_PrefabAsset: {fileID: 0}
---- !u!212 &2864879850210910282 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 1897152260257660855, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
-  m_PrefabInstance: {fileID: 4437753064434327549}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &250440540892949574 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4535035481049904059, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+  m_PrefabInstance: {fileID: 4437753064434327549}
+  m_PrefabAsset: {fileID: 0}
+--- !u!320 &3389270671205136117 stripped
+PlayableDirector:
+  m_CorrespondingSourceObject: {fileID: 1341803659626195208, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
   m_PrefabInstance: {fileID: 4437753064434327549}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &4696390258798710659 stripped
@@ -100,6 +107,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &8380465624375055799 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5321977072006793802, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+  m_PrefabInstance: {fileID: 4437753064434327549}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &-650391582006392195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,10 +124,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b95bb9cb0ab1438e844515a2419c327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spriteRenderer: {fileID: 2864879850210910282}
+  PlayableDirector: {fileID: 3389270671205136117}
+  MoveDownTimeline: {fileID: 11400000, guid: 48e598b078f7e83428f5d2ec16f879de, type: 2}
+  EntranceTimeline: {fileID: 11400000, guid: b2fcacc9dba61d14094d0be9370ff4f2, type: 2}
   _highlight: {fileID: 250440540892949574}
   _startingPositionHighlight: {fileID: 4696390258798710659}
   _isWalkable: 0
   TileName: Wall
   debugText: {fileID: 6433868821417629894}
+  tileType: 2
+  x: 0
+  y: 4
   OccupiedUnit: {fileID: 0}

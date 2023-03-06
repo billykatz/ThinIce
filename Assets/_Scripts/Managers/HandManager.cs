@@ -1,16 +1,24 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
+using Freya;
 using UnityEngine.EventSystems;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.PlayerLoop;
 
 public class HandManager : MonoBehaviour
 {
     public static HandManager Instance;
 
     private List<CombinedCard> cards;
+    private List<GameObject> cardGOs = new List<GameObject>();
+    [SerializeField] private List<GameObject> testers;
+    
+    public float arcRadius;
+    public float itemRadius;
+    
+    //[SerializeField] private float itemRadius = 2f;
+    [SerializeField] private Transform handArc;
 
     [SerializeField] private GameObject MovementCardDeck;
     [SerializeField] private GameObject ModifierCardDeck;
@@ -20,23 +28,32 @@ public class HandManager : MonoBehaviour
 
     [SerializeField] EventSystem m_EventSystem;
 
-    private int selectedIndex;
-    private int numPlayedCards = 0;
+    private int _selectedIndex;
+    private int _numPlayedCards = 0;
 
-    private bool playerIsPlayingCard = false;
+    private bool _playerIsPlayingCard = false;
+    private bool _cardsChanged = false;
 
     private void Awake() {
         Instance = this;
         Debug.Log("Hand Manager Awake()");
 
         this.cards = new List<CombinedCard>();
-        selectedIndex = -1;
+        _selectedIndex = -1;
 
+    }
+
+    private void OnValidate()
+    {
+        if (cards.Count > 0)
+        {
+            ShowHand();
+        }
     }
 
     public async void DrawHand() {
         Debug.Log("HandManager: Start drawing a card");
-        numPlayedCards = 0;
+        _numPlayedCards = 0;
         int index = 0;
         while (cards.Count < 3) {
             CombinedCard drawnCard = DeckManager.Instance.DrawCard();
@@ -48,14 +65,49 @@ public class HandManager : MonoBehaviour
             GameObject combinedCard = drawnCard.InstantiateCombindCard(index);
 
             combinedCard.transform.position = movementPlaceHolder.position;
+            cardGOs.Add(combinedCard);
 
             index++;
 
-            await Task.Delay(100);
+            ShowHand();
+
+            await Task.Delay(200);
         }
         Debug.Log("HandManager: Finishing drawing a card");
 
         GameManager.Instance.EndGameState(GameState.DrawHand);
+    }
+
+    public void ShowHand()
+    {
+
+        if (cardGOs.Count <= 0)
+        {
+            return;
+        }
+        
+        float a = itemRadius*2;
+        float b = arcRadius;
+        
+        float separationAngRad = Mathfs.Acos(1f - (a * a) / (2 * b * b));
+        float totalSeparation = separationAngRad * (cards.Count - 1f);
+        float angRad = Mathfs.TAU * 0.25f - totalSeparation / 2;
+
+        for (int i = 0; i < cardGOs.Count; i++)
+        {
+            cardGOs[i].transform.position = handArc.transform.position;
+            cardGOs[i].transform.rotation = Quaternion.identity;
+        }
+        
+        for (int i = 0; i < cardGOs.Count; i++)
+        {
+            Vector3 itemCenter = Mathfs.AngToDir(angRad) * arcRadius;
+            // testers[i].transform.parent = handArc;
+            cardGOs[i].transform.position += (itemCenter);
+            Quaternion rotationAdd = Quaternion.AngleAxis(Mathfs.Rad2Deg * (angRad - Mathfs.TAU * 0.25f), Vector3.forward);
+            cardGOs[i].transform.rotation *= rotationAdd; 
+            angRad += separationAngRad;
+        }
     }
 
     public void DiscardHand() {
@@ -63,34 +115,35 @@ public class HandManager : MonoBehaviour
             DeckManager.Instance.DiscardCard(card);
             card.DestroyCard();
             cards = new List<CombinedCard>();
+            cardGOs = new List<GameObject>();
         }
     }
 
     public void DeselectAll() {
-        if (playerIsPlayingCard) { return; }
+        if (_playerIsPlayingCard) { return; }
         foreach(CombinedCard card in cards) {
             card.SetSelectedBackground(false);
         }
         MenuManager.Instance.HideCardDetailView();
-        selectedIndex = -1;
+        _selectedIndex = -1;
         PlayerManager.Instance.HidePreview();
     }
 
     public void DidSelectCard(int index) {
-        if (playerIsPlayingCard) { return; }
+        if (_playerIsPlayingCard) { return; }
         DeselectAll();
-        selectedIndex = index;
+        _selectedIndex = index;
         cards[index].SetSelectedBackground(true);
         MenuManager.Instance.ShowCardDetailView(cards[index]);
     }
 
     public void DidSelectModifyTargetCard(CombinedCard card, ModifyTarget target) {
-        if (playerIsPlayingCard) { return; }
+        if (_playerIsPlayingCard) { return; }
         PlayerManager.Instance.ShowPreview(card, target);
     }
     public void DidPlayCard(CombinedCard card, ModifyTarget target) {
-        numPlayedCards++;
-        playerIsPlayingCard = true;
+        _numPlayedCards++;
+        _playerIsPlayingCard = true;
 
         // save the stat updates
         PlayerManager.Instance.PlayedCard(card, target);
@@ -106,7 +159,7 @@ public class HandManager : MonoBehaviour
         List<CombinedCard> newCards = new List<CombinedCard>();
         int shift = 0;
         for (int i = 0; i < cards.Count; i++) {
-            if (selectedIndex != i) {
+            if (_selectedIndex != i) {
                 cards[i].index -= shift;
                 newCards.Add(cards[i]);
             } else {
@@ -121,13 +174,13 @@ public class HandManager : MonoBehaviour
 
         this.cards = newCards;
 
-        if (numPlayedCards == 1)  {
+        if (_numPlayedCards == 1)  {
             GameManager.Instance.EndGameState(GameState.HeroTurnPlayCardOne);
-        } else if (numPlayedCards == 2) {
+        } else if (_numPlayedCards == 2) {
             GameManager.Instance.EndGameState(GameState.HeroTurnPlayCardTwo);
         }
 
-        playerIsPlayingCard = false;
+        _playerIsPlayingCard = false;
 
     }
 
@@ -139,16 +192,16 @@ public class HandManager : MonoBehaviour
     }
 
     public void DidHoverOverCard(int index) {
-        if (playerIsPlayingCard) { return; }
-        if (selectedIndex == -1) {
+        if (_playerIsPlayingCard) { return; }
+        if (_selectedIndex == -1) {
             MenuManager.Instance.ShowCardDetailView(cards[index]);
             cards[index].SetSelectedBackground(true);
         }
     }
 
     public void DidStopHoverOverCard(int index) {
-        if (playerIsPlayingCard) { return; }
-        if (selectedIndex == -1) {
+        if (_playerIsPlayingCard) { return; }
+        if (_selectedIndex == -1) {
             MenuManager.Instance.HideCardDetailView();
             cards[index].SetSelectedBackground(false);
         }
@@ -162,7 +215,7 @@ public class HandManager : MonoBehaviour
 
     // Looks for clicks on the screen to handle deselection.  If the player clicks or taps on the UI then nothing is deselcted so the player can still tap on the card detail view.
     private void Update() {
-        if (playerIsPlayingCard) { return; }
+        if (_playerIsPlayingCard) { return; }
         if (Input.GetMouseButtonDown(0)) {
             PointerEventData pointerEventData = new PointerEventData(m_EventSystem);
             pointerEventData.position = Input.mousePosition;
@@ -187,7 +240,7 @@ public class HandManager : MonoBehaviour
         } else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
             DidSelectCard(1);
         } else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3)) {
-            if (numPlayedCards < 1) {
+            if (_numPlayedCards < 1) {
                 DidSelectCard(2);
             }
         }

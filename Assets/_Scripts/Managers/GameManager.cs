@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using UnityEngine;
@@ -11,8 +9,6 @@ public class GameManager : MonoBehaviour
     public ScriptableLevelRules _levelRules;
 
     public GameState GameState;
-
-    public int levelIndex = 0;
 
     void Awake() {
         Instance = this;
@@ -110,7 +106,7 @@ public class GameManager : MonoBehaviour
                 EnemiesManager.Instance.StartEnemiesTurns();
                 break;
             case GameState.EndTurn:
-                WaveManager.Instance.EndTurn();
+                EndGameState(GameState.EndTurn);
                 break;
             case GameState.LevelWin:
                 WinLoseManager.Instance.GameWin();

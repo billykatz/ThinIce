@@ -1,30 +1,22 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DG.Tweening;
 using Freya;
 using UnityEngine.EventSystems;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 public class HandManager : MonoBehaviour
 {
     public static HandManager Instance;
 
-    private List<CombinedCard> cards;
-    private List<GameObject> cardGOs = new List<GameObject>();
-    [SerializeField] private List<GameObject> testers;
+    private List<CombinedCard> cards = new List<CombinedCard>();
     
     public float arcRadius;
     public float itemRadius;
     
-    //[SerializeField] private float itemRadius = 2f;
     [SerializeField] private Transform handArc;
-
-    [SerializeField] private GameObject MovementCardDeck;
-    [SerializeField] private GameObject ModifierCardDeck;
-
-    [SerializeField] private List<Transform> MovementCardSlotPlaceholders;
-    [SerializeField] private List<Transform> ModiferCardSlotPlaceholders;
+    [SerializeField] private Transform MovementDeckTransform;
+    [SerializeField] private Transform ModifierDeckTransform;
 
     [SerializeField] EventSystem m_EventSystem;
 
@@ -37,10 +29,7 @@ public class HandManager : MonoBehaviour
     private void Awake() {
         Instance = this;
         Debug.Log("Hand Manager Awake()");
-
-        this.cards = new List<CombinedCard>();
         _selectedIndex = -1;
-
     }
 
     private void OnValidate()
@@ -54,21 +43,11 @@ public class HandManager : MonoBehaviour
     public async void DrawHand() {
         Debug.Log("HandManager: Start drawing a card");
         _numPlayedCards = 0;
-        int index = 0;
         while (cards.Count < 3) {
+            
             CombinedCard drawnCard = DeckManager.Instance.DrawCard();
             cards.Add(drawnCard);
-
-            Transform movementPlaceHolder = MovementCardSlotPlaceholders[index];
-            Transform modifyPlaceHolder = ModiferCardSlotPlaceholders[index];
-
-            GameObject combinedCard = drawnCard.InstantiateCombindCard(index);
-
-            combinedCard.transform.position = movementPlaceHolder.position;
-            cardGOs.Add(combinedCard);
-
-            index++;
-
+            drawnCard.cardParent.transform.position = MovementDeckTransform.position;
             ShowHand();
 
             await Task.Delay(200);
@@ -81,7 +60,7 @@ public class HandManager : MonoBehaviour
     public void ShowHand()
     {
 
-        if (cardGOs.Count <= 0)
+        if (cards.Count <= 0)
         {
             return;
         }
@@ -93,19 +72,20 @@ public class HandManager : MonoBehaviour
         float totalSeparation = separationAngRad * (cards.Count - 1f);
         float angRad = Mathfs.TAU * 0.25f - totalSeparation / 2;
 
-        for (int i = 0; i < cardGOs.Count; i++)
+        for (int i = 0; i < cards.Count; i++)
         {
-            cardGOs[i].transform.position = handArc.transform.position;
-            cardGOs[i].transform.rotation = Quaternion.identity;
+            cards[i].cardParent.transform.position = handArc.transform.position;
+            cards[i].cardParent.transform.rotation = Quaternion.identity;
         }
         
-        for (int i = 0; i < cardGOs.Count; i++)
+        
+
+        for (int i = 0; i < cards.Count; i++)
         {
             Vector3 itemCenter = Mathfs.AngToDir(angRad) * arcRadius;
-            // testers[i].transform.parent = handArc;
-            cardGOs[i].transform.position += (itemCenter);
+            cards[i].cardParent.transform.position = handArc.transform.position + itemCenter;
             Quaternion rotationAdd = Quaternion.AngleAxis(Mathfs.Rad2Deg * (angRad - Mathfs.TAU * 0.25f), Vector3.forward);
-            cardGOs[i].transform.rotation *= rotationAdd; 
+            cards[i].cardParent.transform.rotation *= rotationAdd; 
             angRad += separationAngRad;
         }
     }
@@ -115,7 +95,6 @@ public class HandManager : MonoBehaviour
             DeckManager.Instance.DiscardCard(card);
             card.DestroyCard();
             cards = new List<CombinedCard>();
-            cardGOs = new List<GameObject>();
         }
     }
 

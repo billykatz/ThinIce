@@ -11,9 +11,27 @@ public class CombinedCard : BaseCard, MouseInteractionDelegate
 
     public int index;
 
-    public void Create(MovementCard movementCard, ModifierCard modifierCard) {
-        this.movementCard = movementCard;
-        this.modifierCard = modifierCard;
+    public void Create(MovementCard movementCard, ModifierCard modifierCard, GameObject cardParent) {
+        this.cardParent = cardParent;
+        
+        this.movementCard = Instantiate(movementCard, cardParent.transform, true);
+        
+        Vector3 modifierCardPosition = this.movementCard.transform.position;
+        modifierCardPosition.y -= 1.25f;
+        this.modifierCard = Instantiate(modifierCard, cardParent.transform, true);
+        this.modifierCard.transform.position = modifierCardPosition;
+        
+        this.movementCard.SetInteractionDelegate(this);
+        this.modifierCard.SetInteractionDelegate(this);
+        
+        // hide the card to start
+        this.cardParent.SetActive(false);
+    }
+
+    public void SetIndex(int index)
+    {
+        this.index = index;
+        cardParent.name = $"Combined Card {index}";
     }
 
     public GameObject InstantiateCombindCard(int index) {

@@ -14,7 +14,7 @@ public class HandManager : MonoBehaviour
     public float arcRadius;
     public float itemRadius;
     
-    [SerializeField] private Transform handArc;
+    [SerializeField] private Transform HandArcTransform;
     [SerializeField] private Transform MovementDeckTransform;
     [SerializeField] private Transform ModifierDeckTransform;
 
@@ -46,8 +46,9 @@ public class HandManager : MonoBehaviour
         while (cards.Count < 3) {
             
             CombinedCard drawnCard = DeckManager.Instance.DrawCard();
-            cards.Add(drawnCard);
             drawnCard.cardParent.transform.position = MovementDeckTransform.position;
+            drawnCard.SetIndex(cards.Count);
+            cards.Add(drawnCard);
             ShowHand();
 
             await Task.Delay(200);
@@ -74,7 +75,7 @@ public class HandManager : MonoBehaviour
 
         for (int i = 0; i < cards.Count; i++)
         {
-            cards[i].cardParent.transform.position = handArc.transform.position;
+            cards[i].cardParent.transform.position = HandArcTransform.position;
             cards[i].cardParent.transform.rotation = Quaternion.identity;
         }
         
@@ -83,7 +84,7 @@ public class HandManager : MonoBehaviour
         for (int i = 0; i < cards.Count; i++)
         {
             Vector3 itemCenter = Mathfs.AngToDir(angRad) * arcRadius;
-            cards[i].cardParent.transform.position = handArc.transform.position + itemCenter;
+            cards[i].cardParent.transform.position = HandArcTransform.position + itemCenter;
             Quaternion rotationAdd = Quaternion.AngleAxis(Mathfs.Rad2Deg * (angRad - Mathfs.TAU * 0.25f), Vector3.forward);
             cards[i].cardParent.transform.rotation *= rotationAdd; 
             angRad += separationAngRad;

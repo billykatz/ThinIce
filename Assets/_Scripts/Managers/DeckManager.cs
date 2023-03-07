@@ -7,6 +7,7 @@ public class DeckManager : MonoBehaviour
 {
     public static DeckManager Instance;
 
+    [SerializeField] private GameObject CombinedCardPrefab;
     private List<ScriptableCard> _startingDeck;
     public List<CombinedCard> drawPile;
     public List<CombinedCard> discardPile;
@@ -19,23 +20,7 @@ public class DeckManager : MonoBehaviour
     }
 
     public void CreateDeck() {
-        // separate the cards into movement cards and modifier card. Also shuffles the deck
-        List<ScriptableCard> movementCards = _startingDeck.Where(t=>t.CardType == CardType.Movement).OrderBy(o=>Random.value).ToList();
-        List<ScriptableCard> modifierCards = _startingDeck.Where(t=>t.CardType == CardType.Modifier).OrderBy(o=>Random.value).ToList();
-
-        List<CombinedCard> combinedCards = new List<CombinedCard>();
-        for (int i = 0; i < movementCards.Count; i++) {
-            MovementCard movementCard = (MovementCard)movementCards[i].BaseCard;
-            ModifierCard modifierCard = (ModifierCard)modifierCards[i].BaseCard;
-
-            CombinedCard newCard = new CombinedCard();
-            newCard.Create(movementCard, modifierCard);
-            combinedCards.Add(newCard);
-
-        }
-
-        drawPile = combinedCards;
-        discardPile = new List<CombinedCard>();
+        ShuffleDiscardIntoDraw();
 
         GameManager.Instance.EndGameState(GameState.CreateDeck);
 
@@ -50,9 +35,10 @@ public class DeckManager : MonoBehaviour
             MovementCard movementCard = (MovementCard)movementCards[i].BaseCard;
             ModifierCard modifierCard = (ModifierCard)modifierCards[i].BaseCard;
 
-            CombinedCard newCard = new CombinedCard();
-            newCard.Create(movementCard, modifierCard);
-            combinedCards.Add(newCard);
+            GameObject newCard = Instantiate(CombinedCardPrefab);
+            CombinedCard card = newCard.GetComponent<CombinedCard>();
+            card.Create(movementCard, modifierCard, newCard);
+            combinedCards.Add(card);
 
         }
 
@@ -69,6 +55,7 @@ public class DeckManager : MonoBehaviour
         Debug.Log($"Ok now can draw a card. Draw pile count: {drawPile.Count}");
 
         CombinedCard card = drawPile.First();
+        card.cardParent.SetActive(true);
         drawPile.RemoveAt(0);
         return card;
     }

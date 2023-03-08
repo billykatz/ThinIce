@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TweenClip
   m_EditorClassIdentifier: 
   shouldTweenPosition: 1
-  shouldTweenRotation: 0
+  shouldTweenRotation: 1
   curve:
     serializedVersion: 2
     m_Curve:

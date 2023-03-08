@@ -9,10 +9,9 @@ public class GameAnimator : MonoBehaviour
 {
     [SerializeField] private DynamicDataDictionary _dataDictionary;
     
-    public void Animate(GameObject owner, AnimationData fromPosition, AnimationData toPosition, FXView fxView)
+    public void Animate(GameObject owner, AnimationData animationData, FXView fxView)
     {
-        _dataDictionary.Set(owner.name + "(Clone)-start-position", fromPosition);
-        _dataDictionary.Set(owner.name + "(Clone)-end-position", toPosition);
+        _dataDictionary.Set(owner.name + "(Clone)-position-data", animationData);
 
         fxView.name = owner.name;
         FXView newFXView = Instantiate(fxView, Vector3.zero, Quaternion.identity);

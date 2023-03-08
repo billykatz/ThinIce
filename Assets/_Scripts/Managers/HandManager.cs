@@ -36,7 +36,6 @@ public class HandManager : MonoBehaviour
         Instance = this;
         Debug.Log("Hand Manager Awake()");
         _selectedIndex = -1;
-        // _gameAnimator = _gameAnimatorReference.Animator;
     }
 
     private void OnValidate()
@@ -56,7 +55,7 @@ public class HandManager : MonoBehaviour
             drawnCard.cardParent.transform.position = MovementDeckTransform.position;
             drawnCard.SetIndex(cards.Count);
             cards.Add(drawnCard);
-            ShowDrawCard(drawnCard);
+            ShowDrawCard(drawnCard, itemRadius, arcRadius);
             
             await Task.Delay(500);
         }
@@ -65,69 +64,122 @@ public class HandManager : MonoBehaviour
         GameManager.Instance.EndGameState(GameState.DrawHand);
     }
 
-    public void ShowDrawCard(CombinedCard card)
+    public AnimationData[] CalculateCardAnimationData(float[] itemRadii, float arcRadius)
     {
 
+        AnimationData[] data = new AnimationData[cards.Count];
         
-        // AnimationData[] animationData = new AnimationData[cards.Count];
-
-        float a = itemRadius*2;
-        float b = arcRadius;
-        
-        float separationAngRad = Mathfs.Acos(1f - (a * a) / (2 * b * b));
-        float totalSeparation = separationAngRad * (cards.Count - 1f);
-        float angRad = Mathfs.TAU * 0.25f - totalSeparation / 2;
-
-        for (int i = 0; i < cards.Count; i++)
+        float[] anglesBetween = new float[itemRadii.Length-1];
+        float totalSeparation = 0;
+        for (int i = 0; i < anglesBetween.Length; i++)
         {
+            float a = itemRadii[i] + itemRadii[i+1];
+            float b = arcRadius;
             
-            
-            // this is the last card
-            Vector3 startPosition = cards[i].cardParent.transform.position;
-            Quaternion startRotation = cards[i].cardParent.transform.rotation;
-            Vector3 endPosition = Vector3.zero;
-            Quaternion endRotation = Quaternion.identity;
-            
-            
-            cards[i].cardParent.transform.position = HandArcTransform.position;
-            cards[i].cardParent.transform.rotation = Quaternion.identity;
-            
-            
-            Vector3 itemCenter = Mathfs.AngToDir(angRad) * arcRadius;
-            Quaternion rotationAdd = Quaternion.AngleAxis(Mathfs.Rad2Deg * (angRad - Mathfs.TAU * 0.25f), Vector3.forward);
-            endRotation = cards[i].cardParent.transform.rotation * rotationAdd;
-            endPosition = HandArcTransform.position + itemCenter;
-            if (i == cards.Count - 1)
-            {
-                startPosition = MovementDeckTransform.position;
-                startRotation = Quaternion.identity;
-            }
+            float separationAngRad = Mathfs.Acos(1f - (a * a) / (2f * b * b));
+            totalSeparation += separationAngRad;
 
-            AnimationData startData = new AnimationData();
-            startData.position = startPosition;
-            startData.rotation = startRotation;
-            
-            AnimationData endData = new AnimationData();
-            endData.position = endPosition;
-            endData.rotation = endRotation;
-            
-            
-            _gameAnimator.Animate(cards[i].cardParent, startData, endData, AnimateCardsView);
-            
-            
-            angRad += separationAngRad;
+            anglesBetween[i] = separationAngRad;
         }
 
-        // AnimationData startData = new AnimationData();
-        // startData.position = startPosition;
-        // startData.rotation = startRotation;
-        //
-        // AnimationData endData = new AnimationData();
-        // endData.position = endPosition;
-        // endData.rotation = endRotation;
-        //
-        // _gameAnimator.Animate(card.cardParent, startData, endData, AnimateCardsView);
+        float angleBetweenRad = Mathfs.TAU * 0.25f - (totalSeparation / 2f);
+        for (int i = 0; i < cards.Count; i++)
+        {
+            Vector3 startPosition = cards[i].cardParent.transform.position;
+            Quaternion startRotation = cards[i].cardParent.transform.rotation;
 
+            // cards[i].cardParent.transform.position = HandArcTransform.position;
+            cards[i].cardParent.transform.rotation = Quaternion.identity;
+
+            Vector3 itemCenter = Mathfs.AngToDir(angleBetweenRad) * arcRadius;
+            Vector3 endPosition = HandArcTransform.position + itemCenter;
+            
+            Quaternion rotationAdd = Quaternion.AngleAxis(Mathfs.Rad2Deg * (angleBetweenRad - Mathfs.TAU * 0.25f), Vector3.forward);
+            Quaternion endRotation = cards[i].cardParent.transform.rotation * rotationAdd;
+            
+            AnimationData startData = new AnimationData();
+            startData.StartPosition = startPosition;
+            startData.StartRotation = startRotation;
+            
+            startData.EndPosition = endPosition;
+            startData.EndRotation = endRotation;
+            
+            data[i] = startData;
+            
+            if (i < anglesBetween.Length)
+            {
+                angleBetweenRad += anglesBetween[i];
+            }
+
+        }
+
+        return data;
+    }
+
+    public void ShowNormalHand()
+    {
+        float[] itemRadii = new float[cards.Count];
+        for (int i = 0; i < cards.Count; i++)
+        {
+            itemRadii[i] = itemRadius;
+        }
+        
+        AnimationData[] data = CalculateCardAnimationData(itemRadii, arcRadius);
+        
+        for (int i = 0; i < data.Length; i++)
+        {
+            _gameAnimator.Animate(cards[i].cardParent, data[i], AnimateCardsView);
+        }
+    }
+
+    public void ShowDrawCard(CombinedCard card, float itemRadius, float arcRadius)
+    {
+
+        float[] itemRadii = new float[cards.Count];
+        for (int i = 0; i < cards.Count; i++)
+        {
+            itemRadii[i] = itemRadius;
+        }
+        
+        AnimationData[] data = CalculateCardAnimationData(itemRadii, arcRadius);
+        
+        for (int i = 0; i < data.Length; i++)
+        {
+            if (card.index == i)
+            {
+                data[i].StartPosition = MovementDeckTransform.position;
+                data[i].StartRotation = Quaternion.identity;
+            }
+            _gameAnimator.Animate(cards[i].cardParent, data[i], AnimateCardsView);
+        }
+    }
+
+    public void HighlightCard(CombinedCard highlightedCard)
+    {
+        float[] itemRadii = new float[cards.Count];
+        for (int i = 0; i < cards.Count; i++)
+        {
+            if (cards[i] == highlightedCard)
+            {
+                itemRadii[i] = itemRadius*2f;
+            }
+            else
+            {
+                itemRadii[i] = itemRadius*0.75f;
+            }
+        }
+        
+        AnimationData[] data = CalculateCardAnimationData(itemRadii, arcRadius);
+        
+        for (int i = 0; i < data.Length; i++)
+        {
+            if (highlightedCard.index == i)
+            {
+                data[i].EndPosition = data[i].StartPosition;
+                data[i].EndRotation = data[i].StartRotation;
+            }
+            _gameAnimator.Animate(cards[i].cardParent, data[i], AnimateCardsView);
+        }
         
     }
 
@@ -177,6 +229,7 @@ public class HandManager : MonoBehaviour
         }
         MenuManager.Instance.HideCardDetailView();
         _selectedIndex = -1;
+        ShowNormalHand();
         PlayerManager.Instance.HidePreview();
     }
 
@@ -185,6 +238,7 @@ public class HandManager : MonoBehaviour
         DeselectAll();
         _selectedIndex = index;
         cards[index].SetSelectedBackground(true);
+        HighlightCard(cards[index]);
         MenuManager.Instance.ShowCardDetailView(cards[index]);
     }
 
@@ -247,6 +301,7 @@ public class HandManager : MonoBehaviour
         if (_selectedIndex == -1) {
             MenuManager.Instance.ShowCardDetailView(cards[index]);
             cards[index].SetSelectedBackground(true);
+            HighlightCard(cards[index]);
         }
     }
 
@@ -255,6 +310,7 @@ public class HandManager : MonoBehaviour
         if (_selectedIndex == -1) {
             MenuManager.Instance.HideCardDetailView();
             cards[index].SetSelectedBackground(false);
+            ShowNormalHand();
         }
     }
 

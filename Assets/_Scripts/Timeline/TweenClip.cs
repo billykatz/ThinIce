@@ -18,13 +18,14 @@ public class TweenClip : PlayableAsset
     {
         ScriptPlayable<TweenBehaviour> playable = ScriptPlayable<TweenBehaviour>.Create(graph);
         TweenBehaviour tween = playable.GetBehaviour();
+
+        AnimationData data = positionData.GetValue(owner.name + "-position-data");
+        tween.startPosition = data.StartPosition;
+        tween.endPosition = data.EndPosition;
         
-        tween.startPosition = positionData.GetValue(owner.name + "-start-position").position;
-        tween.endPosition = positionData.GetValue(owner.name + "-end-position").position;
         
-        
-        tween.startRotation = positionData.GetValue(owner.name + "-start-position").rotation;
-        tween.endRotation = positionData.GetValue(owner.name + "-end-position").rotation;
+        tween.startRotation = data.StartRotation;
+        tween.endRotation = data.EndRotation;
 
         tween.curve = curve;
         tween.shouldTweenPosition = shouldTweenPosition;

@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class HandManager : MonoBehaviour
 {
+
     public static HandManager Instance;
 
     private List<CombinedCard> cards = new List<CombinedCard>();
@@ -20,6 +21,11 @@ public class HandManager : MonoBehaviour
 
     [SerializeField] EventSystem m_EventSystem;
 
+    // [SerializeField] private GameAnimatorReference _gameAnimatorReference;
+
+    [SerializeField] private FXView AnimateCardsView;
+    [SerializeField] private GameAnimator _gameAnimator;
+
     private int _selectedIndex;
     private int _numPlayedCards = 0;
 
@@ -30,6 +36,7 @@ public class HandManager : MonoBehaviour
         Instance = this;
         Debug.Log("Hand Manager Awake()");
         _selectedIndex = -1;
+        // _gameAnimator = _gameAnimatorReference.Animator;
     }
 
     private void OnValidate()
@@ -49,13 +56,59 @@ public class HandManager : MonoBehaviour
             drawnCard.cardParent.transform.position = MovementDeckTransform.position;
             drawnCard.SetIndex(cards.Count);
             cards.Add(drawnCard);
+            ShowDrawCard(drawnCard);
+            
+            await Task.Delay(1000);
+            
             ShowHand();
 
-            await Task.Delay(200);
+            await Task.Delay(1000);
         }
         Debug.Log("HandManager: Finishing drawing a card");
 
         GameManager.Instance.EndGameState(GameState.DrawHand);
+    }
+
+    public void ShowDrawCard(CombinedCard card)
+    {
+        Vector3 startPosition = MovementDeckTransform.position;
+        Vector3 endPosition = Vector3.zero;
+        
+        Quaternion startRotation = Quaternion.identity;
+        Quaternion endRotation = Quaternion.identity;
+        
+        float a = itemRadius*2;
+        float b = arcRadius;
+        
+        float separationAngRad = Mathfs.Acos(1f - (a * a) / (2 * b * b));
+        float totalSeparation = separationAngRad * (cards.Count - 1f);
+        float angRad = Mathfs.TAU * 0.25f - totalSeparation / 2;
+
+        for (int i = 0; i < cards.Count; i++)
+        {
+            // cards[i].cardParent.transform.position = HandArcTransform.position;
+            // cards[i].cardParent.transform.rotation = Quaternion.identity;
+            //
+            Vector3 itemCenter = Mathfs.AngToDir(angRad) * arcRadius;
+            // cards[i].cardParent.transform.position = HandArcTransform.position + itemCenter;
+            Quaternion rotationAdd = Quaternion.AngleAxis(Mathfs.Rad2Deg * (angRad - Mathfs.TAU * 0.25f), Vector3.forward);
+            endRotation = cards[i].cardParent.transform.rotation * rotationAdd; 
+            angRad += separationAngRad;
+
+            endPosition = HandArcTransform.position + itemCenter;
+        }
+
+        AnimationData startData = new AnimationData();
+        startData.position = startPosition;
+        startData.rotation = startRotation;
+
+        AnimationData endData = new AnimationData();
+        endData.position = endPosition;
+        endData.rotation = endRotation;
+
+        _gameAnimator.Animate(card.cardParent, startData, endData, AnimateCardsView);
+
+        
     }
 
     public void ShowHand()
@@ -77,18 +130,16 @@ public class HandManager : MonoBehaviour
         {
             cards[i].cardParent.transform.position = HandArcTransform.position;
             cards[i].cardParent.transform.rotation = Quaternion.identity;
-        }
-        
-        
-
-        for (int i = 0; i < cards.Count; i++)
-        {
+     
             Vector3 itemCenter = Mathfs.AngToDir(angRad) * arcRadius;
             cards[i].cardParent.transform.position = HandArcTransform.position + itemCenter;
             Quaternion rotationAdd = Quaternion.AngleAxis(Mathfs.Rad2Deg * (angRad - Mathfs.TAU * 0.25f), Vector3.forward);
             cards[i].cardParent.transform.rotation *= rotationAdd; 
             angRad += separationAngRad;
         }
+        
+        
+        // _gameAnimator.Animate(drawnCard, );
     }
 
     public void DiscardHand() {

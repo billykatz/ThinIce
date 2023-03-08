@@ -58,11 +58,7 @@ public class HandManager : MonoBehaviour
             cards.Add(drawnCard);
             ShowDrawCard(drawnCard);
             
-            await Task.Delay(1000);
-            
-            ShowHand();
-
-            await Task.Delay(1000);
+            await Task.Delay(500);
         }
         Debug.Log("HandManager: Finishing drawing a card");
 
@@ -71,12 +67,10 @@ public class HandManager : MonoBehaviour
 
     public void ShowDrawCard(CombinedCard card)
     {
-        Vector3 startPosition = MovementDeckTransform.position;
-        Vector3 endPosition = Vector3.zero;
+
         
-        Quaternion startRotation = Quaternion.identity;
-        Quaternion endRotation = Quaternion.identity;
-        
+        // AnimationData[] animationData = new AnimationData[cards.Count];
+
         float a = itemRadius*2;
         float b = arcRadius;
         
@@ -86,27 +80,53 @@ public class HandManager : MonoBehaviour
 
         for (int i = 0; i < cards.Count; i++)
         {
-            // cards[i].cardParent.transform.position = HandArcTransform.position;
-            // cards[i].cardParent.transform.rotation = Quaternion.identity;
-            //
+            
+            
+            // this is the last card
+            Vector3 startPosition = cards[i].cardParent.transform.position;
+            Quaternion startRotation = cards[i].cardParent.transform.rotation;
+            Vector3 endPosition = Vector3.zero;
+            Quaternion endRotation = Quaternion.identity;
+            
+            
+            cards[i].cardParent.transform.position = HandArcTransform.position;
+            cards[i].cardParent.transform.rotation = Quaternion.identity;
+            
+            
             Vector3 itemCenter = Mathfs.AngToDir(angRad) * arcRadius;
-            // cards[i].cardParent.transform.position = HandArcTransform.position + itemCenter;
             Quaternion rotationAdd = Quaternion.AngleAxis(Mathfs.Rad2Deg * (angRad - Mathfs.TAU * 0.25f), Vector3.forward);
-            endRotation = cards[i].cardParent.transform.rotation * rotationAdd; 
-            angRad += separationAngRad;
-
+            endRotation = cards[i].cardParent.transform.rotation * rotationAdd;
             endPosition = HandArcTransform.position + itemCenter;
+            if (i == cards.Count - 1)
+            {
+                startPosition = MovementDeckTransform.position;
+                startRotation = Quaternion.identity;
+            }
+
+            AnimationData startData = new AnimationData();
+            startData.position = startPosition;
+            startData.rotation = startRotation;
+            
+            AnimationData endData = new AnimationData();
+            endData.position = endPosition;
+            endData.rotation = endRotation;
+            
+            
+            _gameAnimator.Animate(cards[i].cardParent, startData, endData, AnimateCardsView);
+            
+            
+            angRad += separationAngRad;
         }
 
-        AnimationData startData = new AnimationData();
-        startData.position = startPosition;
-        startData.rotation = startRotation;
-
-        AnimationData endData = new AnimationData();
-        endData.position = endPosition;
-        endData.rotation = endRotation;
-
-        _gameAnimator.Animate(card.cardParent, startData, endData, AnimateCardsView);
+        // AnimationData startData = new AnimationData();
+        // startData.position = startPosition;
+        // startData.rotation = startRotation;
+        //
+        // AnimationData endData = new AnimationData();
+        // endData.position = endPosition;
+        // endData.rotation = endRotation;
+        //
+        // _gameAnimator.Animate(card.cardParent, startData, endData, AnimateCardsView);
 
         
     }

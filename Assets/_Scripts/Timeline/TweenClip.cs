@@ -21,6 +21,10 @@ public class TweenClip : PlayableAsset
         
         tween.startPosition = positionData.GetValue(owner.name + "-start-position").position;
         tween.endPosition = positionData.GetValue(owner.name + "-end-position").position;
+        
+        
+        tween.startRotation = positionData.GetValue(owner.name + "-start-position").rotation;
+        tween.endRotation = positionData.GetValue(owner.name + "-end-position").rotation;
 
         tween.curve = curve;
         tween.shouldTweenPosition = shouldTweenPosition;

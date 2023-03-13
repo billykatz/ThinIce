@@ -21,12 +21,11 @@ public class HandManager : MonoBehaviour
 
     [SerializeField] EventSystem m_EventSystem;
 
-    // [SerializeField] private GameAnimatorReference _gameAnimatorReference;
-
     [SerializeField] private FXView AnimateCardsView;
     [SerializeField] private GameAnimator _gameAnimator;
 
     private int _selectedIndex;
+    private int _hoveredIndex;
     private int _numPlayedCards = 0;
 
     private bool _playerIsPlayingCard = false;
@@ -64,7 +63,22 @@ public class HandManager : MonoBehaviour
         GameManager.Instance.EndGameState(GameState.DrawHand);
     }
 
-    public AnimationData[] CalculateCardAnimationData(float[] itemRadii, float arcRadius)
+    private  AnimationData[] CalculateCardAnimationData(float[] itemRadii, float arcRadius)
+    {
+        
+        float[] iRadii = new float[cards.Count];
+        float[] aRadii = new float[cards.Count];
+        for (int i = 0; i < cards.Count; i++)
+        {
+            iRadii[i] = itemRadius;
+            aRadii[i] = arcRadius;
+        }
+        
+        return CalculateCardAnimationData(iRadii, aRadii);
+
+    }
+
+    public AnimationData[] CalculateCardAnimationData(float[] itemRadii, float[] arcRadii)
     {
 
         AnimationData[] data = new AnimationData[cards.Count];
@@ -74,7 +88,7 @@ public class HandManager : MonoBehaviour
         for (int i = 0; i < anglesBetween.Length; i++)
         {
             float a = itemRadii[i] + itemRadii[i+1];
-            float b = arcRadius;
+            float b = arcRadii[i];
             
             float separationAngRad = Mathfs.Acos(1f - (a * a) / (2f * b * b));
             totalSeparation += separationAngRad;
@@ -91,7 +105,7 @@ public class HandManager : MonoBehaviour
             // cards[i].cardParent.transform.position = HandArcTransform.position;
             cards[i].cardParent.transform.rotation = Quaternion.identity;
 
-            Vector3 itemCenter = Mathfs.AngToDir(angleBetweenRad) * arcRadius;
+            Vector3 itemCenter = Mathfs.AngToDir(angleBetweenRad) * arcRadii[i];
             Vector3 endPosition = HandArcTransform.position + itemCenter;
             
             Quaternion rotationAdd = Quaternion.AngleAxis(Mathfs.Rad2Deg * (angleBetweenRad - Mathfs.TAU * 0.25f), Vector3.forward);
@@ -154,28 +168,35 @@ public class HandManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Highlights the hovered/selected card by 
+    /// </summary>
+    /// <param name="highlightedCard"></param>
     public void HighlightCard(CombinedCard highlightedCard)
     {
         float[] itemRadii = new float[cards.Count];
+        float[] arcRadii = new float[cards.Count];
         for (int i = 0; i < cards.Count; i++)
         {
             if (cards[i] == highlightedCard)
             {
-                itemRadii[i] = itemRadius*2f;
+                itemRadii[i] = itemRadius * 1.1f;
+                arcRadii[i] = arcRadius * 1.02f;
             }
             else
             {
-                itemRadii[i] = itemRadius*0.75f;
+                itemRadii[i] = itemRadius * 0.9f;
+                arcRadii[i] = arcRadius;
             }
         }
         
-        AnimationData[] data = CalculateCardAnimationData(itemRadii, arcRadius);
+        AnimationData[] data = CalculateCardAnimationData(itemRadii, arcRadii);
         
         for (int i = 0; i < data.Length; i++)
         {
             if (highlightedCard.index == i)
             {
-                data[i].EndPosition = data[i].StartPosition;
+                // data[i].EndPosition = data[i].StartPosition;
                 data[i].EndRotation = data[i].StartRotation;
             }
             _gameAnimator.Animate(cards[i].cardParent, data[i], AnimateCardsView);
@@ -235,6 +256,10 @@ public class HandManager : MonoBehaviour
 
     public void DidSelectCard(int index) {
         if (_playerIsPlayingCard) { return; }
+
+        if (_selectedIndex == index)
+            return;
+        
         DeselectAll();
         _selectedIndex = index;
         cards[index].SetSelectedBackground(true);
@@ -286,6 +311,8 @@ public class HandManager : MonoBehaviour
         }
 
         _playerIsPlayingCard = false;
+        
+        ShowNormalHand();
 
     }
 
@@ -298,7 +325,11 @@ public class HandManager : MonoBehaviour
 
     public void DidHoverOverCard(int index) {
         if (_playerIsPlayingCard) { return; }
-        if (_selectedIndex == -1) {
+        if (_hoveredIndex == index)
+            return;
+        if (_hoveredIndex == -1)
+        {
+            _hoveredIndex = index;
             MenuManager.Instance.ShowCardDetailView(cards[index]);
             cards[index].SetSelectedBackground(true);
             HighlightCard(cards[index]);
@@ -307,10 +338,20 @@ public class HandManager : MonoBehaviour
 
     public void DidStopHoverOverCard(int index) {
         if (_playerIsPlayingCard) { return; }
-        if (_selectedIndex == -1) {
+
+        if (_selectedIndex == index)
+        {
+            // dont do anything if they move away from the selected (and hovered) card
+            return;
+        }
+
+        if (_hoveredIndex == index)
+        {
+            _hoveredIndex = -1;
+            DeselectAll();
             MenuManager.Instance.HideCardDetailView();
-            cards[index].SetSelectedBackground(false);
-            ShowNormalHand();
+            // cards[index].SetSelectedBackground(false);
+            // ShowNormalHand();
         }
     }
 

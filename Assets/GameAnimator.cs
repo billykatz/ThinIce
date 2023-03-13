@@ -8,6 +8,7 @@ using UnityEngine;
 public class GameAnimator : MonoBehaviour
 {
     [SerializeField] private DynamicDataDictionary _dataDictionary;
+    private string[] animatingObjects;
     
     public void Animate(GameObject owner, AnimationData animationData, FXView fxView)
     {
@@ -16,8 +17,14 @@ public class GameAnimator : MonoBehaviour
         fxView.name = owner.name;
         FXView newFXView = Instantiate(fxView, Vector3.zero, Quaternion.identity);
         newFXView.SetUp(owner.transform);
-        
+
+        newFXView.DidStop += Stopped;
         newFXView.Play();
+    }
+
+    public void Stopped(FXView view)
+    {
+        Destroy(view.gameObject);
     }
     
 }

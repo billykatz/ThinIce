@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,11 @@ public class CombinedCard : BaseCard, MouseInteractionDelegate
     public GameObject cardParent;
 
     public int index;
+
+    private bool _isSelected;
+    private bool _shouldDeselect;
+    [SerializeField] private float SelectionDelay = 0.025f;
+    private float _delay;
 
     public void Create(MovementCard movementCard, ModifierCard modifierCard, GameObject cardParent) {
         this.cardParent = cardParent;
@@ -56,18 +62,20 @@ public class CombinedCard : BaseCard, MouseInteractionDelegate
         HandManager.Instance.DidSelectCard(index);
     }
 
-    void MouseInteractionDelegate.OnMouseEnter() {
+    void MouseInteractionDelegate.OnMouseEnter()
+    {
         HandManager.Instance.DidHoverOverCard(index);
     }
 
-    void MouseInteractionDelegate.OnMouseExit() {
+    void MouseInteractionDelegate.OnMouseExit()
+    {
         HandManager.Instance.DidStopHoverOverCard(index);
     }
 
     public void SetSelectedBackground(bool onOff) {
         if (onOff) {
             movementCard.SetFullCardHighlight(true);
-        } else {
+        } else { 
             movementCard.SetFullCardHighlight(false);
         }
     }

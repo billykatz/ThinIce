@@ -221,6 +221,7 @@ MonoBehaviour:
   modifierCard: {fileID: 0}
   cardParent: {fileID: 0}
   index: 0
+  SelectionDelay: 0.025
 --- !u!1 &7911113686251721336
 GameObject:
   m_ObjectHideFlags: 0

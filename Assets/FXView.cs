@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class FXView : MonoBehaviour
 {
     [SerializeField] private PlayableDirector _director;
     [SerializeField] private TrackAsset bindingTrack;
+    public Action<FXView> DidStop;
     
     public void SetUp(Transform transformToAnimate)
     {
@@ -19,5 +21,12 @@ public class FXView : MonoBehaviour
     public void Play()
     {
         _director.Play();
+        _director.stopped += Stopped;
+
+    }
+
+    public void Stopped(PlayableDirector director)
+    {
+        DidStop.Invoke(this);
     }
 }

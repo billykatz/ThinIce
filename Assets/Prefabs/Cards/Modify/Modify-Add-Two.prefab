@@ -12,22 +12,6 @@ PrefabInstance:
       value: Modify-Add-Two
       objectReference: {fileID: 0}
     - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
-      propertyPath: m_Size.x
-      value: 1.4866388
-      objectReference: {fileID: 0}
-    - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
-      propertyPath: m_Size.y
-      value: 0.7443917
-      objectReference: {fileID: 0}
-    - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
-      propertyPath: m_Offset.x
-      value: 0.0024578571
-      objectReference: {fileID: 0}
-    - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
-      propertyPath: m_Offset.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.x
       value: 1.5
       objectReference: {fileID: 0}
@@ -90,11 +74,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3050438058911645587, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
   m_PrefabInstance: {fileID: 244344063286807049}
   m_PrefabAsset: {fileID: 0}
---- !u!212 &5850380437716608596 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 5932559725543664733, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
-  m_PrefabInstance: {fileID: 244344063286807049}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8369943871593763338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,3 +90,8 @@ MonoBehaviour:
   effectDescription: +2 to ARMOR or ATTACK
   modifyOperation: 0
   modifyAmount: 2
+--- !u!212 &5850380437716608596 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 5932559725543664733, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+  m_PrefabInstance: {fileID: 244344063286807049}
+  m_PrefabAsset: {fileID: 0}

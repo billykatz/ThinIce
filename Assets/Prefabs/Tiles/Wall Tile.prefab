@@ -27,6 +27,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wall Tile
       objectReference: {fileID: 0}
+    - target: {fileID: 5321977072006793802, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7268705880744216379, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_text
       value: x:0, y:4
@@ -133,6 +137,14 @@ MonoBehaviour:
   TileName: Wall
   debugText: {fileID: 6433868821417629894}
   tileType: 2
+  DidSelect: {fileID: -884314802674560144, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  MousePosition: {fileID: 5476545008825471586, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  collider: {fileID: 8416050080475620848}
   x: 0
   y: 4
   OccupiedUnit: {fileID: 0}
+--- !u!64 &8416050080475620848 stripped
+MeshCollider:
+  m_CorrespondingSourceObject: {fileID: 5286592725912123917, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+  m_PrefabInstance: {fileID: 4437753064434327549}
+  m_PrefabAsset: {fileID: 0}

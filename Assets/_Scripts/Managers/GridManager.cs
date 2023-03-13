@@ -277,32 +277,32 @@ public class GridManager : MonoBehaviour
 
     private void Update() {
         if (!currentlyMoving) {
-            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) {
-                // move left
-                Debug.Log("moved left");
-                currentlyMoving = true;
-                ArrowTapped(GridMovement.Left);
-            } else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) {
-                // move up
-                Debug.Log("moved up");
-                currentlyMoving = true;
-                ArrowTapped(GridMovement.Up);
-            } else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) {
-                // move down
-                Debug.Log("moved down");
-                currentlyMoving = true;
-                ArrowTapped(GridMovement.Down);
-            }  else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) {
-                // move right
-                Debug.Log("moved right");
-                currentlyMoving = true;
-                ArrowTapped(GridMovement.Right);
-            }
-        } else {
-            if (Input.GetKeyDown(KeyCode.P)) {
-                Debug.Log($"Currently Moving? {currentlyMoving}");
-                // waitingForInput = true;
-            }
+        //     if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) {
+        //         // move left
+        //         Debug.Log("moved left");
+        //         currentlyMoving = true;
+        //         ArrowTapped(GridMovement.Left);
+        //     } else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) {
+        //         // move up
+        //         Debug.Log("moved up");
+        //         currentlyMoving = true;
+        //         ArrowTapped(GridMovement.Up);
+        //     } else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) {
+        //         // move down
+        //         Debug.Log("moved down");
+        //         currentlyMoving = true;
+        //         ArrowTapped(GridMovement.Down);
+        //     }  else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) {
+        //         // move right
+        //         Debug.Log("moved right");
+        //         currentlyMoving = true;
+        //         ArrowTapped(GridMovement.Right);
+        //     }
+        // } else {
+        //     if (Input.GetKeyDown(KeyCode.P)) {
+        //         Debug.Log($"Currently Moving? {currentlyMoving}");
+        //         // waitingForInput = true;
+        //     }
         }
         
     }

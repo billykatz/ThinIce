@@ -57,7 +57,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5321977072006793802, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_Name
-      value: Tile 3 4
+      value: Ice Tile
+      objectReference: {fileID: 0}
+    - target: {fileID: 5321977072006793802, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7268705880744216379, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_text
@@ -135,9 +139,17 @@ MonoBehaviour:
   TileName: Ice
   debugText: {fileID: 4184708527139773079}
   tileType: 1
+  DidSelect: {fileID: -884314802674560144, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  MousePosition: {fileID: 5476545008825471586, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  collider: {fileID: 1698265340218992545}
   x: 3
   y: 4
   OccupiedUnit: {fileID: 0}
+--- !u!64 &1698265340218992545 stripped
+MeshCollider:
+  m_CorrespondingSourceObject: {fileID: 5286592725912123917, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+  m_PrefabInstance: {fileID: 6831031853919215020}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2483257662028156370 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8987776281186603134, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}

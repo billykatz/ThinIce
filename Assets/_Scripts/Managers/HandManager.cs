@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DG.Tweening;
 using Freya;
-using UnityEngine.EventSystems;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class HandManager : MonoBehaviour
 {
@@ -18,8 +18,10 @@ public class HandManager : MonoBehaviour
     [SerializeField] private Transform HandArcTransform;
     [SerializeField] private Transform MovementDeckTransform;
     [SerializeField] private Transform ModifierDeckTransform;
-
-    [SerializeField] EventSystem m_EventSystem;
+    
+    
+    [SerializeField] private InputActionReference DidSelect;
+    [SerializeField] private InputActionReference MousePosition;
 
     [SerializeField] private FXView AnimateCardsView;
     [SerializeField] private GameAnimator _gameAnimator;
@@ -35,6 +37,11 @@ public class HandManager : MonoBehaviour
         Instance = this;
         Debug.Log("Hand Manager Awake()");
         _selectedIndex = -1;
+    }
+
+    private void Start()
+    {
+        DidSelect.action.performed += ctx => DidClick();
     }
 
     private void OnValidate()
@@ -250,6 +257,7 @@ public class HandManager : MonoBehaviour
         }
         MenuManager.Instance.HideCardDetailView();
         _selectedIndex = -1;
+        _hoveredIndex = -1;
         ShowNormalHand();
         PlayerManager.Instance.HidePreview();
     }
@@ -327,6 +335,8 @@ public class HandManager : MonoBehaviour
         if (_playerIsPlayingCard) { return; }
         if (_hoveredIndex == index)
             return;
+        if (_selectedIndex != -1)
+            return;
         if (_hoveredIndex == -1)
         {
             _hoveredIndex = index;
@@ -364,34 +374,64 @@ public class HandManager : MonoBehaviour
     // Looks for clicks on the screen to handle deselection.  If the player clicks or taps on the UI then nothing is deselcted so the player can still tap on the card detail view.
     private void Update() {
         if (_playerIsPlayingCard) { return; }
-        if (Input.GetMouseButtonDown(0)) {
-            PointerEventData pointerEventData = new PointerEventData(m_EventSystem);
-            pointerEventData.position = Input.mousePosition;
-            var raycastResults = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(pointerEventData, raycastResults);
-            if(raycastResults.Count > 0)
-            {
-                // purposefully left blank
-            } else {
-                Debug.Log("No UI hit - therefore we can handle deselection");
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
-                if (hit.collider == null) {
-                    DeselectAll();
-                }
-            }
+        // if (Input.GetMouseButtonDown(0)) {
+        //     PointerEventData pointerEventData = new PointerEventData(m_EventSystem);
+        //     pointerEventData.position = Input.mousePosition;
+        //     var raycastResults = new List<RaycastResult>();
+        //     EventSystem.current.RaycastAll(pointerEventData, raycastResults);
+        //     if(raycastResults.Count > 0)
+        //     {
+        //         // purposefully left blank
+        //     } else {
+        //         Debug.Log("No UI hit - therefore we can handle deselection");
+        //         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //         RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
+        //         if (hit.collider == null) {
+        //             DeselectAll();
+        //         }
+        //     }
+        //
+        // }
 
+        // if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
+        //     DidSelectCard(0);
+        // } else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
+        //     DidSelectCard(1);
+        // } else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3)) {
+        //     if (_numPlayedCards < 1) {
+        //         DidSelectCard(2);
+        //     }
+        // }
+    }
+
+    private void DidClick()
+    {
+        if (cards.Count <= 0)
+            return;
+        
+        Vector3 mousePosition = MousePosition.action.ReadValue<Vector2>();
+        RaycastHit[] raycastResults = Physics.RaycastAll(mousePosition, Vector3.forward);
+        if(raycastResults.Length > 0)
+        {
+            // purposefully left blank
+        } else {
+            Debug.Log("No UI hit - therefore we can handle deselection");
+            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+            RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
+            if (hit.collider == null) {
+                DeselectAll();
+            }
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
-            DidSelectCard(0);
-        } else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
-            DidSelectCard(1);
-        } else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3)) {
-            if (_numPlayedCards < 1) {
-                DidSelectCard(2);
-            }
-        }
+        //     if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
+        //     DidSelectCard(0);
+        // } else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
+        //     DidSelectCard(1);
+        // } else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3)) {
+        //     if (_numPlayedCards < 1) {
+        //         DidSelectCard(2);
+        //     }
+        // }
     }
 
 

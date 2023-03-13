@@ -15,6 +15,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GoalTile
       objectReference: {fileID: 0}
+    - target: {fileID: 5321977072006793802, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 8787914481195979253, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -69,6 +73,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 81fb1c96355fb0147a9159656e3c10ea, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+--- !u!64 &1669499443935048654 stripped
+MeshCollider:
+  m_CorrespondingSourceObject: {fileID: 5286592725912123917, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+  m_PrefabInstance: {fileID: 6806769676577802691}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1706289240766088073 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5321977072006793802, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
@@ -95,6 +104,9 @@ MonoBehaviour:
   TileName: Goal
   debugText: {fileID: 4226946600760463096}
   tileType: 3
+  DidSelect: {fileID: -884314802674560144, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  MousePosition: {fileID: 5476545008825471586, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  collider: {fileID: 1669499443935048654}
   x: 0
   y: 0
   OccupiedUnit: {fileID: 0}

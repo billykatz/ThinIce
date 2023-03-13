@@ -227,15 +227,15 @@ public class MenuManager : MonoBehaviour
 
     private void Update() {
         if (cardDetailView.activeInHierarchy) {
-            if (Input.GetKeyDown(KeyCode.Z)) {
-                ArmorButtonSelected();
-            } else if (Input.GetKeyDown(KeyCode.X)) {
-                AttackButtonSelected();
-            } else if (Input.GetKeyDown(KeyCode.Space)) {
-                PlayButtonSelected();
-            } else if (Input.GetKeyDown(KeyCode.Escape)) {
-                CancelButtonSelected();
-            }
+            // if (Input.GetKeyDown(KeyCode.Z)) {
+            //     ArmorButtonSelected();
+            // } else if (Input.GetKeyDown(KeyCode.X)) {
+            //     AttackButtonSelected();
+            // } else if (Input.GetKeyDown(KeyCode.Space)) {
+            //     PlayButtonSelected();
+            // } else if (Input.GetKeyDown(KeyCode.Escape)) {
+            //     CancelButtonSelected();
+            // }
         }
     }
 

@@ -1,20 +1,25 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
-public class ThinIceCanvasButton : MonoBehaviour, IPointerClickHandler
+public class ThinIceCanvasButton : MonoBehaviour
 {
     [SerializeField] private Image image;
     [SerializeField] private Sprite normal;
     [SerializeField] private Sprite selected;
+    [SerializeField] private InputAction DidSelect;
     [SerializeField] public string identifier;
-
-    private bool isSelected = false;
-
+    
+    private bool isSelected;
+    
     public static event Action<bool, string> OnClicked;
+
+    private void Start()
+    {
+        DidSelect.Enable();
+        DidSelect.performed += ctx => OnClick();
+    }
 
 
     public void ResetButton() {
@@ -27,7 +32,7 @@ public class ThinIceCanvasButton : MonoBehaviour, IPointerClickHandler
         isSelected = true;
     }
 
-    public void OnPointerClick(PointerEventData eventData) {
+    public void OnClick() {
         Debug.Log($"Custom Button clicked id {identifier} isSelected : {!isSelected}");
         isSelected = !isSelected;
         image.sprite = (isSelected) ? selected : normal;

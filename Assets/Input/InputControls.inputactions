@@ -1,0 +1,65 @@
+{
+    "name": "InputControls",
+    "maps": [
+        {
+            "name": "PlayerControlers",
+            "id": "aaf0fb73-27cb-4b37-b67b-6c0750a845ac",
+            "actions": [
+                {
+                    "name": "Select",
+                    "type": "Button",
+                    "id": "cb1ec270-46f2-4053-817f-15e5c8397fda",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PointerPosition",
+                    "type": "PassThrough",
+                    "id": "11456ce8-90a1-4968-8ec8-29064b4579ed",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "79c73300-fb90-4208-8deb-7f9b6e6cc30c",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "98d6455b-bf92-48de-b761-0c071655ec78",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PointerPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0f0e9dd8-6275-49a3-9069-e2de3a6e483d",
+                    "path": "<Touchscreen>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PointerPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

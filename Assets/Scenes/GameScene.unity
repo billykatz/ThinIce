@@ -1013,6 +1013,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DidSelect: {fileID: -884314802674560144, guid: 343c9847a1cecd349a211133670701cd, type: 3}
   MousePos: {fileID: 5476545008825471586, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  Drag: {fileID: -3443580987699009382, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  RightButton: {fileID: -6447484787346832275, guid: 343c9847a1cecd349a211133670701cd, type: 3}
 --- !u!1 &269490479
 GameObject:
   m_ObjectHideFlags: 0
@@ -2745,6 +2747,8 @@ MonoBehaviour:
   ModifierDeckTransform: {fileID: 989960643}
   DidSelect: {fileID: -884314802674560144, guid: 343c9847a1cecd349a211133670701cd, type: 3}
   MousePosition: {fileID: 5476545008825471586, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  DidHold: {fileID: -3443580987699009382, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  DidRightButton: {fileID: -6447484787346832275, guid: 343c9847a1cecd349a211133670701cd, type: 3}
   AnimateCardsView: {fileID: 1038166600437575955, guid: 66d1b81e82ff83b4dbc9d7194e94c4c8, type: 3}
   _gameAnimator: {fileID: 703258010}
 --- !u!1 &1004587548

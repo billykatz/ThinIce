@@ -22,13 +22,18 @@ public class HandManager : MonoBehaviour
     
     [SerializeField] private InputActionReference DidSelect;
     [SerializeField] private InputActionReference MousePosition;
+    [SerializeField] private InputActionReference DidHold;
+    [SerializeField] private InputActionReference DidRightButton;
 
     [SerializeField] private FXView AnimateCardsView;
     [SerializeField] private GameAnimator _gameAnimator;
 
     private int _selectedIndex;
     private int _hoveredIndex;
+    private int _draggedIndex;
     private int _numPlayedCards = 0;
+
+    private float _miniumHold = 0f;
 
     private bool _playerIsPlayingCard = false;
     private bool _cardsChanged = false;
@@ -37,19 +42,57 @@ public class HandManager : MonoBehaviour
         Instance = this;
         Debug.Log("Hand Manager Awake()");
         _selectedIndex = -1;
+        _draggedIndex = -1;
+        _hoveredIndex = -1;
     }
 
     private void Start()
     {
         DidSelect.action.performed += ctx => DidClick();
+        DidHold.action.performed += ctx => Hold();
+        // DidHold.action.started += ctx => Hold();
+        DidRightButton.action.performed += ctx => RightButtonPressed();
+        // DidHold.action.canceled += ctx => HoldCancelled();
     }
 
+    private void RightButtonPressed()
+    {
+        DeselectAll();
+    }
     private void OnValidate()
     {
         if (cards.Count > 0)
         {
             ShowHand();
         }
+    }
+
+    // private void HoldCancelled()
+    // {
+    //     if (_draggedIndex != -1 && _miniumHold > 0.1f)
+    //     {
+    //         DeselectAll();
+    //     }
+    // }
+
+    private void Hold()
+    {
+        if (_selectedIndex == -1)
+            return;
+
+        // if (_miniumHold < 0.1f)
+        //     return;
+
+        Vector2 mousePos = MousePosition.action.ReadValue<Vector2>();
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        for (int i = 0; i < cards.Count; i++)
+        {
+            if (cards[i].DoesRayCollides(ray) == _selectedIndex)
+            {
+                _draggedIndex = _selectedIndex;
+            }
+        }
+        
     }
 
     public async void DrawHand() {
@@ -258,6 +301,7 @@ public class HandManager : MonoBehaviour
         MenuManager.Instance.HideCardDetailView();
         _selectedIndex = -1;
         _hoveredIndex = -1;
+        _draggedIndex = -1;
         ShowNormalHand();
         PlayerManager.Instance.HidePreview();
     }
@@ -360,8 +404,6 @@ public class HandManager : MonoBehaviour
             _hoveredIndex = -1;
             DeselectAll();
             MenuManager.Instance.HideCardDetailView();
-            // cards[index].SetSelectedBackground(false);
-            // ShowNormalHand();
         }
     }
 
@@ -374,6 +416,24 @@ public class HandManager : MonoBehaviour
     // Looks for clicks on the screen to handle deselection.  If the player clicks or taps on the UI then nothing is deselcted so the player can still tap on the card detail view.
     private void Update() {
         if (_playerIsPlayingCard) { return; }
+
+        if (_draggedIndex != -1)
+        {
+            _miniumHold += Time.deltaTime;
+            
+            float z = cards[_draggedIndex].transform.position.z;
+            Vector3 newPos = Camera.main.ScreenToWorldPoint(MousePosition.action.ReadValue<Vector2>());
+            newPos.z = z;
+            _gameAnimator.CancelAnimation(cards[_draggedIndex].cardParent);
+            cards[_draggedIndex].transform.position = newPos;
+
+            // AnimationData data = new AnimationData();
+            // data.StartPosition = cards[_draggedIndex].transform.position;
+            // data.StartRotation = cards[_draggedIndex].transform.rotation;
+            // data.EndPosition = newPos;
+            // data.StartRotation = data.StartRotation;
+            // _gameAnimator.Animate(cards[_draggedIndex].gameObject, data, AnimateCardsView);
+        }
         // if (Input.GetMouseButtonDown(0)) {
         //     PointerEventData pointerEventData = new PointerEventData(m_EventSystem);
         //     pointerEventData.position = Input.mousePosition;
@@ -417,8 +477,15 @@ public class HandManager : MonoBehaviour
         } else {
             Debug.Log("No UI hit - therefore we can handle deselection");
             Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-            RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
-            if (hit.collider == null) {
+            int count = 0;
+            for (int i = 0; i < cards.Count; i++)
+            {
+                if (cards[i].DoesRayCollides(ray) != -1)
+                {
+                    count++;
+                }
+            }
+            if (count == 0) {
                 DeselectAll();
             }
         }

@@ -58,6 +58,23 @@ public class CombinedCard : BaseCard, MouseInteractionDelegate
         return cardParent;
     }
 
+    /// <summary>
+    /// Returns -1 if it doesnt hit
+    /// Returns the index if it does
+    /// </summary>
+    /// <param name="ray"></param>
+    /// <returns></returns>
+    public int DoesRayCollides(Ray ray)
+    {
+        RaycastHit hit;
+        if (movementCard.collider.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            return index;
+        }
+
+        return -1;
+    }
+
     void MouseInteractionDelegate.OnMouseDown() {
         HandManager.Instance.DidSelectCard(index);
     }

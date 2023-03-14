@@ -17,7 +17,7 @@ public class BaseCard : MonoBehaviour
 
     [SerializeField] private InputActionReference DidSelect;
     [SerializeField] private InputActionReference MousePos;
-    [SerializeField] private Collider collider;
+    [SerializeField] public Collider collider;
     
     public string effectDescription;
 
@@ -27,8 +27,15 @@ public class BaseCard : MonoBehaviour
 
     private void Awake()
     {
-        DidSelect.action.performed += ctx => OnDidSelect();
-        MousePos.action.performed += ctx => MouseMoved();
+        if (DidSelect != null)
+        {
+            DidSelect.action.performed += ctx => OnDidSelect();
+        }
+
+        if (MousePos != null)
+        {
+            MousePos.action.performed += ctx => MouseMoved();
+        }
     }
 
     private void OnDidSelect()
@@ -74,7 +81,6 @@ public class BaseCard : MonoBehaviour
         if (interactionDelegate != null) {
            interactionDelegate.OnMouseDown(); 
         }
-
     }
 
     private void OnMouseExit() {

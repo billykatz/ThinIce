@@ -24,6 +24,14 @@ public class FXView : MonoBehaviour
         _director.stopped += Stopped;
 
     }
+    
+    public void Cancel()
+    {
+        if (_director != null)
+        {
+            _director.Stop();
+        }
+    }
 
     public void Stopped(PlayableDirector director)
     {

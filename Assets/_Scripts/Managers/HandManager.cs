@@ -33,7 +33,7 @@ public class HandManager : MonoBehaviour
     private int _draggedIndex;
     private int _numPlayedCards = 0;
 
-    private float _miniumHold = 0f;
+    private bool _holdStarted = false;
 
     private bool _playerIsPlayingCard = false;
     private bool _cardsChanged = false;
@@ -49,10 +49,9 @@ public class HandManager : MonoBehaviour
     private void Start()
     {
         DidSelect.action.performed += ctx => DidClick();
-        DidHold.action.performed += ctx => Hold();
-        // DidHold.action.started += ctx => Hold();
         DidRightButton.action.performed += ctx => RightButtonPressed();
-        // DidHold.action.canceled += ctx => HoldCancelled();
+        DidHold.action.performed += ctx => Hold();
+        DidHold.action.canceled += ctx => HoldCancelled();
     }
 
     private void RightButtonPressed()
@@ -67,21 +66,19 @@ public class HandManager : MonoBehaviour
         }
     }
 
-    // private void HoldCancelled()
-    // {
-    //     if (_draggedIndex != -1 && _miniumHold > 0.1f)
-    //     {
-    //         DeselectAll();
-    //     }
-    // }
+    private void HoldCancelled()
+    {
+        if (_draggedIndex != -1 && _holdStarted)
+        {
+            DeselectAll();
+            _holdStarted = false;
+        }
+    }
 
     private void Hold()
     {
         if (_selectedIndex == -1)
             return;
-
-        // if (_miniumHold < 0.1f)
-        //     return;
 
         Vector2 mousePos = MousePosition.action.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
@@ -90,6 +87,7 @@ public class HandManager : MonoBehaviour
             if (cards[i].DoesRayCollides(ray) == _selectedIndex)
             {
                 _draggedIndex = _selectedIndex;
+                _holdStarted = true;
             }
         }
         
@@ -312,7 +310,10 @@ public class HandManager : MonoBehaviour
         if (_selectedIndex == index)
             return;
         
-        DeselectAll();
+        // instead of deselcting all we just wanna turn off the background highlight
+        foreach(CombinedCard card in cards) {
+            card.SetSelectedBackground(false);
+        }
         _selectedIndex = index;
         cards[index].SetSelectedBackground(true);
         HighlightCard(cards[index]);
@@ -417,22 +418,21 @@ public class HandManager : MonoBehaviour
     private void Update() {
         if (_playerIsPlayingCard) { return; }
 
-        if (_draggedIndex != -1)
+        if (_holdStarted)
         {
-            _miniumHold += Time.deltaTime;
-            
             float z = cards[_draggedIndex].transform.position.z;
             Vector3 newPos = Camera.main.ScreenToWorldPoint(MousePosition.action.ReadValue<Vector2>());
             newPos.z = z;
             _gameAnimator.CancelAnimation(cards[_draggedIndex].cardParent);
-            cards[_draggedIndex].transform.position = newPos;
+            cards[_draggedIndex].cardParent.transform.position = newPos;
+            cards[_draggedIndex].cardParent.transform.rotation = Quaternion.identity;
 
             // AnimationData data = new AnimationData();
             // data.StartPosition = cards[_draggedIndex].transform.position;
             // data.StartRotation = cards[_draggedIndex].transform.rotation;
             // data.EndPosition = newPos;
-            // data.StartRotation = data.StartRotation;
-            // _gameAnimator.Animate(cards[_draggedIndex].gameObject, data, AnimateCardsView);
+            // data.StartRotation = Quaternion.identity;
+            // _gameAnimator.Animate(cards[_draggedIndex].cardParent, data, AnimateCardsView);
         }
         // if (Input.GetMouseButtonDown(0)) {
         //     PointerEventData pointerEventData = new PointerEventData(m_EventSystem);
@@ -485,8 +485,9 @@ public class HandManager : MonoBehaviour
                     count++;
                 }
             }
+            
             if (count == 0) {
-                DeselectAll();
+                // DeselectAll();
             }
         }
 

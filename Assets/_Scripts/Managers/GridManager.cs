@@ -16,6 +16,7 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Tile _wallTilePrefab;
     [SerializeField] private Transform _cam;
     [SerializeField] private GameObject arrowController;
+    [SerializeField] private Vector2 _boardOffset;
 
     // the number of visible rows
     private int _width;
@@ -60,11 +61,13 @@ public class GridManager : MonoBehaviour
             for (int y = 0; y < _visibleRows; y++) {
                 //spawns an ice tile, for now
                 Vector2 position = new Vector2(x, y);
+                position += _boardOffset;
                 var spawnTile = Instantiate(_iceTilePrefab, position, Quaternion.identity);
                 spawnTile.name = $"Tile {x} {y}";
-                spawnTile.Init(x, y);
+                Vector2 coord = new Vector2(x, y);
+                spawnTile.Init(coord);
                 
-                _tiles[position] = spawnTile;   
+                _tiles[coord] = spawnTile;   
             }
         }
         
@@ -134,6 +137,7 @@ public class GridManager : MonoBehaviour
         {
             // the coord
             Vector2 newPosition = new Vector2(coordKey.x, posY);
+            newPosition += _boardOffset;
             TileType tileType = newRow[coordKey];
             Tile prefab = tileType == TileType.Ice ? _iceTilePrefab : _wallTilePrefab;
             Tile spawnTile = Instantiate(isEndRow ? _goalTilePrefab : prefab, newPosition, Quaternion.identity);

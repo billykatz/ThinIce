@@ -23,7 +23,7 @@ public class CombinedCard : BaseCard, MouseInteractionDelegate
         this.movementCard = Instantiate(movementCard, cardParent.transform, true);
         
         Vector3 modifierCardPosition = this.movementCard.transform.position;
-        modifierCardPosition.y -= 1.25f;
+        modifierCardPosition.y -= 0.675f;
         this.modifierCard = Instantiate(modifierCard, cardParent.transform, true);
         this.modifierCard.transform.position = modifierCardPosition;
         

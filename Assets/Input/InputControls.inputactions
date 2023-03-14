@@ -89,6 +89,17 @@
                 },
                 {
                     "name": "",
+                    "id": "adce6f58-1280-4e2c-b111-10b17df9a5f0",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Hold(duration=5000)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "f049a2d3-bec2-4f8a-96cc-1d3b6057116c",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",

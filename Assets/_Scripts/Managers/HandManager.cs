@@ -68,37 +68,48 @@ public class HandManager : MonoBehaviour
 
     private void Start()
     {
-        DidSelect.action.performed += ctx => DidClick();
-        DidRightButton.action.performed += ctx => RightButtonPressed();
-        DidHold.action.performed += ctx => Hold();
-        DidHold.action.canceled += ctx => HoldCancelled();
+        DidSelect.action.performed += DidClick;
+        DidRightButton.action.performed += RightButtonPressed;
+        DidHold.action.performed += Hold;
+        DidHold.action.canceled += HoldCancelled;
     }
 
-    private void RightButtonPressed()
+    private void OnDestroy()
     {
-        HoldCancelled();
-        DeselectAll();
-    }
-    private void OnValidate()
-    {
-        if (cards.Count > 0)
-        {
-            ShowHand();
-        }
+        DidSelect.action.performed -= DidClick;
+        DidRightButton.action.performed -= RightButtonPressed;
+        DidHold.action.performed -= Hold;
+        DidHold.action.canceled -= HoldCancelled;
     }
 
-    private void HoldCancelled()
+    private void RightButtonPressed(InputAction.CallbackContext ctx)
     {
-        if (_draggedIndex != -1 && _holdStarted)
+        if (ctx.performed)
         {
-            DidFinishDrag();
+            HoldCancel();
             DeselectAll();
-            _holdStarted = false;
         }
     }
 
-    private void Hold()
+    private void HoldCancelled(InputAction.CallbackContext ctx)
     {
+        if (ctx.canceled && _draggedIndex != -1 && _holdStarted)
+        {
+            HoldCancel();
+        }
+    }
+
+    private void HoldCancel()
+    {
+        DidFinishDrag();
+        DeselectAll();
+        _holdStarted = false;
+    }
+
+    private void Hold(InputAction.CallbackContext ctx)
+    {
+        if (!ctx.performed)
+            return;
         if (_selectedIndex == -1)
             return;
 
@@ -279,38 +290,6 @@ public class HandManager : MonoBehaviour
         }
         
     }
-
-    public void ShowHand()
-    {
-
-        if (cards.Count <= 0)
-        {
-            return;
-        }
-        
-        float a = itemRadius*2;
-        float b = arcRadius;
-        
-        float separationAngRad = Mathfs.Acos(1f - (a * a) / (2 * b * b));
-        float totalSeparation = separationAngRad * (cards.Count - 1f);
-        float angRad = Mathfs.TAU * 0.25f - totalSeparation / 2;
-
-        for (int i = 0; i < cards.Count; i++)
-        {
-            cards[i].cardParent.transform.position = HandArcTransform.position;
-            cards[i].cardParent.transform.rotation = Quaternion.identity;
-     
-            Vector3 itemCenter = Mathfs.AngToDir(angRad) * arcRadius;
-            cards[i].cardParent.transform.position = HandArcTransform.position + itemCenter;
-            Quaternion rotationAdd = Quaternion.AngleAxis(Mathfs.Rad2Deg * (angRad - Mathfs.TAU * 0.25f), Vector3.forward);
-            cards[i].cardParent.transform.rotation *= rotationAdd; 
-            angRad += separationAngRad;
-        }
-        
-        
-        // _gameAnimator.Animate(drawnCard, );
-    }
-
     public void DiscardHand() {
         foreach(CombinedCard card in cards) {
             DeckManager.Instance.DiscardCard(card);
@@ -546,7 +525,10 @@ public class HandManager : MonoBehaviour
         return animations;
     }
 
-    // Looks for clicks on the screen to handle deselection.  If the player clicks or taps on the UI then nothing is deselcted so the player can still tap on the card detail view.
+    
+    /// <summary>
+    /// Looks for clicks on the screen to handle deselection.  If the player clicks or taps on the UI then nothing is deselcted so the player can still tap on the card detail view. 
+    /// </summary>
     private void Update() {
         if (_playerIsPlayingCard) { return; }
 
@@ -568,38 +550,12 @@ public class HandManager : MonoBehaviour
             }
             
         }
-        // if (Input.GetMouseButtonDown(0)) {
-        //     PointerEventData pointerEventData = new PointerEventData(m_EventSystem);
-        //     pointerEventData.position = Input.mousePosition;
-        //     var raycastResults = new List<RaycastResult>();
-        //     EventSystem.current.RaycastAll(pointerEventData, raycastResults);
-        //     if(raycastResults.Count > 0)
-        //     {
-        //         // purposefully left blank
-        //     } else {
-        //         Debug.Log("No UI hit - therefore we can handle deselection");
-        //         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //         RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
-        //         if (hit.collider == null) {
-        //             DeselectAll();
-        //         }
-        //     }
-        //
-        // }
-
-        // if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
-        //     DidSelectCard(0);
-        // } else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
-        //     DidSelectCard(1);
-        // } else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3)) {
-        //     if (_numPlayedCards < 1) {
-        //         DidSelectCard(2);
-        //     }
-        // }
     }
 
-    private void DidClick()
+    private void DidClick(InputAction.CallbackContext ctx)
     {
+        if (!ctx.performed)
+            return;
         if (cards.Count <= 0)
             return;
         
@@ -608,7 +564,9 @@ public class HandManager : MonoBehaviour
         if(raycastResults.Length > 0)
         {
             // purposefully left blank
-        } else {
+        }
+        else
+        {
             Debug.Log("No UI hit - therefore we can handle deselection");
             Ray ray = Camera.main.ScreenPointToRay(mousePosition);
             int count = 0;
@@ -619,21 +577,12 @@ public class HandManager : MonoBehaviour
                     count++;
                 }
             }
-            
-            if (count == 0) {
+
+            if (count == 0)
+            {
                 // DeselectAll();
             }
         }
-
-        //     if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
-        //     DidSelectCard(0);
-        // } else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
-        //     DidSelectCard(1);
-        // } else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3)) {
-        //     if (_numPlayedCards < 1) {
-        //         DidSelectCard(2);
-        //     }
-        // }
     }
 
 

@@ -334,22 +334,22 @@ public class GridManager : MonoBehaviour
             Debug.Log($"GridManager: Valid movement.");
             waitingForInput = false;
 
-            Vector2 newPlayerPosition = TileAfterMovement(movement);
-            if (DidInitiateCombat(newPlayerPosition)) {
+            Vector2 newPlayerCoord = TileAfterMovement(movement);
+            if (DidInitiateCombat(newPlayerCoord)) {
                 
                 // we need to fight and then finish the movement.
                 CardRuleStep newStep = new CardRuleStep();
                 newStep.state = CardRuleState.Combat;
                 newStep.attackerUnit = playerTile.OccupiedUnit;
-                newStep.defenderUnit = _tiles[newPlayerPosition].OccupiedUnit;
+                newStep.defenderUnit = _tiles[newPlayerCoord].OccupiedUnit;
 
-                Debug.Log($"GridManager: Did initiate combat {playerTile.OccupiedUnit} {_tiles[newPlayerPosition].OccupiedUnit}");
+                Debug.Log($"GridManager: Did initiate combat {playerTile.OccupiedUnit} {_tiles[newPlayerCoord].OccupiedUnit}");
                 CardRuleManager.Instance.StartCardRuleStep(newStep);
 
             } else {
                 Debug.Log($"GridManager: Did finish moving");
                 //TODO eventually make it so the player cant got below the board 
-                if (!_tiles[newPlayerPosition].isWalkable) {
+                if (!_tiles[newPlayerCoord].isWalkable) {
                     // dont let player go into walls
 
                 } else {
@@ -360,11 +360,11 @@ public class GridManager : MonoBehaviour
                     // if we are moving up then move the board down
                     if (movement == GridMovement.Up)
                     {
-                        MovePlayerUpGrid(playerUnit, playerTile, _tiles[newPlayerPosition]);
+                        MovePlayerUpGrid(playerUnit, playerTile, _tiles[newPlayerCoord]);
                     }
                     else
                     {
-                        _tiles[newPlayerPosition].SetUnit(playerUnit);
+                        _tiles[newPlayerCoord].SetUnit(playerUnit);
                     }
                 }
 

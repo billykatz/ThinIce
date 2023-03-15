@@ -13,12 +13,19 @@ public class GameAnimator : MonoBehaviour
     
     public void Animate(GameObject owner, AnimationData animationData, FXView fxView)
     {
-        _dataDictionary.Set(owner.name + "(Clone)-position-data", animationData);
+        string key = "" + owner.GetInstanceID();
+        _dataDictionary.Set(key, animationData);
 
-        fxView.name = owner.name;
         FXView newFXView = Instantiate(fxView, Vector3.zero, Quaternion.identity);
+        newFXView.name = key;
         newFXView.SetUp(owner.transform);
 
+        // FXView test;
+        // if (animatingObjects.TryGetValue(owner.GetInstanceID(), out test))
+        // {
+        //     Debug.Log("Animator: This object is already being animated.");
+        //     return;
+        // }
         newFXView.DidStop += Stopped;
         animatingObjects[owner.GetInstanceID()] = newFXView;
         newFXView.Play();
@@ -31,6 +38,7 @@ public class GameAnimator : MonoBehaviour
 
     public void Stopped(FXView view)
     {
+        view.DidStop -= Stopped;
         Destroy(view.gameObject);
     }
     

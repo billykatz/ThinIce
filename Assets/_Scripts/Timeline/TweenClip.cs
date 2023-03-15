@@ -19,7 +19,7 @@ public class TweenClip : PlayableAsset
         ScriptPlayable<TweenBehaviour> playable = ScriptPlayable<TweenBehaviour>.Create(graph);
         TweenBehaviour tween = playable.GetBehaviour();
 
-        AnimationData data = positionData.GetValue(owner.name + "-position-data");
+        AnimationData data = positionData.GetValue(owner.name);
         tween.startPosition = data.StartPosition;
         tween.endPosition = data.EndPosition;
         

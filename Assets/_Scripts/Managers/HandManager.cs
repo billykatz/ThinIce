@@ -26,7 +26,17 @@ public class HandManager : MonoBehaviour
     [SerializeField] private InputActionReference DidRightButton;
 
     [SerializeField] private FXView AnimateCardsView;
+    [SerializeField] private FXView AnimateOptionAreaViews;
     [SerializeField] private GameAnimator _gameAnimator;
+
+    [SerializeField] private GameObject _swordOptionArea;
+    [SerializeField] private GameObject _shieldOptionArea;
+    [SerializeField] private float _highlightOptionDistanceThreshold;
+    [SerializeField] private Vector3 _swordOptionOrigin;
+    [SerializeField] private Vector3 _shieldOptionOrigin;
+    [SerializeField] private Vector3 ShowOptionAreaVector;
+    [SerializeField] private Vector3 HighlightOptionAreaVector;
+    private Dictionary<ModifyTarget, GameObject> _optionAreas;
 
     private int _selectedIndex;
     private int _hoveredIndex;
@@ -34,6 +44,9 @@ public class HandManager : MonoBehaviour
     private int _numPlayedCards = 0;
 
     private bool _holdStarted = false;
+
+    private float DelayOptionAreTimer = 0.25f;
+    private float _delayOptionAreTimer = 0.25f;
 
     private bool _playerIsPlayingCard = false;
     private bool _cardsChanged = false;
@@ -44,6 +57,13 @@ public class HandManager : MonoBehaviour
         _selectedIndex = -1;
         _draggedIndex = -1;
         _hoveredIndex = -1;
+
+        _optionAreas = new Dictionary<ModifyTarget, GameObject>();
+        _optionAreas.Add(ModifyTarget.Armor,_shieldOptionArea);
+        _optionAreas.Add(ModifyTarget.Attack,_swordOptionArea);
+        _optionAreas.Add(ModifyTarget.None,null);
+        _swordOptionOrigin = _swordOptionArea.transform.position;
+        _shieldOptionOrigin = _shieldOptionArea.transform.position;
     }
 
     private void Start()
@@ -130,6 +150,10 @@ public class HandManager : MonoBehaviour
     {
 
         AnimationData[] data = new AnimationData[cards.Count];
+        if (itemRadii.Length <= 0)
+        {
+            return data;
+        }
         
         float[] anglesBetween = new float[itemRadii.Length-1];
         float totalSeparation = 0;
@@ -192,6 +216,8 @@ public class HandManager : MonoBehaviour
         {
             _gameAnimator.Animate(cards[i].cardParent, data[i], AnimateCardsView);
         }
+        
+        HideOptionAreas();
     }
 
     public void ShowDrawCard(CombinedCard card, float itemRadius, float arcRadius)
@@ -410,8 +436,80 @@ public class HandManager : MonoBehaviour
 
     public void EndPlayerTurn() {
         DiscardHand();
-        // await Task.Run(DrawHand);
         GameManager.Instance.EndGameState(GameState.HeroTurnCleanUp);
+    }
+
+
+    private void HideOptionAreas()
+    {
+        ModifyTarget[] targets = new ModifyTarget[2] { ModifyTarget.Armor, ModifyTarget.Attack };
+        
+        for (int i = 0; i < targets.Length; i++)
+        {
+            ModifyTarget target = targets[i];
+            AnimationData data = new AnimationData();
+            data.StartPosition = _optionAreas[target].transform.position;
+            data.EndPosition = (target == ModifyTarget.Armor ? _shieldOptionOrigin : _swordOptionOrigin);
+            _gameAnimator.Animate(_optionAreas[target], data, AnimateCardsView);
+        }
+    }
+
+    private void ShowOptionAreas()
+    {
+        ModifyTarget target = ModifyTarget.None;
+        
+        // measure the distance from the pointer both option areas.
+        Vector2 pointerPos = MousePosition.action.ReadValue<Vector2>();
+        Vector3 pointerWorldPos = Camera.main.ScreenToWorldPoint(pointerPos);
+        float distanceToShield = Vector2.Distance(pointerWorldPos, _shieldOptionOrigin);
+        float distanceToSword = Vector2.Distance(pointerWorldPos, _swordOptionOrigin);
+
+        if (distanceToShield < _highlightOptionDistanceThreshold)
+        {
+            target = ModifyTarget.Armor;
+        } else if (distanceToSword < _highlightOptionDistanceThreshold)
+        {
+            target = ModifyTarget.Attack;
+        }
+        
+        Dictionary<ModifyTarget, AnimationData> animate = CalculateOptionAreaAnimation(target);
+        foreach (ModifyTarget key in animate.Keys)
+        {
+            GameObject animationParent = _optionAreas[key];
+            if (animationParent)
+            {
+                // animationParent.transform.position = animate[key].EndPosition;
+                _gameAnimator.Animate(animationParent, animate[key], AnimateOptionAreaViews);
+            }
+        }
+    }
+
+    private Dictionary<ModifyTarget, AnimationData> CalculateOptionAreaAnimation(ModifyTarget highlightOption)
+    {
+        Dictionary<ModifyTarget, AnimationData> animations = new Dictionary<ModifyTarget, AnimationData>();
+        ModifyTarget[] targets = new ModifyTarget[2] { ModifyTarget.Armor, ModifyTarget.Attack };
+
+        Vector3 showVector = ShowOptionAreaVector;
+        Vector3 highlightVector = HighlightOptionAreaVector;
+        for (int i = 0; i < targets.Length; i++)
+        {
+            ModifyTarget target = targets[i];
+            AnimationData data = new AnimationData();
+            data.StartPosition = _optionAreas[target].transform.position;
+            if (targets[i] == highlightOption)
+            {
+                data.EndPosition = (target == ModifyTarget.Armor ? _shieldOptionOrigin - highlightVector : _swordOptionOrigin + highlightVector);
+            }
+            else
+            {
+                data.EndPosition = (target == ModifyTarget.Armor ? _shieldOptionOrigin - showVector : _swordOptionOrigin + showVector);
+            }
+            
+            animations.Add(target, data);
+        }
+        
+
+        return animations;
     }
 
     // Looks for clicks on the screen to handle deselection.  If the player clicks or taps on the UI then nothing is deselcted so the player can still tap on the card detail view.
@@ -427,12 +525,14 @@ public class HandManager : MonoBehaviour
             cards[_draggedIndex].cardParent.transform.position = newPos;
             cards[_draggedIndex].cardParent.transform.rotation = Quaternion.identity;
 
-            // AnimationData data = new AnimationData();
-            // data.StartPosition = cards[_draggedIndex].transform.position;
-            // data.StartRotation = cards[_draggedIndex].transform.rotation;
-            // data.EndPosition = newPos;
-            // data.StartRotation = Quaternion.identity;
-            // _gameAnimator.Animate(cards[_draggedIndex].cardParent, data, AnimateCardsView);
+            // then animate the option areas in
+            _delayOptionAreTimer += Time.deltaTime;
+            if (_delayOptionAreTimer > DelayOptionAreTimer)
+            {
+                ShowOptionAreas();
+                _delayOptionAreTimer = 0;
+            }
+            
         }
         // if (Input.GetMouseButtonDown(0)) {
         //     PointerEventData pointerEventData = new PointerEventData(m_EventSystem);

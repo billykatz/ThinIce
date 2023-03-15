@@ -303,7 +303,6 @@ public class HandManager : MonoBehaviour
         foreach(CombinedCard card in cards) {
             card.SetSelectedBackground(false);
         }
-        MenuManager.Instance.HideCardDetailView();
         _holdStarted = false;
         _selectedIndex = -1;
         _hoveredIndex = -1;
@@ -325,7 +324,6 @@ public class HandManager : MonoBehaviour
         _selectedIndex = index;
         cards[index].SetSelectedBackground(true);
         HighlightCard(cards[index]);
-        MenuManager.Instance.ShowCardDetailView(cards[index]);
     }
 
     public void DidSelectModifyTargetCard(CombinedCard card, ModifyTarget target) {
@@ -357,8 +355,6 @@ public class HandManager : MonoBehaviour
                 shift++;
             }
         }
-
-        MenuManager.Instance.HideCardDetailView();
 
         // move the card to the discard pile
         DiscardCard(card);
@@ -393,7 +389,6 @@ public class HandManager : MonoBehaviour
         if (_hoveredIndex == -1)
         {
             _hoveredIndex = index;
-            MenuManager.Instance.ShowCardDetailView(cards[index]);
             cards[index].SetSelectedBackground(true);
             HighlightCard(cards[index]);
         }
@@ -412,7 +407,6 @@ public class HandManager : MonoBehaviour
         {
             _hoveredIndex = -1;
             DeselectAll();
-            MenuManager.Instance.HideCardDetailView();
         }
     }
 

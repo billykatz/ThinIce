@@ -25,50 +25,71 @@ public class BaseCard : MonoBehaviour
 
     private bool _isHoveredOver;
 
-    private void Awake()
+    private void Start()
     {
+        // The base card is the parent class of movement and modifier cards
+        // Due to wonkiness with putting a box collider on both cards, I decided to only put the collider on one card
+        // this means that we need to check to see if these are set before accessing them
         if (DidSelect != null)
         {
-            DidSelect.action.performed += ctx => OnDidSelect();
+            DidSelect.action.performed += OnDidSelect;
         }
 
         if (MousePos != null)
         {
-            MousePos.action.performed += ctx => MouseMoved();
+            MousePos.action.performed += MouseMoved;
         }
     }
 
-    private void OnDidSelect()
+    private void OnDestroy()
     {
-        Vector2 mousePos = MousePos.action.ReadValue<Vector2>();
-        Ray ray = Camera.main.ScreenPointToRay(new Vector3(mousePos.x, mousePos.y, 0.0f));
-        RaycastHit hit;
-        if (collider.Raycast(ray, out hit, Mathf.Infinity))
+        if (DidSelect != null)
         {
-            OnMouseDown();
+            DidSelect.action.performed -= OnDidSelect;
+        }
+        if (MousePos != null)
+        {
+            MousePos.action.performed -= MouseMoved;
+        }
+    }
+
+    private void OnDidSelect(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Vector2 mousePos = MousePos.action.ReadValue<Vector2>();
+            Ray ray = Camera.main.ScreenPointToRay(new Vector3(mousePos.x, mousePos.y, 0.0f));
+            RaycastHit hit;
+            if (collider.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                OnMouseDown();
+            }
         }
     }
     
-    private void MouseMoved()
+    private void MouseMoved(InputAction.CallbackContext context)
     {
-        Vector2 mousePos = MousePos.action.ReadValue<Vector2>();
-        Ray ray = Camera.main.ScreenPointToRay(new Vector3(mousePos.x, mousePos.y, 0.0f));
-        RaycastHit hit;
-        if (collider.Raycast(ray, out hit, Mathf.Infinity))
+        if (context.performed)
         {
-            if (!_isHoveredOver)
+            Vector2 mousePos = MousePos.action.ReadValue<Vector2>();
+            Ray ray = Camera.main.ScreenPointToRay(new Vector3(mousePos.x, mousePos.y, 0.0f));
+            RaycastHit hit;
+            if (collider.Raycast(ray, out hit, Mathf.Infinity))
             {
-                OnMouseEnter();
+                if (!_isHoveredOver)
+                {
+                    OnMouseEnter();
+                }
+                _isHoveredOver = true;
             }
-            _isHoveredOver = true;
-        }
-        else
-        {
-            if (_isHoveredOver)
+            else
             {
-                OnMouseExit();
+                if (_isHoveredOver)
+                {
+                    OnMouseExit();
+                }
+                _isHoveredOver = false;
             }
-            _isHoveredOver = false;
         }
     }
 

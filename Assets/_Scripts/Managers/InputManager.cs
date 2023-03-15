@@ -11,6 +11,10 @@ public class InputManager : MonoBehaviour
     [SerializeField] private InputActionReference MousePos;
     [SerializeField] private InputActionReference Drag;
     [SerializeField] private InputActionReference RightButton;
+    [SerializeField] private InputActionReference MovementLeft;
+    [SerializeField] private InputActionReference MovementRight;
+    [SerializeField] private InputActionReference MovementUp;
+    [SerializeField] private InputActionReference MovementDown;
 
     private void Awake()
     {
@@ -18,5 +22,9 @@ public class InputManager : MonoBehaviour
         MousePos.action.Enable();
         Drag.action.Enable();
         RightButton.action.Enable();
+        MovementLeft.action.Enable();
+        MovementRight.action.Enable();
+        MovementUp.action.Enable();
+        MovementDown.action.Enable();
     }
 }

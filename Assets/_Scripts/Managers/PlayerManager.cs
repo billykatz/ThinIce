@@ -36,6 +36,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private Color noChangeColor;
 
     private BaseUnit heroUnit;
+    private BaseUnit previewUnit;
 
     private int armor {
         get {
@@ -56,6 +57,7 @@ public class PlayerManager : MonoBehaviour
         healthText.text = $"-";
         armorText.text = $"-";
         attackText.text = $"-";
+        previewUnit = new BaseUnit();
     }
 
     public void HeroUnitUpdated() {
@@ -69,79 +71,86 @@ public class PlayerManager : MonoBehaviour
     public void ShowPreview(CombinedCard card, ModifyTarget target) {
         StartCoroutine(FlashThenShowPreview(card, target));
     }
-
-    public void PlayedCard(CombinedCard card, ModifyTarget target) {
-        StartCoroutine(UpdateCurrentStats(card, target));
+    
+    public void ShowModifierPreview(CombinedCard card, ModifyTarget target)
+    {
+        previewUnit.armor = heroUnit.armor;
+        previewUnit.health = heroUnit.health;
+        previewUnit.attack = heroUnit.attack;
+        ShowStats(attack, armor, card, target, previewUnit);
     }
 
-    private IEnumerator UpdateCurrentStats(CombinedCard card, ModifyTarget target) {
-        previewPlayerStats.SetActive(false);
-        int newAttack = attack;
-        int newArmor = armor;
+    public void PlayedCard(CombinedCard card, ModifyTarget target) {
+        StartCoroutine(UpdateCurrentStats(card, target, heroUnit));
+    }
 
-        if (target == ModifyTarget.Attack) {
-            switch (card.modifierCard.modifyOperation) {
-                case ModifyOperation.Add:
-                    newAttack = Mathf.Min(maxAttack, newAttack + card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.Subtract:
-                    newAttack = Mathf.Max(minAttack, newAttack - card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.Multiply:
-                    newAttack = Mathf.Min(maxAttack, newAttack * card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.Divide:
-                    newAttack = Mathf.Max(minAttack, newAttack / card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.ToMax:
-                    newAttack = maxAttack;
-                    break;
-                case ModifyOperation.ToMin:
-                    newAttack = minAttack;
-                    break;
-            }
-        } else if (target == ModifyTarget.Armor) {
-            switch (card.modifierCard.modifyOperation) {
-                case ModifyOperation.Add:
-                    newArmor = Mathf.Min(maxArmor, newArmor + card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.Subtract:
-                    newArmor = Mathf.Max(minArmor, newArmor - card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.Multiply:
-                    newArmor = Mathf.Min(maxArmor, newArmor * card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.Divide:
-                    newArmor = Mathf.Max(minArmor, newArmor / card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.ToMax:
-                    newArmor = maxArmor;
-                    break;
-                case ModifyOperation.ToMin:
-                    newArmor = minArmor;
-                    break;
-            }
-        }
-        if (newArmor > armor) {
-            armorText.color = increaseColor;
-        } else if (armor > newArmor) {
-            armorText.color = decreaseColor;
-        } else {
-            armorText.color = noChangeColor;
-        }
-        armorText.text = $"{newArmor}";
+    private int ComputeNewStat(int currentStat, int minStat, int maxStat, CombinedCard card)
+    {
+        int newStat = currentStat;
 
-        if (newAttack > attack) {
+        switch (card.modifierCard.modifyOperation) {
+            case ModifyOperation.Add:
+                newStat = Mathf.Min(maxStat, newStat + card.modifierCard.modifyAmount);
+                break;
+            case ModifyOperation.Subtract:
+                newStat = Mathf.Max(minStat, newStat - card.modifierCard.modifyAmount);
+                break;
+            case ModifyOperation.Multiply:
+                newStat = Mathf.Min(maxStat, newStat * card.modifierCard.modifyAmount);
+                break;
+            case ModifyOperation.Divide:
+                newStat = Mathf.Max(minStat, newStat / card.modifierCard.modifyAmount);
+                break;
+            case ModifyOperation.ToMax:
+                newStat = maxStat;
+                break;
+            case ModifyOperation.ToMin:
+                newStat = minStat;
+                break;
+        }
+
+        return newStat;
+    }
+
+    private void ShowStats(int currentAttack, int currentArmor, CombinedCard card, ModifyTarget target, BaseUnit unit)
+    {
+        int newAttack = currentAttack;
+        int newArmor = currentArmor;
+
+        if (target == ModifyTarget.Attack)
+        {
+            newAttack = ComputeNewStat(currentAttack, minAttack, maxAttack, card);
+        } else if (target == ModifyTarget.Armor)
+        {
+            newArmor = ComputeNewStat(currentArmor, minArmor, maxArmor, card);
+        }
+
+        if (newAttack > currentAttack) {
             attackText.color = increaseColor;
-        } else if (attack > newAttack) {
+        } else if (newAttack < currentAttack) {
             attackText.color = decreaseColor;
         } else {
             attackText.color = noChangeColor;
         }
         attackText.text = $"{newAttack}";
 
-        heroUnit.armor = newArmor;
-        heroUnit.attack = newAttack;
+        if (newArmor > currentArmor) {
+            armorText.color = increaseColor;
+        } else if (newArmor < currentArmor) {
+            armorText.color = decreaseColor;
+        } else {
+            armorText.color = noChangeColor;
+        }
+        armorText.text = $"{newArmor}";
+
+        unit.armor = newArmor;
+        unit.attack = newAttack;
+
+    }
+    private IEnumerator UpdateCurrentStats(CombinedCard card, ModifyTarget target, BaseUnit unit) {
+        previewPlayerStats.SetActive(false);
+        ShowStats(attack, armor, card, target, unit);
+
         yield return new WaitForSeconds(2.5f);
 
         armorText.color = noChangeColor;

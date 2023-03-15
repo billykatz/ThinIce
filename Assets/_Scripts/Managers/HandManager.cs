@@ -76,6 +76,7 @@ public class HandManager : MonoBehaviour
 
     private void RightButtonPressed()
     {
+        HoldCancelled();
         DeselectAll();
     }
     private void OnValidate()
@@ -90,6 +91,7 @@ public class HandManager : MonoBehaviour
     {
         if (_draggedIndex != -1 && _holdStarted)
         {
+            DidFinishDrag();
             DeselectAll();
             _holdStarted = false;
         }
@@ -323,6 +325,7 @@ public class HandManager : MonoBehaviour
             card.SetSelectedBackground(false);
         }
         MenuManager.Instance.HideCardDetailView();
+        _holdStarted = false;
         _selectedIndex = -1;
         _hoveredIndex = -1;
         _draggedIndex = -1;
@@ -456,22 +459,8 @@ public class HandManager : MonoBehaviour
 
     private void ShowOptionAreas()
     {
-        ModifyTarget target = ModifyTarget.None;
-        
-        // measure the distance from the pointer both option areas.
-        Vector2 pointerPos = MousePosition.action.ReadValue<Vector2>();
-        Vector3 pointerWorldPos = Camera.main.ScreenToWorldPoint(pointerPos);
-        float distanceToShield = Vector2.Distance(pointerWorldPos, _shieldOptionOrigin);
-        float distanceToSword = Vector2.Distance(pointerWorldPos, _swordOptionOrigin);
+        ModifyTarget target = GetHighlightModifyTarget();
 
-        if (distanceToShield < _highlightOptionDistanceThreshold)
-        {
-            target = ModifyTarget.Armor;
-        } else if (distanceToSword < _highlightOptionDistanceThreshold)
-        {
-            target = ModifyTarget.Attack;
-        }
-        
         Dictionary<ModifyTarget, AnimationData> animate = CalculateOptionAreaAnimation(target);
         foreach (ModifyTarget key in animate.Keys)
         {
@@ -481,6 +470,45 @@ public class HandManager : MonoBehaviour
                 // animationParent.transform.position = animate[key].EndPosition;
                 _gameAnimator.Animate(animationParent, animate[key], AnimateOptionAreaViews);
             }
+        }
+    }
+
+    private ModifyTarget GetHighlightModifyTarget()
+    {
+        ModifyTarget target = ModifyTarget.None;
+
+        // measure the distance from the pointer both option areas.
+        Vector2 pointerPos = MousePosition.action.ReadValue<Vector2>();
+        Vector3 pointerWorldPos = Camera.main.ScreenToWorldPoint(pointerPos);
+        float distanceToShield = Vector2.Distance(pointerWorldPos, _shieldOptionOrigin);
+        float distanceToSword = Vector2.Distance(pointerWorldPos, _swordOptionOrigin);
+
+        if (distanceToShield < _highlightOptionDistanceThreshold)
+        {
+            target = ModifyTarget.Armor;
+        }
+        else if (distanceToSword < _highlightOptionDistanceThreshold)
+        {
+            target = ModifyTarget.Attack;
+        }
+
+        return target;
+    }
+
+    private void DidFinishDrag()
+    {
+        if (_draggedIndex == -1)
+            return;
+        
+        ModifyTarget target = GetHighlightModifyTarget();
+        if (target != ModifyTarget.None)
+        {
+            DidPlayCard(cards[_draggedIndex], target);
+        }
+        else
+        {
+            _draggedIndex = -1;
+            _holdStarted = false;
         }
     }
 
@@ -496,9 +524,10 @@ public class HandManager : MonoBehaviour
             ModifyTarget target = targets[i];
             AnimationData data = new AnimationData();
             data.StartPosition = _optionAreas[target].transform.position;
-            if (targets[i] == highlightOption)
+            if (target == highlightOption)
             {
                 data.EndPosition = (target == ModifyTarget.Armor ? _shieldOptionOrigin - highlightVector : _swordOptionOrigin + highlightVector);
+                PlayerManager.Instance.ShowModifierPreview(cards[_draggedIndex], target);
             }
             else
             {
@@ -506,6 +535,11 @@ public class HandManager : MonoBehaviour
             }
             
             animations.Add(target, data);
+        }
+
+        if (highlightOption == ModifyTarget.None)
+        {
+            PlayerManager.Instance.ShowModifierPreview(cards[_draggedIndex], highlightOption);
         }
         
 

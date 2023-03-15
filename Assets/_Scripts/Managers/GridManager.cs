@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -17,6 +18,11 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Transform _cam;
     [SerializeField] private GameObject arrowController;
     [SerializeField] private Vector2 _boardOffset;
+
+    [SerializeField] private InputActionReference _movementLeft;
+    [SerializeField] private InputActionReference _movementRight;
+    [SerializeField] private InputActionReference _movementUp;
+    [SerializeField] private InputActionReference _movementDown;
 
     // the number of visible rows
     private int _width;
@@ -41,7 +47,35 @@ public class GridManager : MonoBehaviour
     {
         _visibleRows = _levelRules.StartingRows;
         _width = _levelRules.Width;
+        _movementLeft.action.performed += didTapLeft;
+        _movementRight.action.performed += didTapRight;
+        _movementUp.action.performed += didTapUp;
+        _movementDown.action.performed += didTapDown;
     }
+
+    private void OnDisable()
+    {
+        _movementLeft.action.performed -= didTapLeft;
+        _movementRight.action.performed -= didTapRight;
+        _movementUp.action.performed -= didTapUp;
+        _movementDown.action.performed -= didTapDown;
+    }
+    
+    private void didTapLeft(InputAction.CallbackContext ctx) => ArrowInputPerformed(ctx, GridMovement.Left);
+    private void didTapRight(InputAction.CallbackContext ctx) => ArrowInputPerformed(ctx, GridMovement.Right);
+    private void didTapUp(InputAction.CallbackContext ctx) => ArrowInputPerformed(ctx, GridMovement.Up);
+    private void didTapDown(InputAction.CallbackContext ctx) => ArrowInputPerformed(ctx, GridMovement.Down);
+
+    private void ArrowInputPerformed(InputAction.CallbackContext ctx, GridMovement gridMovement)
+    {
+
+        if (!currentlyMoving && ctx.performed)
+        {
+            currentlyMoving = true;
+            ArrowTapped(gridMovement);
+        }
+    }
+    
 
 
     // current player unit
@@ -87,7 +121,7 @@ public class GridManager : MonoBehaviour
         
         // get the top left tile and calculate the new position for our Y coord.
         Vector2 topLeftTileCoord = new Vector2(0, _levelRules.CurrentNumberRows-1);
-        float posY = _tiles[topLeftTileCoord].transform.position.y + 1;
+        float posY = _tiles[topLeftTileCoord].transform.position.y + 1 - _boardOffset.y;
         
         // store data about the new row
         Dictionary<Vector2, TileType> newRow = new Dictionary<Vector2, TileType>();
@@ -277,38 +311,6 @@ public class GridManager : MonoBehaviour
             startCoords[i] = new Vector2(i, 0);
         }
         return startCoords;
-    }
-
-    private void Update() {
-        if (!currentlyMoving) {
-        //     if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) {
-        //         // move left
-        //         Debug.Log("moved left");
-        //         currentlyMoving = true;
-        //         ArrowTapped(GridMovement.Left);
-        //     } else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) {
-        //         // move up
-        //         Debug.Log("moved up");
-        //         currentlyMoving = true;
-        //         ArrowTapped(GridMovement.Up);
-        //     } else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) {
-        //         // move down
-        //         Debug.Log("moved down");
-        //         currentlyMoving = true;
-        //         ArrowTapped(GridMovement.Down);
-        //     }  else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) {
-        //         // move right
-        //         Debug.Log("moved right");
-        //         currentlyMoving = true;
-        //         ArrowTapped(GridMovement.Right);
-        //     }
-        // } else {
-        //     if (Input.GetKeyDown(KeyCode.P)) {
-        //         Debug.Log($"Currently Moving? {currentlyMoving}");
-        //         // waitingForInput = true;
-        //     }
-        }
-        
     }
 
     private bool ValidMove(GridMovement movement)
@@ -521,8 +523,17 @@ public class GridManager : MonoBehaviour
         //TODO we should auto move the player if they choose a card with no choice
         if (gridMovements.Contains(GridMovement.None))
         {
-            ArrowTapped(GridMovement.None);
+            ArrowTappedWrapper(GridMovement.None);
+        } else if (gridMovements.Count == 1)
+        {
+            ArrowTappedWrapper(gridMovements[0]);
         }
+    }
+
+    async void ArrowTappedWrapper(GridMovement gridMovement)
+    {
+        await Task.Delay(250);
+        ArrowTapped(gridMovement);
     }
 
     public void ArrowTapped(GridMovement gridMovement) {

@@ -1048,6 +1048,10 @@ MonoBehaviour:
   MousePos: {fileID: 5476545008825471586, guid: 343c9847a1cecd349a211133670701cd, type: 3}
   Drag: {fileID: -3443580987699009382, guid: 343c9847a1cecd349a211133670701cd, type: 3}
   RightButton: {fileID: -6447484787346832275, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  MovementLeft: {fileID: 632455275785946623, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  MovementRight: {fileID: 1588021756827798560, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  MovementUp: {fileID: -4436627590226921548, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  MovementDown: {fileID: 5916017782020407967, guid: 343c9847a1cecd349a211133670701cd, type: 3}
 --- !u!1 &269490479
 GameObject:
   m_ObjectHideFlags: 0
@@ -2103,6 +2107,10 @@ MonoBehaviour:
   _cam: {fileID: 519420032}
   arrowController: {fileID: 8850347746501693185, guid: ea2842442abc449e6ac275601e85e828, type: 3}
   _boardOffset: {x: 0, y: 0.5}
+  _movementLeft: {fileID: 632455275785946623, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  _movementRight: {fileID: 1588021756827798560, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  _movementUp: {fileID: -4436627590226921548, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  _movementDown: {fileID: 5916017782020407967, guid: 343c9847a1cecd349a211133670701cd, type: 3}
 --- !u!1001 &703258009
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2967,7 +2975,7 @@ MonoBehaviour:
   _gameAnimator: {fileID: 703258010}
   _swordOptionArea: {fileID: 1914122871}
   _shieldOptionArea: {fileID: 604548458}
-  _highlightOptionDistanceThreshold: 5
+  _highlightOptionDistanceThreshold: 4
   _swordOptionOrigin: {x: 0, y: 0, z: 0}
   _shieldOptionOrigin: {x: 0, y: 0, z: 0}
   ShowOptionAreaVector: {x: 1, y: 0, z: 0}

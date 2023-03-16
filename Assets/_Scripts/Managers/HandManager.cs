@@ -18,8 +18,7 @@ public class HandManager : MonoBehaviour
     [SerializeField] private Transform HandArcTransform;
     [SerializeField] private Transform MovementDeckTransform;
     [SerializeField] private Transform ModifierDeckTransform;
-    
-    
+
     [SerializeField] private InputActionReference DidSelect;
     [SerializeField] private InputActionReference MousePosition;
     [SerializeField] private InputActionReference DidHold;
@@ -51,6 +50,8 @@ public class HandManager : MonoBehaviour
     private bool _playerIsPlayingCard = false;
     private bool _cardsChanged = false;
 
+    #region Monobehaviour
+    
     private void Awake() {
         Instance = this;
         Debug.Log("Hand Manager Awake()");
@@ -81,7 +82,43 @@ public class HandManager : MonoBehaviour
         DidHold.action.performed -= Hold;
         DidHold.action.canceled -= HoldCancelled;
     }
+    
+    /// <summary>
+    /// Looks for clicks on the screen to handle deselection.  If the player clicks or taps on the UI then nothing is deselcted so the player can still tap on the card detail view. 
+    /// </summary>
+    private void Update() {
+        if (_playerIsPlayingCard) { return; }
 
+        if (_holdStarted)
+        {
+            float z = cards[_draggedIndex].transform.position.z;
+            Vector3 newPos = Camera.main.ScreenToWorldPoint(MousePosition.action.ReadValue<Vector2>());
+            newPos.z = z;
+            _gameAnimator.CancelAnimation(cards[_draggedIndex].cardParent);
+            cards[_draggedIndex].cardParent.transform.position = newPos;
+            cards[_draggedIndex].cardParent.transform.rotation = Quaternion.identity;
+
+            // then animate the option areas in
+            _delayOptionAreTimer += Time.deltaTime;
+            if (_delayOptionAreTimer > DelayOptionAreTimer)
+            {
+                ShowOptionAreas();
+                _delayOptionAreTimer = 0;
+            }
+            
+        }
+    }
+    
+    #endregion
+
+    
+    
+    #region Gesture Recognition
+
+    private void DidClick(InputAction.CallbackContext ctx)
+    {
+        // nothing to do now, butt keeping this for now.
+    }
     private void RightButtonPressed(InputAction.CallbackContext ctx)
     {
         if (ctx.performed)
@@ -125,25 +162,175 @@ public class HandManager : MonoBehaviour
         }
         
     }
-
-    public async void DrawHand() {
-        Debug.Log("HandManager: Start drawing a card");
-        _numPlayedCards = 0;
-        while (cards.Count < 3) {
-            
-            CombinedCard drawnCard = DeckManager.Instance.DrawCard();
-            drawnCard.cardParent.transform.position = MovementDeckTransform.position;
-            drawnCard.SetIndex(cards.Count);
-            cards.Add(drawnCard);
-            ShowDrawCard(drawnCard, itemRadius, arcRadius);
-            
-            await Task.Delay(500);
+    
+    private void DidFinishDrag()
+    {
+        if (_draggedIndex == -1)
+            return;
+        
+        ModifyTarget target = GetHighlightModifyTarget();
+        if (target != ModifyTarget.None)
+        {
+            DidPlayCard(cards[_draggedIndex], target);
         }
-        Debug.Log("HandManager: Finishing drawing a card");
+        else
+        {
+            _draggedIndex = -1;
+            _holdStarted = false;
+        }
+    }
+        
 
-        GameManager.Instance.EndGameState(GameState.DrawHand);
+    
+    public void DeselectAll() {
+        if (_playerIsPlayingCard) { return; }
+        foreach(CombinedCard card in cards) {
+            card.SetSelectedBackground(false);
+        }
+        _holdStarted = false;
+        _selectedIndex = -1;
+        _hoveredIndex = -1;
+        _draggedIndex = -1;
+        ShowNormalHand();
+        PlayerManager.Instance.HidePreview();
     }
 
+    public void DidSelectCard(int index) {
+        if (_playerIsPlayingCard) { return; }
+
+        if (_selectedIndex == index)
+            return;
+        
+        // instead of deselecting all we just wanna turn off the background highlight
+        foreach(CombinedCard card in cards) {
+            card.SetSelectedBackground(false);
+        }
+        _selectedIndex = index;
+        cards[index].SetSelectedBackground(true);
+        HighlightCard(cards[index]);
+    }
+
+    
+    public void DidHoverOverCard(int index) {
+        if (_playerIsPlayingCard) { return; }
+        if (_hoveredIndex == index)
+            return;
+        if (_selectedIndex != -1)
+            return;
+        if (_hoveredIndex == -1)
+        {
+            _hoveredIndex = index;
+            cards[index].SetSelectedBackground(true);
+            HighlightCard(cards[index]);
+        }
+    }
+
+    public void DidStopHoverOverCard(int index) {
+        if (_playerIsPlayingCard) { return; }
+
+        if (_selectedIndex == index)
+        {
+            // dont do anything if they move away from the selected (and hovered) card
+            return;
+        }
+
+        if (_hoveredIndex == index)
+        {
+            _hoveredIndex = -1;
+            DeselectAll();
+        }
+    }
+
+
+    private void HideOptionAreas()
+    {
+        ModifyTarget[] targets = new ModifyTarget[2] { ModifyTarget.Armor, ModifyTarget.Attack };
+        
+        for (int i = 0; i < targets.Length; i++)
+        {
+            ModifyTarget target = targets[i];
+            AnimationData data = new AnimationData();
+            data.StartPosition = _optionAreas[target].transform.position;
+            data.EndPosition = (target == ModifyTarget.Armor ? _shieldOptionOrigin : _swordOptionOrigin);
+            _gameAnimator.Animate(_optionAreas[target], data, AnimateCardsView);
+        }
+    }
+
+    private void ShowOptionAreas()
+    {
+        ModifyTarget target = GetHighlightModifyTarget();
+
+        Dictionary<ModifyTarget, AnimationData> animate = CalculateOptionAreaAnimation(target);
+        foreach (ModifyTarget key in animate.Keys)
+        {
+            GameObject animationParent = _optionAreas[key];
+            if (animationParent)
+            {
+                // animationParent.transform.position = animate[key].EndPosition;
+                _gameAnimator.Animate(animationParent, animate[key], AnimateOptionAreaViews);
+            }
+        }
+    }
+
+    private ModifyTarget GetHighlightModifyTarget()
+    {
+        ModifyTarget target = ModifyTarget.None;
+
+        // measure the distance from the pointer both option areas.
+        Vector2 pointerPos = MousePosition.action.ReadValue<Vector2>();
+        Vector3 pointerWorldPos = Camera.main.ScreenToWorldPoint(pointerPos);
+        float distanceToShield = Vector2.Distance(pointerWorldPos, _shieldOptionOrigin);
+        float distanceToSword = Vector2.Distance(pointerWorldPos, _swordOptionOrigin);
+
+        if (distanceToShield < _highlightOptionDistanceThreshold)
+        {
+            target = ModifyTarget.Armor;
+        }
+        else if (distanceToSword < _highlightOptionDistanceThreshold)
+        {
+            target = ModifyTarget.Attack;
+        }
+
+        return target;
+    }
+    
+    #endregion
+    
+    #region Animations and Calculations
+    private Dictionary<ModifyTarget, AnimationData> CalculateOptionAreaAnimation(ModifyTarget highlightOption)
+    {
+        Dictionary<ModifyTarget, AnimationData> animations = new Dictionary<ModifyTarget, AnimationData>();
+        ModifyTarget[] targets = new ModifyTarget[2] { ModifyTarget.Armor, ModifyTarget.Attack };
+
+        Vector3 showVector = ShowOptionAreaVector;
+        Vector3 highlightVector = HighlightOptionAreaVector;
+        for (int i = 0; i < targets.Length; i++)
+        {
+            ModifyTarget target = targets[i];
+            AnimationData data = new AnimationData();
+            data.StartPosition = _optionAreas[target].transform.position;
+            if (target == highlightOption)
+            {
+                data.EndPosition = (target == ModifyTarget.Armor ? _shieldOptionOrigin - highlightVector : _swordOptionOrigin + highlightVector);
+                PlayerManager.Instance.ShowModifierPreview(cards[_draggedIndex], target);
+            }
+            else
+            {
+                data.EndPosition = (target == ModifyTarget.Armor ? _shieldOptionOrigin - showVector : _swordOptionOrigin + showVector);
+            }
+            
+            animations.Add(target, data);
+        }
+
+        if (highlightOption == ModifyTarget.None)
+        {
+            PlayerManager.Instance.ShowModifierPreview(cards[_draggedIndex], highlightOption);
+        }
+        
+
+        return animations;
+    }
+    
     private  AnimationData[] CalculateCardAnimationData(float[] itemRadii, float arcRadius)
     {
         
@@ -254,7 +441,7 @@ public class HandManager : MonoBehaviour
             _gameAnimator.Animate(cards[i].cardParent, data[i], AnimateCardsView);
         }
     }
-
+    
     /// <summary>
     /// Highlights the hovered/selected card by 
     /// </summary>
@@ -290,46 +477,35 @@ public class HandManager : MonoBehaviour
         }
         
     }
-    public void DiscardHand() {
-        foreach(CombinedCard card in cards) {
-            DeckManager.Instance.DiscardCard(card);
-            card.DestroyCard();
-            cards = new List<CombinedCard>();
+
+    
+    #endregion
+
+    #region  Game Logic
+
+    public void EndPlayerTurn() {
+        DiscardHand();
+        GameManager.Instance.EndGameState(GameState.HeroTurnCleanUp);
+    }
+    
+    public async void DrawHand() {
+        Debug.Log("HandManager: Start drawing a card");
+        _numPlayedCards = 0;
+        while (cards.Count < 3) {
+            
+            CombinedCard drawnCard = DeckManager.Instance.DrawCard();
+            drawnCard.cardParent.transform.position = MovementDeckTransform.position;
+            drawnCard.SetIndex(cards.Count);
+            cards.Add(drawnCard);
+            ShowDrawCard(drawnCard, itemRadius, arcRadius);
+            
+            await Task.Delay(500);
         }
-    }
+        Debug.Log("HandManager: Finishing drawing a card");
 
-    public void DeselectAll() {
-        if (_playerIsPlayingCard) { return; }
-        foreach(CombinedCard card in cards) {
-            card.SetSelectedBackground(false);
-        }
-        _holdStarted = false;
-        _selectedIndex = -1;
-        _hoveredIndex = -1;
-        _draggedIndex = -1;
-        ShowNormalHand();
-        PlayerManager.Instance.HidePreview();
+        GameManager.Instance.EndGameState(GameState.DrawHand);
     }
-
-    public void DidSelectCard(int index) {
-        if (_playerIsPlayingCard) { return; }
-
-        if (_selectedIndex == index)
-            return;
-        
-        // instead of deselcting all we just wanna turn off the background highlight
-        foreach(CombinedCard card in cards) {
-            card.SetSelectedBackground(false);
-        }
-        _selectedIndex = index;
-        cards[index].SetSelectedBackground(true);
-        HighlightCard(cards[index]);
-    }
-
-    public void DidSelectModifyTargetCard(CombinedCard card, ModifyTarget target) {
-        if (_playerIsPlayingCard) { return; }
-        PlayerManager.Instance.ShowPreview(card, target);
-    }
+    
     public void DidPlayCard(CombinedCard card, ModifyTarget target) {
         _numPlayedCards++;
         _playerIsPlayingCard = true;
@@ -372,214 +548,25 @@ public class HandManager : MonoBehaviour
         ShowNormalHand();
 
     }
+    
+    #endregion
 
+    #region Hand Logic
+
+    public void DiscardHand() {
+        foreach(CombinedCard card in cards) {
+            DeckManager.Instance.DiscardCard(card);
+            card.DestroyCard();
+            cards = new List<CombinedCard>();
+        }
+    }
+    
     public void DiscardCard(CombinedCard card) {
         DeckManager.Instance.DiscardCard(card);
         DeselectAll();
 
         card.DestroyCard();
     }
-
-    public void DidHoverOverCard(int index) {
-        if (_playerIsPlayingCard) { return; }
-        if (_hoveredIndex == index)
-            return;
-        if (_selectedIndex != -1)
-            return;
-        if (_hoveredIndex == -1)
-        {
-            _hoveredIndex = index;
-            cards[index].SetSelectedBackground(true);
-            HighlightCard(cards[index]);
-        }
-    }
-
-    public void DidStopHoverOverCard(int index) {
-        if (_playerIsPlayingCard) { return; }
-
-        if (_selectedIndex == index)
-        {
-            // dont do anything if they move away from the selected (and hovered) card
-            return;
-        }
-
-        if (_hoveredIndex == index)
-        {
-            _hoveredIndex = -1;
-            DeselectAll();
-        }
-    }
-
-    public void EndPlayerTurn() {
-        DiscardHand();
-        GameManager.Instance.EndGameState(GameState.HeroTurnCleanUp);
-    }
-
-
-    private void HideOptionAreas()
-    {
-        ModifyTarget[] targets = new ModifyTarget[2] { ModifyTarget.Armor, ModifyTarget.Attack };
-        
-        for (int i = 0; i < targets.Length; i++)
-        {
-            ModifyTarget target = targets[i];
-            AnimationData data = new AnimationData();
-            data.StartPosition = _optionAreas[target].transform.position;
-            data.EndPosition = (target == ModifyTarget.Armor ? _shieldOptionOrigin : _swordOptionOrigin);
-            _gameAnimator.Animate(_optionAreas[target], data, AnimateCardsView);
-        }
-    }
-
-    private void ShowOptionAreas()
-    {
-        ModifyTarget target = GetHighlightModifyTarget();
-
-        Dictionary<ModifyTarget, AnimationData> animate = CalculateOptionAreaAnimation(target);
-        foreach (ModifyTarget key in animate.Keys)
-        {
-            GameObject animationParent = _optionAreas[key];
-            if (animationParent)
-            {
-                // animationParent.transform.position = animate[key].EndPosition;
-                _gameAnimator.Animate(animationParent, animate[key], AnimateOptionAreaViews);
-            }
-        }
-    }
-
-    private ModifyTarget GetHighlightModifyTarget()
-    {
-        ModifyTarget target = ModifyTarget.None;
-
-        // measure the distance from the pointer both option areas.
-        Vector2 pointerPos = MousePosition.action.ReadValue<Vector2>();
-        Vector3 pointerWorldPos = Camera.main.ScreenToWorldPoint(pointerPos);
-        float distanceToShield = Vector2.Distance(pointerWorldPos, _shieldOptionOrigin);
-        float distanceToSword = Vector2.Distance(pointerWorldPos, _swordOptionOrigin);
-
-        if (distanceToShield < _highlightOptionDistanceThreshold)
-        {
-            target = ModifyTarget.Armor;
-        }
-        else if (distanceToSword < _highlightOptionDistanceThreshold)
-        {
-            target = ModifyTarget.Attack;
-        }
-
-        return target;
-    }
-
-    private void DidFinishDrag()
-    {
-        if (_draggedIndex == -1)
-            return;
-        
-        ModifyTarget target = GetHighlightModifyTarget();
-        if (target != ModifyTarget.None)
-        {
-            DidPlayCard(cards[_draggedIndex], target);
-        }
-        else
-        {
-            _draggedIndex = -1;
-            _holdStarted = false;
-        }
-    }
-
-    private Dictionary<ModifyTarget, AnimationData> CalculateOptionAreaAnimation(ModifyTarget highlightOption)
-    {
-        Dictionary<ModifyTarget, AnimationData> animations = new Dictionary<ModifyTarget, AnimationData>();
-        ModifyTarget[] targets = new ModifyTarget[2] { ModifyTarget.Armor, ModifyTarget.Attack };
-
-        Vector3 showVector = ShowOptionAreaVector;
-        Vector3 highlightVector = HighlightOptionAreaVector;
-        for (int i = 0; i < targets.Length; i++)
-        {
-            ModifyTarget target = targets[i];
-            AnimationData data = new AnimationData();
-            data.StartPosition = _optionAreas[target].transform.position;
-            if (target == highlightOption)
-            {
-                data.EndPosition = (target == ModifyTarget.Armor ? _shieldOptionOrigin - highlightVector : _swordOptionOrigin + highlightVector);
-                PlayerManager.Instance.ShowModifierPreview(cards[_draggedIndex], target);
-            }
-            else
-            {
-                data.EndPosition = (target == ModifyTarget.Armor ? _shieldOptionOrigin - showVector : _swordOptionOrigin + showVector);
-            }
-            
-            animations.Add(target, data);
-        }
-
-        if (highlightOption == ModifyTarget.None)
-        {
-            PlayerManager.Instance.ShowModifierPreview(cards[_draggedIndex], highlightOption);
-        }
-        
-
-        return animations;
-    }
-
     
-    /// <summary>
-    /// Looks for clicks on the screen to handle deselection.  If the player clicks or taps on the UI then nothing is deselcted so the player can still tap on the card detail view. 
-    /// </summary>
-    private void Update() {
-        if (_playerIsPlayingCard) { return; }
-
-        if (_holdStarted)
-        {
-            float z = cards[_draggedIndex].transform.position.z;
-            Vector3 newPos = Camera.main.ScreenToWorldPoint(MousePosition.action.ReadValue<Vector2>());
-            newPos.z = z;
-            _gameAnimator.CancelAnimation(cards[_draggedIndex].cardParent);
-            cards[_draggedIndex].cardParent.transform.position = newPos;
-            cards[_draggedIndex].cardParent.transform.rotation = Quaternion.identity;
-
-            // then animate the option areas in
-            _delayOptionAreTimer += Time.deltaTime;
-            if (_delayOptionAreTimer > DelayOptionAreTimer)
-            {
-                ShowOptionAreas();
-                _delayOptionAreTimer = 0;
-            }
-            
-        }
-    }
-
-    private void DidClick(InputAction.CallbackContext ctx)
-    {
-        if (!ctx.performed)
-            return;
-        if (cards.Count <= 0)
-            return;
-        
-        Vector3 mousePosition = MousePosition.action.ReadValue<Vector2>();
-        RaycastHit[] raycastResults = Physics.RaycastAll(mousePosition, Vector3.forward);
-        if(raycastResults.Length > 0)
-        {
-            // purposefully left blank
-        }
-        else
-        {
-            Debug.Log("No UI hit - therefore we can handle deselection");
-            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-            int count = 0;
-            for (int i = 0; i < cards.Count; i++)
-            {
-                if (cards[i].DoesRayCollides(ray) != -1)
-                {
-                    count++;
-                }
-            }
-
-            if (count == 0)
-            {
-                // DeselectAll();
-            }
-        }
-    }
-
-
-
-
+    #endregion
 }

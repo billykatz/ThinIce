@@ -76,7 +76,7 @@ public class CombinedCard : BaseCard, MouseInteractionDelegate
     }
 
     void MouseInteractionDelegate.OnMouseDown() {
-
+        HandManager.Instance.DidSelectCard(index);
     }
 
     void MouseInteractionDelegate.OnMouseEnter()

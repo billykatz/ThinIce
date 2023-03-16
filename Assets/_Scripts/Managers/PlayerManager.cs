@@ -68,10 +68,6 @@ public class PlayerManager : MonoBehaviour
         attackText.text = $"{heroUnit.attack}";
     }
 
-    public void ShowPreview(CombinedCard card, ModifyTarget target) {
-        StartCoroutine(FlashThenShowPreview(card, target));
-    }
-    
     public void ShowModifierPreview(CombinedCard card, ModifyTarget target)
     {
         previewUnit.armor = heroUnit.armor;
@@ -157,86 +153,8 @@ public class PlayerManager : MonoBehaviour
         attackText.color = noChangeColor;
 
     }
+    
 
-    private IEnumerator FlashThenShowPreview(CombinedCard card, ModifyTarget target) {
-        previewPlayerStats.SetActive(false);
-        currentPlayerStats.SetActive(false);
-        yield return new WaitForSeconds(0.1f);
-
-        previewPlayerStats.SetActive(true);
-        currentPlayerStats.SetActive(true);
-        Preview(card, target);
-
-
-    }
-
-    private void Preview(CombinedCard card, ModifyTarget target) {
-        previewHealthText.text = healthText.text;
-        int newAttack = attack;
-        int newArmor = armor;
-
-        if (target == ModifyTarget.Attack) {
-            switch (card.modifierCard.modifyOperation) {
-                case ModifyOperation.Add:
-                    newAttack = Mathf.Min(maxAttack, newAttack + card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.Subtract:
-                    newAttack = Mathf.Max(minAttack, newAttack - card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.Multiply:
-                    newAttack = Mathf.Min(maxAttack, newAttack * card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.Divide:
-                    newAttack = Mathf.Max(minAttack, newAttack / card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.ToMax:
-                    newAttack = maxAttack;
-                    break;
-                case ModifyOperation.ToMin:
-                    newAttack = minAttack;
-                    break;
-            }
-        } else if (target == ModifyTarget.Armor) {
-            switch (card.modifierCard.modifyOperation) {
-                case ModifyOperation.Add:
-                    newArmor = Mathf.Min(maxArmor, newArmor + card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.Subtract:
-                    newArmor = Mathf.Max(minArmor, newArmor - card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.Multiply:
-                    newArmor = Mathf.Min(maxArmor, newArmor * card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.Divide:
-                    newArmor = Mathf.Max(minArmor, newArmor / card.modifierCard.modifyAmount);
-                    break;
-                case ModifyOperation.ToMax:
-                    newArmor = maxArmor;
-                    break;
-                case ModifyOperation.ToMin:
-                    newArmor = minArmor;
-                    break;
-            }
-        }
-
-        if (newArmor > armor) {
-            previewArmorText.color = increaseColor;
-        } else if (armor > newArmor) {
-            previewArmorText.color = decreaseColor;
-        } else {
-            previewArmorText.color = noChangeColor;
-        }
-        previewArmorText.text = $"{newArmor}";
-
-        if (newAttack > attack) {
-            previewAttackText.color = increaseColor;
-        } else if (attack > newAttack) {
-            previewAttackText.color = decreaseColor;
-        } else {
-            previewAttackText.color = noChangeColor;
-        }
-        previewAttackText.text = $"{newAttack}";
-    }
     public void HidePreview() {
         previewPlayerStats.SetActive(false);
     }

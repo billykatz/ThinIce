@@ -27,6 +27,7 @@ public class GridManager : MonoBehaviour
     // the number of visible rows
     private int _width;
     private int _visibleRows;
+    private int _bottomMostRowIndex;
     private bool currentlyMoving;
     private bool waitingForInput;
     private int _consecutiveGeneratedRocks;
@@ -47,6 +48,7 @@ public class GridManager : MonoBehaviour
     {
         _visibleRows = _levelRules.StartingRows;
         _width = _levelRules.Width;
+        _bottomMostRowIndex = 0;
         _movementLeft.action.performed += didTapLeft;
         _movementRight.action.performed += didTapRight;
         _movementUp.action.performed += didTapUp;
@@ -409,10 +411,16 @@ public class GridManager : MonoBehaviour
         GenerateRow();
         SpawnEnemies();
         
-        foreach (KeyValuePair<Vector2, Tile> kv in _tiles)
+        foreach (Vector2 key in _tiles.Keys)
         {
-            kv.Value.PlayMoveDownAnimation();
+            _tiles[key].PlayMoveDownAnimation();
+
+            if (key.y == _bottomMostRowIndex)
+            {
+                
+            }
         }
+        
     }
 
     private int _consecutiveRowsWithSpawnedEnemy = 0;
@@ -532,7 +540,9 @@ public class GridManager : MonoBehaviour
 
     async void ArrowTappedWrapper(GridMovement gridMovement)
     {
-        await Task.Delay(250);
+        // this is just a hair longer than the tile down animation. 
+        // but of a hack until we figure out the animation and animation completion hooks
+        await Task.Delay(500);
         ArrowTapped(gridMovement);
     }
 

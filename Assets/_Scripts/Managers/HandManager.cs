@@ -343,12 +343,10 @@ public class HandManager : MonoBehaviour
         }
         
         return CalculateCardAnimationData(iRadii, aRadii);
-
     }
 
     public AnimationData[] CalculateCardAnimationData(float[] itemRadii, float[] arcRadii)
     {
-
         AnimationData[] data = new AnimationData[cards.Count];
         if (itemRadii.Length <= 0)
         {
@@ -499,7 +497,7 @@ public class HandManager : MonoBehaviour
             cards.Add(drawnCard);
             ShowDrawCard(drawnCard, itemRadius, arcRadius);
             
-            await Task.Delay(500);
+            await Task.Delay(250);
         }
         Debug.Log("HandManager: Finishing drawing a card");
 

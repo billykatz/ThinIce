@@ -24,10 +24,11 @@ public class GridManager : MonoBehaviour
     [SerializeField] private InputActionReference _movementUp;
     [SerializeField] private InputActionReference _movementDown;
 
+    public int BottomMostRowIndex;
+    
     // the number of visible rows
     private int _width;
     private int _visibleRows;
-    private int _bottomMostRowIndex;
     private bool currentlyMoving;
     private bool waitingForInput;
     private int _consecutiveGeneratedRocks;
@@ -48,7 +49,7 @@ public class GridManager : MonoBehaviour
     {
         _visibleRows = _levelRules.StartingRows;
         _width = _levelRules.Width;
-        _bottomMostRowIndex = 0;
+        BottomMostRowIndex = 0;
         _movementLeft.action.performed += didTapLeft;
         _movementRight.action.performed += didTapRight;
         _movementUp.action.performed += didTapUp;
@@ -120,6 +121,7 @@ public class GridManager : MonoBehaviour
         {
             return;
         }
+        
         
         // get the top left tile and calculate the new position for our Y coord.
         Vector2 topLeftTileCoord = new Vector2(0, _levelRules.CurrentNumberRows-1);
@@ -413,14 +415,34 @@ public class GridManager : MonoBehaviour
         
         foreach (Vector2 key in _tiles.Keys)
         {
-            _tiles[key].PlayMoveDownAnimation();
-
-            if (key.y == _bottomMostRowIndex)
+            if (key.y == BottomMostRowIndex)
             {
+                _tiles[key].PlayExitAnimation();
                 
+            } else
+            {
+                _tiles[key].PlayMoveDownAnimation();
             }
         }
         
+        
+        DestroyBottomRow(BottomMostRowIndex);
+        
+        // update the bottom most row
+        BottomMostRowIndex++;
+
+    }
+
+    async void DestroyBottomRow(int index)
+    {
+        await Task.Delay(900);
+        for (int i = 0; i < _width; i++)
+        {
+            Vector2 coord = new Vector2(i, index);
+            _tiles[coord].DestroyTile();
+            _tiles.Remove(coord);
+        }
+
     }
 
     private int _consecutiveRowsWithSpawnedEnemy = 0;

@@ -21,10 +21,15 @@ public class EnemiesManager : MonoBehaviour
         Debug.Log("Enemies Manager Awake()");
     }
 
+    public void DestroyEnemyOnTile(Tile tile)
+    {
+        Destroy(tile.OccupiedUnit.gameObject);
+    }
+
     public async void DoEnemyTurn(Action callback) {
         Tile heroTile = GridManager.Instance.GetHeroTile();
         int width = _levelRules.Width;
-        int height = _levelRules.CurrentNumberRows;
+        int height = _levelRules.CurrentNumberRows - GridManager.Instance.BottomMostRowIndex;
 
         enemyTurnComplete += EnemyTurnDone;
 

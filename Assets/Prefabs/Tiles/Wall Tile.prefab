@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 1341803659626195208, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_PlayableAsset
       value: 
-      objectReference: {fileID: 11400000, guid: 48e598b078f7e83428f5d2ec16f879de, type: 2}
+      objectReference: {fileID: 11400000, guid: 398c1052f8b86724c805f34854a3b3ef, type: 2}
     - target: {fileID: 1897152260257660855, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_Color.b
       value: 0.5644357
@@ -131,6 +131,7 @@ MonoBehaviour:
   PlayableDirector: {fileID: 3389270671205136117}
   MoveDownTimeline: {fileID: 11400000, guid: 48e598b078f7e83428f5d2ec16f879de, type: 2}
   EntranceTimeline: {fileID: 11400000, guid: b2fcacc9dba61d14094d0be9370ff4f2, type: 2}
+  ExitTimeline: {fileID: 11400000, guid: 398c1052f8b86724c805f34854a3b3ef, type: 2}
   _highlight: {fileID: 250440540892949574}
   _startingPositionHighlight: {fileID: 4696390258798710659}
   _isWalkable: 0

@@ -7,8 +7,8 @@ namespace Extensions
 {
     public static class Vector2Extension
     {
-        public static bool IsInBounds(this Vector2 vector, int width, int height) {
-            return (vector.x >= 0 && vector.x < width) && (vector.y >= 0 && vector.y < height);
+        public static bool IsInBounds(this Vector2 vector, int width, int minHeight, int maxHeight) {
+            return (vector.x >= 0 && vector.x < width) && (vector.y >= minHeight && vector.y < maxHeight);
         }
 
         public static List<Vector2> MyNeighbors(this Vector2 origin) {

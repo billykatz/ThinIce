@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 1341803659626195208, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_PlayableAsset
       value: 
-      objectReference: {fileID: 11400000, guid: 48e598b078f7e83428f5d2ec16f879de, type: 2}
+      objectReference: {fileID: 11400000, guid: 398c1052f8b86724c805f34854a3b3ef, type: 2}
     - target: {fileID: 1897152260257660855, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_Color.b
       value: 0.5644357
@@ -26,6 +26,10 @@ PrefabInstance:
     - target: {fileID: 5321977072006793802, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_Name
       value: Wall Tile
+      objectReference: {fileID: 0}
+    - target: {fileID: 5321977072006793802, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7268705880744216379, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
       propertyPath: m_text
@@ -127,12 +131,21 @@ MonoBehaviour:
   PlayableDirector: {fileID: 3389270671205136117}
   MoveDownTimeline: {fileID: 11400000, guid: 48e598b078f7e83428f5d2ec16f879de, type: 2}
   EntranceTimeline: {fileID: 11400000, guid: b2fcacc9dba61d14094d0be9370ff4f2, type: 2}
+  ExitTimeline: {fileID: 11400000, guid: 398c1052f8b86724c805f34854a3b3ef, type: 2}
   _highlight: {fileID: 250440540892949574}
   _startingPositionHighlight: {fileID: 4696390258798710659}
   _isWalkable: 0
   TileName: Wall
   debugText: {fileID: 6433868821417629894}
   tileType: 2
+  DidSelect: {fileID: -884314802674560144, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  MousePosition: {fileID: 5476545008825471586, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  collider: {fileID: 8416050080475620848}
   x: 0
   y: 4
   OccupiedUnit: {fileID: 0}
+--- !u!64 &8416050080475620848 stripped
+MeshCollider:
+  m_CorrespondingSourceObject: {fileID: 5286592725912123917, guid: 8876f9957820b4b948a80b59fd6c9acd, type: 3}
+  m_PrefabInstance: {fileID: 4437753064434327549}
+  m_PrefabAsset: {fileID: 0}

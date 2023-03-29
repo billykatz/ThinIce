@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,13 +12,18 @@ public class CombinedCard : BaseCard, MouseInteractionDelegate
 
     public int index;
 
+    private bool _isSelected;
+    private bool _shouldDeselect;
+    [SerializeField] private float SelectionDelay = 0.025f;
+    private float _delay;
+
     public void Create(MovementCard movementCard, ModifierCard modifierCard, GameObject cardParent) {
         this.cardParent = cardParent;
         
         this.movementCard = Instantiate(movementCard, cardParent.transform, true);
         
         Vector3 modifierCardPosition = this.movementCard.transform.position;
-        modifierCardPosition.y -= 1.25f;
+        modifierCardPosition.y -= 0.675f;
         this.modifierCard = Instantiate(modifierCard, cardParent.transform, true);
         this.modifierCard.transform.position = modifierCardPosition;
         
@@ -52,22 +58,41 @@ public class CombinedCard : BaseCard, MouseInteractionDelegate
         return cardParent;
     }
 
+    /// <summary>
+    /// Returns -1 if it doesnt hit
+    /// Returns the index if it does
+    /// </summary>
+    /// <param name="ray"></param>
+    /// <returns></returns>
+    public int DoesRayCollides(Ray ray)
+    {
+        RaycastHit hit;
+        if (movementCard.collider.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            return index;
+        }
+
+        return -1;
+    }
+
     void MouseInteractionDelegate.OnMouseDown() {
         HandManager.Instance.DidSelectCard(index);
     }
 
-    void MouseInteractionDelegate.OnMouseEnter() {
+    void MouseInteractionDelegate.OnMouseEnter()
+    {
         HandManager.Instance.DidHoverOverCard(index);
     }
 
-    void MouseInteractionDelegate.OnMouseExit() {
+    void MouseInteractionDelegate.OnMouseExit()
+    {
         HandManager.Instance.DidStopHoverOverCard(index);
     }
 
     public void SetSelectedBackground(bool onOff) {
         if (onOff) {
             movementCard.SetFullCardHighlight(true);
-        } else {
+        } else { 
             movementCard.SetFullCardHighlight(false);
         }
     }

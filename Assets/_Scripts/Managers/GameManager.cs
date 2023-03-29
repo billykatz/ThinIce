@@ -58,6 +58,7 @@ public class GameManager : MonoBehaviour
                 ChangeState(GameState.EnemyTurn);
                 break;
             case GameState.EnemyTurn:
+                await Task.Delay(900);
                 ChangeState(GameState.EndTurn);
                 break;
             case GameState.EndTurn:
@@ -70,6 +71,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    
     void ChangeState(GameState newState) {
         Debug.Log($"Game Manager: Start Game State {newState}");
         GameState = newState;

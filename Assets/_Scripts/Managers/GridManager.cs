@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -16,7 +17,15 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Tile _wallTilePrefab;
     [SerializeField] private Transform _cam;
     [SerializeField] private GameObject arrowController;
+    [SerializeField] private Vector2 _boardOffset;
 
+    [SerializeField] private InputActionReference _movementLeft;
+    [SerializeField] private InputActionReference _movementRight;
+    [SerializeField] private InputActionReference _movementUp;
+    [SerializeField] private InputActionReference _movementDown;
+
+    public int BottomMostRowIndex;
+    
     // the number of visible rows
     private int _width;
     private int _visibleRows;
@@ -40,7 +49,36 @@ public class GridManager : MonoBehaviour
     {
         _visibleRows = _levelRules.StartingRows;
         _width = _levelRules.Width;
+        BottomMostRowIndex = 0;
+        _movementLeft.action.performed += didTapLeft;
+        _movementRight.action.performed += didTapRight;
+        _movementUp.action.performed += didTapUp;
+        _movementDown.action.performed += didTapDown;
     }
+
+    private void OnDisable()
+    {
+        _movementLeft.action.performed -= didTapLeft;
+        _movementRight.action.performed -= didTapRight;
+        _movementUp.action.performed -= didTapUp;
+        _movementDown.action.performed -= didTapDown;
+    }
+    
+    private void didTapLeft(InputAction.CallbackContext ctx) => ArrowInputPerformed(ctx, GridMovement.Left);
+    private void didTapRight(InputAction.CallbackContext ctx) => ArrowInputPerformed(ctx, GridMovement.Right);
+    private void didTapUp(InputAction.CallbackContext ctx) => ArrowInputPerformed(ctx, GridMovement.Up);
+    private void didTapDown(InputAction.CallbackContext ctx) => ArrowInputPerformed(ctx, GridMovement.Down);
+
+    private void ArrowInputPerformed(InputAction.CallbackContext ctx, GridMovement gridMovement)
+    {
+
+        if (!currentlyMoving && ctx.performed)
+        {
+            currentlyMoving = true;
+            ArrowTapped(gridMovement);
+        }
+    }
+    
 
 
     // current player unit
@@ -60,11 +98,13 @@ public class GridManager : MonoBehaviour
             for (int y = 0; y < _visibleRows; y++) {
                 //spawns an ice tile, for now
                 Vector2 position = new Vector2(x, y);
+                position += _boardOffset;
                 var spawnTile = Instantiate(_iceTilePrefab, position, Quaternion.identity);
                 spawnTile.name = $"Tile {x} {y}";
-                spawnTile.Init(x, y);
+                Vector2 coord = new Vector2(x, y);
+                spawnTile.Init(coord);
                 
-                _tiles[position] = spawnTile;   
+                _tiles[coord] = spawnTile;   
             }
         }
         
@@ -82,9 +122,10 @@ public class GridManager : MonoBehaviour
             return;
         }
         
+        
         // get the top left tile and calculate the new position for our Y coord.
         Vector2 topLeftTileCoord = new Vector2(0, _levelRules.CurrentNumberRows-1);
-        float posY = _tiles[topLeftTileCoord].transform.position.y + 1;
+        float posY = _tiles[topLeftTileCoord].transform.position.y + 1 - _boardOffset.y;
         
         // store data about the new row
         Dictionary<Vector2, TileType> newRow = new Dictionary<Vector2, TileType>();
@@ -134,6 +175,7 @@ public class GridManager : MonoBehaviour
         {
             // the coord
             Vector2 newPosition = new Vector2(coordKey.x, posY);
+            newPosition += _boardOffset;
             TileType tileType = newRow[coordKey];
             Tile prefab = tileType == TileType.Ice ? _iceTilePrefab : _wallTilePrefab;
             Tile spawnTile = Instantiate(isEndRow ? _goalTilePrefab : prefab, newPosition, Quaternion.identity);
@@ -275,38 +317,6 @@ public class GridManager : MonoBehaviour
         return startCoords;
     }
 
-    private void Update() {
-        if (!currentlyMoving) {
-            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) {
-                // move left
-                Debug.Log("moved left");
-                currentlyMoving = true;
-                ArrowTapped(GridMovement.Left);
-            } else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) {
-                // move up
-                Debug.Log("moved up");
-                currentlyMoving = true;
-                ArrowTapped(GridMovement.Up);
-            } else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) {
-                // move down
-                Debug.Log("moved down");
-                currentlyMoving = true;
-                ArrowTapped(GridMovement.Down);
-            }  else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) {
-                // move right
-                Debug.Log("moved right");
-                currentlyMoving = true;
-                ArrowTapped(GridMovement.Right);
-            }
-        } else {
-            if (Input.GetKeyDown(KeyCode.P)) {
-                Debug.Log($"Currently Moving? {currentlyMoving}");
-                // waitingForInput = true;
-            }
-        }
-        
-    }
-
     private bool ValidMove(GridMovement movement)
     {
 
@@ -328,22 +338,22 @@ public class GridManager : MonoBehaviour
             Debug.Log($"GridManager: Valid movement.");
             waitingForInput = false;
 
-            Vector2 newPlayerPosition = TileAfterMovement(movement);
-            if (DidInitiateCombat(newPlayerPosition)) {
+            Vector2 newPlayerCoord = TileAfterMovement(movement);
+            if (DidInitiateCombat(newPlayerCoord)) {
                 
                 // we need to fight and then finish the movement.
                 CardRuleStep newStep = new CardRuleStep();
                 newStep.state = CardRuleState.Combat;
                 newStep.attackerUnit = playerTile.OccupiedUnit;
-                newStep.defenderUnit = _tiles[newPlayerPosition].OccupiedUnit;
+                newStep.defenderUnit = _tiles[newPlayerCoord].OccupiedUnit;
 
-                Debug.Log($"GridManager: Did initiate combat {playerTile.OccupiedUnit} {_tiles[newPlayerPosition].OccupiedUnit}");
+                Debug.Log($"GridManager: Did initiate combat {playerTile.OccupiedUnit} {_tiles[newPlayerCoord].OccupiedUnit}");
                 CardRuleManager.Instance.StartCardRuleStep(newStep);
 
             } else {
                 Debug.Log($"GridManager: Did finish moving");
                 //TODO eventually make it so the player cant got below the board 
-                if (!_tiles[newPlayerPosition].isWalkable) {
+                if (!_tiles[newPlayerCoord].isWalkable) {
                     // dont let player go into walls
 
                 } else {
@@ -354,11 +364,11 @@ public class GridManager : MonoBehaviour
                     // if we are moving up then move the board down
                     if (movement == GridMovement.Up)
                     {
-                        MovePlayerUpGrid(playerUnit, playerTile, _tiles[newPlayerPosition]);
+                        MovePlayerUpGrid(playerUnit, playerTile, _tiles[newPlayerCoord]);
                     }
                     else
                     {
-                        _tiles[newPlayerPosition].SetUnit(playerUnit);
+                        _tiles[newPlayerCoord].SetUnit(playerUnit);
                     }
                 }
 
@@ -403,10 +413,36 @@ public class GridManager : MonoBehaviour
         GenerateRow();
         SpawnEnemies();
         
-        foreach (KeyValuePair<Vector2, Tile> kv in _tiles)
+        foreach (Vector2 key in _tiles.Keys)
         {
-            kv.Value.PlayMoveDownAnimation();
+            if (key.y == BottomMostRowIndex)
+            {
+                _tiles[key].PlayExitAnimation();
+                
+            } else
+            {
+                _tiles[key].PlayMoveDownAnimation();
+            }
         }
+        
+        
+        DestroyBottomRow(BottomMostRowIndex);
+        
+        // update the bottom most row
+        BottomMostRowIndex++;
+
+    }
+
+    async void DestroyBottomRow(int index)
+    {
+        await Task.Delay(900);
+        for (int i = 0; i < _width; i++)
+        {
+            Vector2 coord = new Vector2(i, index);
+            _tiles[coord].DestroyTile();
+            _tiles.Remove(coord);
+        }
+
     }
 
     private int _consecutiveRowsWithSpawnedEnemy = 0;
@@ -517,8 +553,19 @@ public class GridManager : MonoBehaviour
         //TODO we should auto move the player if they choose a card with no choice
         if (gridMovements.Contains(GridMovement.None))
         {
-            ArrowTapped(GridMovement.None);
+            ArrowTappedWrapper(GridMovement.None);
+        } else if (gridMovements.Count == 1)
+        {
+            ArrowTappedWrapper(gridMovements[0]);
         }
+    }
+
+    async void ArrowTappedWrapper(GridMovement gridMovement)
+    {
+        // this is just a hair longer than the tile down animation. 
+        // but of a hack until we figure out the animation and animation completion hooks
+        await Task.Delay(500);
+        ArrowTapped(gridMovement);
     }
 
     public void ArrowTapped(GridMovement gridMovement) {

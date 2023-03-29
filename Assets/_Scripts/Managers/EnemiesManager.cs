@@ -29,7 +29,8 @@ public class EnemiesManager : MonoBehaviour
     public async void DoEnemyTurn(Action callback) {
         Tile heroTile = GridManager.Instance.GetHeroTile();
         int width = _levelRules.Width;
-        int height = _levelRules.CurrentNumberRows - GridManager.Instance.BottomMostRowIndex;
+        int minHeight = GridManager.Instance.BottomMostRowIndex;
+        int maxHeight = _levelRules.CurrentNumberRows;
 
         enemyTurnComplete += EnemyTurnDone;
 
@@ -39,13 +40,18 @@ public class EnemiesManager : MonoBehaviour
             EnemyTurnDone();
             return; 
         }
+        
         Tile tile = enemyTiles[enemyTurnIndex];
-
         BaseUnit enemyUnit = tile.OccupiedUnit;
         // check to see if the player is in the enemies attack zone
         // give a little time between each enemy
         MenuManager.Instance.SetTextForEnemyTurn(tile.OccupiedUnit.UnitName, "Thinking...");
         await Task.Delay(1000);
+        if (tile == null)
+        {
+            enemyTurnComplete?.Invoke();
+            return;
+        }
 
         if (tile.OccupiedUnit.ShouldAttack(tile, heroTile)) {
             Debug.Log($"EnemiesManager: Enemy {tile.OccupiedUnit.UnitName} attacks from {tile.coord} to {heroTile.coord}");
@@ -69,7 +75,7 @@ public class EnemiesManager : MonoBehaviour
             foreach (Vector2 wantToMoveCoord in wantToMove) {
                 if (!enemyHasTakenTurn) {
                     // creates a list of all neighbors and orders them by which one would be closest to where I eventually ant to be (within attack range of the player)
-                    List<Vector2> potentialMoves = tile.coord.MyNeighbors().Where(coord=>coord.IsInBounds(width, height)).OrderBy(coord=>Vector2.Distance(wantToMoveCoord, coord)).ToList();
+                    List<Vector2> potentialMoves = tile.coord.MyNeighbors().Where(coord=>coord.IsInBounds(width, minHeight, maxHeight)).OrderBy(coord=>Vector2.Distance(wantToMoveCoord, coord)).ToList();
                     foreach (Vector2 moveTo in potentialMoves) {
                         if (!GridManager.Instance.IsOccupied(moveTo)) {
                             Debug.Log($"EnemiesManager: Can't attack next turn. Enemy moves from {tile.coord} to {moveTo} to attack next turn");
@@ -85,7 +91,7 @@ public class EnemiesManager : MonoBehaviour
             //fall back in case we havent moved the enemy yet
             if (!enemyHasTakenTurn) {
                 Debug.Log($"EnemiesManager: Fall back to random movement that puts us closer to the player");
-                List<Vector2> potentialMoves = tile.coord.MyNeighbors().Where(coord=>coord.IsInBounds(width, height)).OrderBy(coord=>Vector2.Distance(heroTile.coord, coord)).ToList();
+                List<Vector2> potentialMoves = tile.coord.MyNeighbors().Where(coord=>coord.IsInBounds(width, minHeight, maxHeight)).OrderBy(coord=>Vector2.Distance(heroTile.coord, coord)).ToList();
                 foreach (Vector2 moveTo in potentialMoves) {
                     if (!GridManager.Instance.IsOccupied(moveTo)) {
                         Debug.Log($"EnemiesManager: Moving to unoccupied tile closest to the player");

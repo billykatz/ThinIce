@@ -90,7 +90,7 @@ public class GridManager : MonoBehaviour
     // grab all the enemy tiles
     public List<Tile> GetEnemyUnits() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy).Select(s=>s.Value).ToList(); }
     
-    public bool CheckForDeadEnemy() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.health == 0).Count() > 0; }
+    public bool CheckForDeadEnemy() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.Health == 0).Count() > 0; }
 
     public void GenerateGrid() {
         _tiles = new Dictionary<Vector2, Tile>();
@@ -226,7 +226,7 @@ public class GridManager : MonoBehaviour
         if (GameManager.Instance.GameState == GameState.PlaceHero) {
             if (PotentialPlayerStartingPositions().Contains(tappedCoord)) {
                 Debug.Log($"Tile at {x}, {y} was tapped");
-                BaseHero hero = UnitManager.Instance.SpawnHeroUnit();
+                BaseUnit hero = UnitManager.Instance.SpawnHeroUnit();
                 _tiles[tappedCoord].SetUnit(hero);
                 hero.OccupiedTile = _tiles[tappedCoord];
 
@@ -265,7 +265,7 @@ public class GridManager : MonoBehaviour
     /// Destroys the enemy prefab and updates the player's state
     /// </summary>
     public void KillEnemyAndMovePlayer() {
-        Vector2 deadEnemy = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.health == 0).ToList().First().Key;
+        Vector2 deadEnemy = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.Health == 0).ToList().First().Key;
         Tile playerTile = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Value;
         Debug.Log("There is a dead enemy");
         if (deadEnemy != null && playerTile != null) {

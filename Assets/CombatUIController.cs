@@ -97,22 +97,22 @@ public class CombatUIController : MonoBehaviour
         animationCount = 0;
         animationComplete += EndAnimation;
 
-        // decrement attack if it is a player
+        // decrement Attack if it is a player
         if (_config.attackerIsPlayer) {
             int endValue = _config.attackerEndAttackStat;
             StartCoroutine(DecrementStat(attackStatText, _config.attackerAttackStat, endValue, animationComplete, 0));
             animationCount++;
         }
 
-        // decrement armor
+        // decrement Armor
         if (_config.defenderHasArmor) {
-            Debug.Log($"CombatUIController: Defender has armor. {_config.defenderEndArmorStat}");
+            Debug.Log($"CombatUIController: Defender has Armor. {_config.defenderEndArmorStat}");
             int endValue = _config.defenderEndArmorStat;
             StartCoroutine(DecrementStat(armorStatText, _config.defenderArmorStat, endValue, animationComplete, 0));
             animationCount++;
         }
 
-        // decrement health after armor is depleted
+        // decrement Health after Armor is depleted
         int healthEndValue = _config.defenderEndHealthStat;
         if (_config.defenderHasArmor) {
             var initialPause = _config.defenderArmorStat - _config.defenderEndArmorStat;

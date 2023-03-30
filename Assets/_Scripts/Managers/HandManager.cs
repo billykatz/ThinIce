@@ -192,7 +192,6 @@ public class HandManager : MonoBehaviour
         _hoveredIndex = -1;
         _draggedIndex = -1;
         ShowNormalHand();
-        PlayerManager.Instance.HidePreview();
     }
 
     public void DidSelectCard(int index) {

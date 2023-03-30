@@ -30,12 +30,12 @@ public class CombatManager : MonoBehaviour
         defendingUnit = defenderUnit;
 
         CombatUIConfiguration config = new CombatUIConfiguration();
-        config.attackerAttackStat = attackerUnit.attack;
+        config.attackerAttackStat = attackerUnit.Attack;
         config.attackerName = attackerUnit.UnitName;
         config.attackSprite = attackerUnit.sprite;
 
-        config.defenderHealthStat = defenderUnit.health;
-        config.defenderArmorStat = defenderUnit.armor;
+        config.defenderHealthStat = defenderUnit.Health;
+        config.defenderArmorStat = defenderUnit.Armor;
         config.defenderName = defenderUnit.UnitName;
         config.defenderSprite = defenderUnit.sprite;
 
@@ -45,15 +45,15 @@ public class CombatManager : MonoBehaviour
         // combat math
         config.attackerIsPlayer = attackerUnit.Faction == Faction.Hero;
 
-        config.attackerEndAttackStat = attackerUnit.attack;
+        config.attackerEndAttackStat = attackerUnit.Attack;
         if (attackerUnit.Faction == Faction.Hero) {
-            // players lose attack stat when they attack
-            config.attackerEndAttackStat = Mathf.Max(0, attackerUnit.attack - (defenderUnit.armor + defenderUnit.health));
+            // players lose Attack stat when they Attack
+            config.attackerEndAttackStat = Mathf.Max(0, attackerUnit.Attack - (defenderUnit.Armor + defenderUnit.Health));
         }
 
-        config.defenderEndArmorStat = Mathf.Max(0, defenderUnit.armor - attackerUnit.attack);
+        config.defenderEndArmorStat = Mathf.Max(0, defenderUnit.Armor - attackerUnit.Attack);
 
-        config.defenderEndHealthStat = Mathf.Max(0, Mathf.Min(defenderUnit.health, (defenderUnit.health + defenderUnit.armor) - attackerUnit.attack));
+        config.defenderEndHealthStat = Mathf.Max(0, Mathf.Min(defenderUnit.Health, (defenderUnit.Health + defenderUnit.Armor) - attackerUnit.Attack));
 
         config.animationCompleteCallback = callback;
 
@@ -71,9 +71,9 @@ public class CombatManager : MonoBehaviour
         // and then remove the combat ui
         combatUIGameObject.SetActive(false);
 
-        attackingUnit.attack = _config.attackerEndAttackStat;
-        defendingUnit.health = _config.defenderEndHealthStat;
-        defendingUnit.armor = _config.defenderEndArmorStat;
+        attackingUnit.Attack = _config.attackerEndAttackStat;
+        defendingUnit.Health = _config.defenderEndHealthStat;
+        defendingUnit.Armor = _config.defenderEndArmorStat;
 
         // and then complete the move or wahtever
         if (_config.attackerIsPlayer) {
@@ -83,7 +83,7 @@ public class CombatManager : MonoBehaviour
         }
 
         if (OnUnitDidDie != null) {
-            if (defendingUnit.health <= 0) {
+            if (defendingUnit.Health <= 0) {
                 Debug.Log($"{defendingUnit.UnitName} did die");
                 OnUnitDidDie.Invoke(defendingUnit);
             }

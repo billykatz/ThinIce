@@ -11,6 +11,19 @@ public class GameAnimator : MonoBehaviour
     [SerializeField] private DynamicDataDictionary _dataDictionary;
     private Dictionary<int, FXView> animatingObjects = new Dictionary<int, FXView>();
     
+    
+    private Action _callback;
+
+    public void AnimateCombat(BaseUnit attackingUnit, BaseUnit defendingUnit, Action callback)
+    {
+        AnimationData data = new AnimationData();
+        data.StartPosition = attackingUnit.gameObject.transform.position;
+        data.EndPosition = defendingUnit.gameObject.transform.position;
+        _dataDictionary.Set(attackingUnit.gameObject.name, data);
+        
+        attackingUnit.PlayAttackAnimation(callback);
+    }
+    
     public void Animate(GameObject owner, AnimationData animationData, FXView fxView)
     {
         string key = "" + owner.GetInstanceID();

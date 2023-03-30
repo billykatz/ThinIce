@@ -36,7 +36,7 @@ public class TweenMixerBehaviour : PlayableBehaviour
             float normalisedTime = (float)(playableInput.GetTime() / playableInput.GetDuration ());
             float tweenProgress = input.EvaluateCurrentCurve(normalisedTime);
             
-            if (input.shouldTweenPosition)
+            if (input.shouldTweenPosition && inputWeight > 0f)
             {
                 blendedPosition = Mathfs.Lerp(input.startPosition, input.endPosition, new Vector3(tweenProgress, tweenProgress, tweenProgress)) * inputWeight;
             }

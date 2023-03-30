@@ -15,7 +15,7 @@ public class FXView : MonoBehaviour
     public void SetUp(Transform transformToAnimate)
     {
         // Take the transform and bind it to the track
-        _director.SetGenericBinding(bindingTrack , transformToAnimate);
+        _director.SetGenericBinding(bindingTrack, transformToAnimate);
     }
 
     public void Play()

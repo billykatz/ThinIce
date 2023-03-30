@@ -42,11 +42,16 @@ public class BaseUnit : MonoBehaviour
         }
     }
 
-    [SerializeField] public PlayableDirector PlayableDirector;
+    // Asset related to the timeline
+    [SerializeField] private PlayableDirector _playableDirector;
+    [SerializeField] private PlayableAsset _moveDownAnimation;
+    [SerializeField] private PlayableAsset _attackAnimation;
 
+    // gameobjects representing the stat numbers
     [SerializeField] private GameObject[] _swordNumbers;
     [SerializeField] private GameObject[] _armorNumbers;
     [SerializeField] private GameObject[] _hpNumbers;
+    
     
     private bool _firstFrameHappened = false;
 
@@ -122,7 +127,7 @@ public class BaseUnit : MonoBehaviour
         ShowArmorFor(_armor);
     }
 
-    IEnumerator animationTimer(int index, Action callback)
+    private IEnumerator animationTimer(int index, Action callback)
     {
         yield return new WaitForSeconds(index * 0.08f);
         callback?.Invoke();
@@ -139,10 +144,27 @@ public class BaseUnit : MonoBehaviour
     public virtual List<Vector2> WantToMoveTo(Tile currentTile, Tile playerTile) {
         return new List<Vector2>();
     }
-    
-    public void Play()
+
+    private Action _callback;
+    public void PlayMoveDownAnimation()
     {
-        PlayableDirector.Play();
+        _playableDirector.playableAsset = _moveDownAnimation;
+        _playableDirector.Play();
+        _playableDirector.stopped += DidStop;
+    }
+    
+    public void PlayAttackAnimation(Action callback)
+    {
+        _playableDirector.playableAsset = _attackAnimation;
+        _playableDirector.Play();
+        _callback = callback;
+        _playableDirector.stopped += DidStop;
+    }
+
+    private void DidStop(PlayableDirector director)
+    {
+        _playableDirector.stopped -= DidStop;
+        _callback?.Invoke();
     }
     
     

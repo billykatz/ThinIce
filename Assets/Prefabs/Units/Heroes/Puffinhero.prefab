@@ -1229,7 +1229,9 @@ MonoBehaviour:
   _health: 4
   _attack: 1
   _armor: 1
-  PlayableDirector: {fileID: 3750774931363768869}
+  _playableDirector: {fileID: 3750774931363768869}
+  _moveDownAnimation: {fileID: 11400000, guid: dff2f19db719c274299c94daff67c9ea, type: 2}
+  _attackAnimation: {fileID: 11400000, guid: 27f32bc099b688a408543272627d9250, type: 2}
   _swordNumbers:
   - {fileID: 778138082925730789}
   - {fileID: 7532567613417358195}
@@ -1263,7 +1265,7 @@ PlayableDirector:
   m_GameObject: {fileID: 4403784596851668710}
   m_Enabled: 1
   serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: dff2f19db719c274299c94daff67c9ea, type: 2}
+  m_PlayableAsset: {fileID: 11400000, guid: 27f32bc099b688a408543272627d9250, type: 2}
   m_InitialState: 0
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
@@ -1271,6 +1273,8 @@ PlayableDirector:
   m_SceneBindings:
   - key: {fileID: -343347379975049281, guid: dff2f19db719c274299c94daff67c9ea, type: 2}
     value: {fileID: 5873138055704716436}
+  - key: {fileID: 4664541635801219411, guid: 27f32bc099b688a408543272627d9250, type: 2}
+    value: {fileID: 6149447786164250842}
   m_ExposedReferences:
     m_References: []
 --- !u!95 &5873138055704716436

@@ -147,7 +147,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 10826158}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.1, z: 0}
+  m_LocalPosition: {x: 0, y: 1.46, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1849,7 +1849,7 @@ MonoBehaviour:
   _wallTilePrefab: {fileID: -650391582006392195, guid: 0a6cde2cf5c8b433583cd51143ac5d4a, type: 3}
   _cam: {fileID: 519420032}
   arrowController: {fileID: 8850347746501693185, guid: ea2842442abc449e6ac275601e85e828, type: 3}
-  _boardOffset: {x: 0, y: 0.5}
+  _boardOffset: {x: 0, y: 1.5}
   _movementLeft: {fileID: 632455275785946623, guid: 343c9847a1cecd349a211133670701cd, type: 3}
   _movementRight: {fileID: 1588021756827798560, guid: 343c9847a1cecd349a211133670701cd, type: 3}
   _movementUp: {fileID: -4436627590226921548, guid: 343c9847a1cecd349a211133670701cd, type: 3}
@@ -3003,7 +3003,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1232408447
 RectTransform:
   m_ObjectHideFlags: 0

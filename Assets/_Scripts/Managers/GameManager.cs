@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
         await Task.Delay(100);
         switch (currentGameState) {
             case GameState.GenerateGrid:
-                ChangeState(GameState.SpawnEnemies);
+                ChangeState(GameState.PlaceHero);
                 break;
             case GameState.SpawnEnemies:
                 ChangeState(GameState.PlaceHero);
@@ -78,11 +78,10 @@ public class GameManager : MonoBehaviour
         MenuManager.Instance.ShowTurnPhase(newState);
         switch (newState) {
             case GameState.GenerateGrid:
-                GridManager.Instance.GenerateGrid();
+                GridManager.Instance.LoadGrid();
                 break;
             case GameState.SpawnEnemies:
-                UnitManager.Instance.SpawnEnemyUnit();
-                UnitManager.Instance.SpawnEnemyUnit();
+                GridManager.Instance.LoadEnemies();
                 break;
             case GameState.SpawnHazards:
                 break;

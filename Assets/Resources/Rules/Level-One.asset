@@ -23,3 +23,15 @@ MonoBehaviour:
   BaseChanceSpawnWall: 0.25
   BaseChanceSpawnEnemy: 0.1
   ChanceDeltaSpawnEnemy: 0.1
+  Rows:
+  - {fileID: 11400000, guid: 309f8591d36c0ec4da5275f664fd4b3e, type: 2}
+  - {fileID: 11400000, guid: 9ea98f785a42e7548969c83509ec9299, type: 2}
+  - {fileID: 11400000, guid: 3aa4bc13be55cfe42ae90daaaaa7d971, type: 2}
+  - {fileID: 11400000, guid: 93bc328ea0f16234caca4e2ce8345144, type: 2}
+  - {fileID: 11400000, guid: bdee145137e99c84e99bae973ffab256, type: 2}
+  - {fileID: 11400000, guid: cd80597229c4a2640bbe8b3c03641b1a, type: 2}
+  - {fileID: 11400000, guid: d980ac5b774d48c4ca3f0a97adc1b246, type: 2}
+  - {fileID: 11400000, guid: b15926341c6791b40a5ed73d14465889, type: 2}
+  - {fileID: 11400000, guid: a7862dabb4405de43ab1d5a91507ebf8, type: 2}
+  - {fileID: 11400000, guid: a0a5ce27dca4a994c800746a765903ef, type: 2}
+  - {fileID: 11400000, guid: 3e6b7411c6860dc4889f87c37b20a658, type: 2}

@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b95bb9cb0ab1438e844515a2419c327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayableDirector: {fileID: 3389270671205136117}
+  _playableDirector: {fileID: 3389270671205136117}
   MoveDownTimeline: {fileID: 11400000, guid: 48e598b078f7e83428f5d2ec16f879de, type: 2}
   EntranceTimeline: {fileID: 11400000, guid: b2fcacc9dba61d14094d0be9370ff4f2, type: 2}
   ExitTimeline: {fileID: 11400000, guid: 398c1052f8b86724c805f34854a3b3ef, type: 2}

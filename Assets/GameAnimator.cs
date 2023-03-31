@@ -14,14 +14,14 @@ public class GameAnimator : MonoBehaviour
     
     private Action _callback;
 
-    public void AnimateCombat(BaseUnit attackingUnit, BaseUnit defendingUnit, Action callback)
+    public void AnimateCombat(BaseUnit attackingUnit, BaseUnit defendingUnit, Action attackHitCallback, Action actionFinishedCallback)
     {
         AnimationData data = new AnimationData();
         data.StartPosition = attackingUnit.gameObject.transform.position;
         data.EndPosition = defendingUnit.gameObject.transform.position;
         _dataDictionary.Set(attackingUnit.gameObject.name, data);
         
-        attackingUnit.PlayAttackAnimation(callback);
+        attackingUnit.PlayAttackAnimation(attackHitCallback, actionFinishedCallback);
     }
     
     public void Animate(GameObject owner, AnimationData animationData, FXView fxView)
@@ -44,6 +44,18 @@ public class GameAnimator : MonoBehaviour
         newFXView.Play();
     }
 
+    public void Animate(FXView fxView, AnimationData animationData)
+    {
+        string key = "" + fxView.gameObject.GetInstanceID();
+        _dataDictionary.Set(key, animationData);
+        
+        fxView.DidStop += Stopped;
+        fxView.name = key;
+        animatingObjects[fxView.gameObject.GetInstanceID()] = fxView;
+        fxView.Play();
+    }
+
+    
     public void CancelAnimation(GameObject owner)
     {
         animatingObjects[owner.GetInstanceID()].Cancel();

@@ -947,7 +947,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 1
+  orthographic: 0
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -2330,7 +2330,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1131047756
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2677,6 +2677,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 703258010}
+  _damageBadgePrefab: {fileID: 5299879801046840983, guid: 0c065be41081ac742a391bc2247f6efa, type: 3}
 --- !u!1 &1470949060
 GameObject:
   m_ObjectHideFlags: 0
@@ -2984,7 +2985,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Hero Turn
+  m_Text: Draw Hand
 --- !u!222 &1694836048
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3447,7 +3448,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Play your second card (the unplayed card is discarded)
+  m_Text: Place Buck in the highlighted area
 --- !u!222 &1872993506
 CanvasRenderer:
   m_ObjectHideFlags: 0

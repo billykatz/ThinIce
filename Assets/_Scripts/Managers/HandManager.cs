@@ -82,17 +82,22 @@ public class HandManager : MonoBehaviour
         DidHold.action.performed -= Hold;
         DidHold.action.canceled -= HoldCancelled;
     }
-    
+
     /// <summary>
     /// Looks for clicks on the screen to handle deselection.  If the player clicks or taps on the UI then nothing is deselcted so the player can still tap on the card detail view. 
     /// </summary>
-    private void Update() {
-        if (_playerIsPlayingCard) { return; }
+    private void Update()
+    {
+        if (_playerIsPlayingCard)
+        {
+            return;
+        }
 
         if (_holdStarted)
         {
             float z = cards[_draggedIndex].transform.position.z;
-            Vector3 newPos = Camera.main.ScreenToWorldPoint(MousePosition.action.ReadValue<Vector2>());
+            Vector3 newPos = GetWorldPositionOnPlane(MousePosition.action.ReadValue<Vector2>(), z);
+            // Vector3 newPos = Camera.main.ScreenToWorldPoint();
             newPos.z = z;
             _gameAnimator.CancelAnimation(cards[_draggedIndex].cardParent);
             cards[_draggedIndex].cardParent.transform.position = newPos;
@@ -105,9 +110,27 @@ public class HandManager : MonoBehaviour
                 ShowOptionAreas();
                 _delayOptionAreTimer = 0;
             }
-            
+
         }
     }
+
+
+    public Vector3 GetWorldPositionOnPlane(Vector3 screenPosition, float z) {
+        Ray ray = Camera.main.ScreenPointToRay(screenPosition); 
+        Plane xy = new Plane(Vector3.forward, new Vector3(0, 0, z));
+        float distance;
+        xy.Raycast(ray, out distance);
+        return ray.GetPoint(distance);
+    }
+    
+    public Ray GetRayWorldPositionOnPlane(Vector3 screenPosition, float z) {
+        Ray ray = Camera.main.ScreenPointToRay(screenPosition); 
+        Plane xy = new Plane(Vector3.forward, new Vector3(0, 0, z));
+        float distance;
+        xy.Raycast(ray, out distance);
+        return ray;
+    }
+
     
     #endregion
 
@@ -151,7 +174,7 @@ public class HandManager : MonoBehaviour
             return;
 
         Vector2 mousePos = MousePosition.action.ReadValue<Vector2>();
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        Ray ray = GetRayWorldPositionOnPlane(mousePos, 0);// Camera.main.ScreenPointToRay(mousePos);
         for (int i = 0; i < cards.Count; i++)
         {
             if (cards[i].DoesRayCollides(ray) == _selectedIndex)
@@ -277,7 +300,7 @@ public class HandManager : MonoBehaviour
 
         // measure the distance from the pointer both option areas.
         Vector2 pointerPos = MousePosition.action.ReadValue<Vector2>();
-        Vector3 pointerWorldPos = Camera.main.ScreenToWorldPoint(pointerPos);
+        Vector3 pointerWorldPos = GetWorldPositionOnPlane(pointerPos, -1);// Camera.main.ScreenToWorldPoint(pointerPos);
         float distanceToShield = Vector2.Distance(pointerWorldPos, _shieldOptionOrigin);
         float distanceToSword = Vector2.Distance(pointerWorldPos, _swordOptionOrigin);
 

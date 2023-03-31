@@ -79,12 +79,14 @@ public class PlayerManager : MonoBehaviour
         // destroy the last one
         if (previewUnit != null && previewUnit.gameObject != null)
         {
+            heroUnit.gameObject.SetActive(true);
             Destroy(previewUnit.gameObject);
         }
 
         // set the spawn pos to be slightly closer to the camera above the actual unit
         Vector3 spawnPos = heroUnit.transform.position;
-        spawnPos.z -= 1f;
+        // spawnPos.z -= 0.2f;
+        heroUnit.gameObject.SetActive(false);
         previewUnit = Instantiate(_baseHeroPrefab, spawnPos, Quaternion.identity).GetComponent<BaseUnit>();
 
         int previousArmor = heroUnit.Armor;
@@ -103,6 +105,7 @@ public class PlayerManager : MonoBehaviour
 
         if (target == ModifyTarget.None)
         {
+            heroUnit.gameObject.SetActive(true);
             Destroy(previewUnit.gameObject);
         }
     }
@@ -112,6 +115,7 @@ public class PlayerManager : MonoBehaviour
         // destroy the last one
         if (previewUnit != null && previewUnit.gameObject != null)
         {
+            heroUnit.gameObject.SetActive(true);
             Destroy(previewUnit.gameObject);
         }
         

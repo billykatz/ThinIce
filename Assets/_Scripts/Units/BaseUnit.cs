@@ -145,7 +145,8 @@ public class BaseUnit : MonoBehaviour
         return new List<Vector2>();
     }
 
-    private Action _callback;
+    private Action _attackFinishedCallback;
+    private Action _attackHitCallback;
     public void PlayMoveDownAnimation()
     {
         _playableDirector.playableAsset = _moveDownAnimation;
@@ -153,18 +154,29 @@ public class BaseUnit : MonoBehaviour
         _playableDirector.stopped += DidStop;
     }
     
-    public void PlayAttackAnimation(Action callback)
+    public void PlayAttackAnimation(Action attackHitCallback, Action attackFinishedCallback)
     {
         _playableDirector.playableAsset = _attackAnimation;
         _playableDirector.Play();
-        _callback = callback;
+        _attackHitCallback = attackHitCallback;
+        _attackFinishedCallback = attackFinishedCallback;
         _playableDirector.stopped += DidStop;
     }
 
     private void DidStop(PlayableDirector director)
     {
         _playableDirector.stopped -= DidStop;
-        _callback?.Invoke();
+        _attackFinishedCallback?.Invoke();
+        _attackFinishedCallback = null;
+    }
+
+    /// <summary>
+    ///  called by a signal emitter on the timeline to let us know when the attack hit
+    /// </summary>
+    public void AttackDidHit()
+    {
+        _attackHitCallback?.Invoke();
+        _attackHitCallback = null;
     }
     
     

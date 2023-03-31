@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _director: {fileID: 0}
   bindingTrack: {fileID: -1515887255801117272, guid: ec781d2d63030be4ca40519e306b4ac0, type: 2}
+  _textfield: {fileID: 0}
 --- !u!320 &421669177868371049
 PlayableDirector:
   m_ObjectHideFlags: 0
@@ -61,6 +62,8 @@ PlayableDirector:
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
-  m_SceneBindings: []
+  m_SceneBindings:
+  - key: {fileID: -3086336537995148193, guid: 1c254b1e38f91a94bacf1ab735f8c19e, type: 2}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References: []

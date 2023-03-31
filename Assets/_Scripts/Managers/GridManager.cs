@@ -563,19 +563,11 @@ public class GridManager : MonoBehaviour
         //TODO we should auto move the player if they choose a card with no choice
         if (gridMovements.Contains(GridMovement.None))
         {
-            ArrowTappedWrapper(GridMovement.None);
+            ArrowTapped(GridMovement.None);
         } else if (gridMovements.Count == 1)
         {
-            ArrowTappedWrapper(gridMovements[0]);
+            ArrowTapped(gridMovements[0]);
         }
-    }
-
-    async void ArrowTappedWrapper(GridMovement gridMovement)
-    {
-        // this is just a hair longer than the tile down animation. 
-        // but of a hack until we figure out the animation and animation completion hooks
-        await Task.Delay(500);
-        ArrowTapped(gridMovement);
     }
 
     public void ArrowTapped(GridMovement gridMovement) {

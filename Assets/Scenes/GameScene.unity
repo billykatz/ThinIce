@@ -1518,6 +1518,8 @@ MonoBehaviour:
   _movementRight: {fileID: 1588021756827798560, guid: 343c9847a1cecd349a211133670701cd, type: 3}
   _movementUp: {fileID: -4436627590226921548, guid: 343c9847a1cecd349a211133670701cd, type: 3}
   _movementDown: {fileID: 5916017782020407967, guid: 343c9847a1cecd349a211133670701cd, type: 3}
+  _animator: {fileID: 703258010}
+  _moveToFXView: {fileID: 1375288930}
   BottomMostRowIndex: 0
 --- !u!1001 &703258009
 PrefabInstance:
@@ -2632,6 +2634,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1298095970}
   m_CullTransparentMesh: 1
+--- !u!114 &1375288930 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1038166600437575955, guid: 66d1b81e82ff83b4dbc9d7194e94c4c8, type: 3}
+  m_PrefabInstance: {fileID: 60781898579650215}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c5e63550b688104885a3878456ccb3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1407136858
 GameObject:
   m_ObjectHideFlags: 0

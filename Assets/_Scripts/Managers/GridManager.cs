@@ -358,7 +358,7 @@ public class GridManager : MonoBehaviour
 
                 if (playerTile.coord == newPlayerCoord || !_tiles[newPlayerCoord].isWalkable)
                 {
-                    // we played the "stay" card or we tryied to move into a non-walkable space, just finish the movement
+                    // player played the "stay" card or player tried to move into a non-walkable space, just finish the movement
                     FinishMovement();
                 }
                 else
@@ -369,8 +369,6 @@ public class GridManager : MonoBehaviour
                     if (movement == GridMovement.Up)
                     {
                         MovePlayerUpGrid(playerUnit, playerTile, _tiles[newPlayerCoord]);
-                        FinishMovement();
-
                     }
                     else
                     {
@@ -459,6 +457,7 @@ public class GridManager : MonoBehaviour
         
         // update the bottom most row
         BottomMostRowIndex++;
+        FinishMovement();
 
     }
 

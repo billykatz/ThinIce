@@ -26,22 +26,21 @@ public class GameAnimator : MonoBehaviour
     
     public void Animate(GameObject owner, AnimationData animationData, FXView fxView)
     {
+        Animate(owner, animationData, fxView, () => { });
+    }
+    
+    public void Animate(GameObject owner, AnimationData animationData, FXView fxView, Action animationCompleteCallback)
+    {
         string key = "" + owner.GetInstanceID();
         _dataDictionary.Set(key, animationData);
 
         FXView newFXView = Instantiate(fxView, Vector3.zero, Quaternion.identity);
         newFXView.name = key;
         newFXView.SetUp(owner.transform);
-
-        // FXView test;
-        // if (animatingObjects.TryGetValue(owner.GetInstanceID(), out test))
-        // {
-        //     Debug.Log("Animator: This object is already being animated.");
-        //     return;
-        // }
+        
         newFXView.DidStop += Stopped;
         animatingObjects[owner.GetInstanceID()] = newFXView;
-        newFXView.Play();
+        newFXView.Play(animationCompleteCallback);
     }
 
     public void Animate(FXView fxView, AnimationData animationData)

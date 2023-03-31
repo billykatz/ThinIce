@@ -14,6 +14,8 @@ public class FXView : MonoBehaviour
     [SerializeField] private TextMeshPro _textfield;
     public Action<FXView> DidStop;
     
+    private Action _animationComplete;
+    
     public void SetUp(Transform transformToAnimate)
     {
         // Take the transform and bind it to the track
@@ -24,6 +26,14 @@ public class FXView : MonoBehaviour
     {
         _director.Play();
         _director.stopped += Stopped;
+
+    }
+    
+    public void Play(Action animationCompleteCallback)
+    {
+        _director.Play();
+        _director.stopped += Stopped;
+        _animationComplete = animationCompleteCallback;
 
     }
     
@@ -38,6 +48,7 @@ public class FXView : MonoBehaviour
     public void Stopped(PlayableDirector director)
     {
         DidStop.Invoke(this);
+        _animationComplete?.Invoke();
     }
 
     public void SetText(string text)

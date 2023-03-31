@@ -24,6 +24,9 @@ public class GridManager : MonoBehaviour
     [SerializeField] private InputActionReference _movementUp;
     [SerializeField] private InputActionReference _movementDown;
 
+    [SerializeField] private GameAnimator _animator;
+    [SerializeField] private FXView _moveToFXView;
+    
     public int BottomMostRowIndex;
     
     // the number of visible rows
@@ -352,43 +355,61 @@ public class GridManager : MonoBehaviour
 
             } else {
                 Debug.Log($"GridManager: Did finish moving");
-                //TODO eventually make it so the player cant got below the board 
-                if (!_tiles[newPlayerCoord].isWalkable) {
-                    // dont let player go into walls
 
-                } else {
-                    // valid move no combat
-                    BaseUnit playerUnit = GetHeroUnit();
-                    playerTile.OccupiedUnit = null;
-                    
-                    // if we are moving up then move the board down
-                    if (movement == GridMovement.Up)
-                    {
-                        MovePlayerUpGrid(playerUnit, playerTile, _tiles[newPlayerCoord]);
-                    }
-                    else
-                    {
-                        _tiles[newPlayerCoord].SetUnit(playerUnit);
-                    }
-                }
-
-                // TODO: Remove hack that we call this from the grid manager
-                if (GetHeroTile() is GoalTile)
+                if (playerTile.coord == newPlayerCoord || !_tiles[newPlayerCoord].isWalkable)
                 {
-                    WinLoseManager.Instance.GameWin();
+                    // we played the "stay" card or we tryied to move into a non-walkable space, just finish the movement
+                    FinishMovement();
                 }
                 else
                 {
-                    // send it back to the CardRule controller
-                    CardRuleManager.Instance.DidCompleteMovement();
+                    // valid move no combat
+                    BaseUnit playerUnit = GetHeroUnit();
+                    playerTile.OccupiedUnit = null;
+                    if (movement == GridMovement.Up)
+                    {
+                        MovePlayerUpGrid(playerUnit, playerTile, _tiles[newPlayerCoord]);
+                        FinishMovement();
+
+                    }
+                    else
+                    {
+                        // animate the hero to move up
+                        AnimationData data = new AnimationData();
+                        data.StartPosition = playerTile.transform.position;
+                        data.EndPosition = _tiles[newPlayerCoord].transform.position;
+                        _animator.Animate(playerUnit.gameObject, data, _moveToFXView, () =>
+                        {
+                            _tiles[newPlayerCoord].SetUnit(playerUnit);
+
+                            FinishMovement();
+                        });
+                    }
                 }
+
             }
         } else {
             // invalid move
             Debug.Log($"GridManager: Invalid move");
+            currentlyMoving = false;
+            
         }
         
+    }
+
+    private void FinishMovement()
+    {
         currentlyMoving = false;
+        // TODO: Remove hack that we call this from the grid manager
+        if (GetHeroTile() is GoalTile)
+        {
+            WinLoseManager.Instance.GameWin();
+        }
+        else
+        {
+            // send it back to the CardRule controller
+            CardRuleManager.Instance.DidCompleteMovement();
+        }
     }
 
     /// <summary>
@@ -406,7 +427,15 @@ public class GridManager : MonoBehaviour
 
         if (_stopGenerating)
         {
-            playerUnit.transform.position = newPlayerTile.transform.position;
+            
+            AnimationData data = new AnimationData();
+            data.StartPosition = oldPlayerTile.transform.position;
+            data.EndPosition = newPlayerTile.transform.position;
+            _animator.Animate(playerUnit.gameObject, data, _moveToFXView, () =>
+            {
+                FinishMovement();
+            });
+            
             return;
         }
 

@@ -26,11 +26,11 @@ public class CombatManager : MonoBehaviour
            {
                AnimationData data = new AnimationData();
                data.StartPosition = defenderUnit.transform.position;
-               data.EndPosition = defenderUnit.transform.position;
-               GameObject damageBadge = Instantiate(_damageBadgePrefab, defenderUnit.transform.position, Quaternion.identity);
-                FXView view = damageBadge.GetComponent<FXView>();
-                view.SetUp(damageBadge.transform);
-                view.SetText("-" + attackDamage);
+               data.EndPosition = defenderUnit.transform.position; 
+               GameObject damageBadge = Instantiate(_damageBadgePrefab, defenderUnit.transform.position, Quaternion.identity); 
+               FXView view = damageBadge.GetComponent<FXView>();
+               view.SetUp(damageBadge.transform);
+               view.SetText("-" + attackDamage);
                _animator.Animate(view, data);
            },
            () =>

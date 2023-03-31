@@ -43,10 +43,11 @@ public class UnitManager : MonoBehaviour
 
     }
 
-    public BaseHero SpawnHeroUnit() {
+    public BaseUnit SpawnHeroUnit() {
         var randomPrefab =  GetRandomUnit<BaseUnit>(Faction.Hero);
         var spawnedUnit = Instantiate(randomPrefab);
-        return (BaseHero)spawnedUnit;
+        // spawnedUnit.SetStats();
+        return spawnedUnit;
     }
 
     private T GetRandomUnit<T>(Faction faction) where T: BaseUnit {

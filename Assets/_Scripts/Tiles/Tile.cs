@@ -71,7 +71,7 @@ public abstract class Tile : MonoBehaviour
         PlayableDirector.Play();
         if (OccupiedUnit is BaseEnemy)
         {
-            OccupiedUnit.Play();
+            OccupiedUnit.PlayMoveDownAnimation();
         }
     }
     
@@ -87,7 +87,7 @@ public abstract class Tile : MonoBehaviour
         PlayableDirector.Play();
         if (OccupiedUnit is BaseEnemy)
         {
-            OccupiedUnit.Play();
+            OccupiedUnit.PlayMoveDownAnimation();
         }
     }
 

@@ -58,8 +58,8 @@ public class WinLoseManager : MonoBehaviour
             Debug.Log($"WinLoseManager: shield");
             shieldReward.SelectButton();
             selectedButton = shieldReward;
-        } else if (id == "attack" && isSelected) {
-            Debug.Log($"WinLoseManager: attack");
+        } else if (id == "Attack" && isSelected) {
+            Debug.Log($"WinLoseManager: Attack");
             attackReward.SelectButton();
             selectedButton = attackReward;
         } 

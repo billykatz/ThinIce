@@ -32,7 +32,7 @@ public class MermaidCupEnemy : BaseEnemy
 
     public override List<Vector2> WantToMoveTo(Tile currentTile, Tile playerTile)
     {
-        // get attack tiles from the player tile to know where we want to be.
+        // get Attack tiles from the player tile to know where we want to be.
         List<Vector2> idealAttackTiles = AttackTiles(playerTile);  
         int width = _levelRules.Width;
         int minHeight = GridManager.Instance.BottomMostRowIndex;

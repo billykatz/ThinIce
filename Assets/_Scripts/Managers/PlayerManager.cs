@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,29 +23,26 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private Text healthText;
     [SerializeField] private Text armorText;
     [SerializeField] private Text attackText;
-
-    [SerializeField] private GameObject previewPlayerStats;
-    [SerializeField] private Text previewHealthText;
-    [SerializeField] private Text previewArmorText;
-    [SerializeField] private Text previewAttackText;
-
-
+    
     [SerializeField] private Color increaseColor;
     [SerializeField] private Color decreaseColor;
     [SerializeField] private Color noChangeColor;
-
+    [SerializeField] private GameObject _baseHeroPrefab;
+    
     private BaseUnit heroUnit;
     private BaseUnit previewUnit;
 
+    private float _lastTimePreviewShown = 0.25f;
+
     private int armor {
         get {
-            return heroUnit.armor;
+            return heroUnit.Armor;
         }
     }
 
     private int attack {
         get {
-            return heroUnit.attack;
+            return heroUnit.Attack;
         }
     }
 
@@ -57,26 +53,72 @@ public class PlayerManager : MonoBehaviour
         healthText.text = $"-";
         armorText.text = $"-";
         attackText.text = $"-";
-        previewUnit = new BaseUnit();
+        previewUnit = Instantiate(_baseHeroPrefab, new Vector3(-100, -100, 0), Quaternion.identity).GetComponent<BaseUnit>();
     }
 
     public void HeroUnitUpdated() {
         heroUnit = GridManager.Instance.GetHeroUnit();
 
-        healthText.text = $"{heroUnit.health}";
-        armorText.text = $"{heroUnit.armor}";
-        attackText.text = $"{heroUnit.attack}";
+        healthText.text = $"{heroUnit.Health}";
+        armorText.text = $"{heroUnit.Armor}";
+        attackText.text = $"{heroUnit.Attack}";
     }
 
     public void ShowModifierPreview(CombinedCard card, ModifyTarget target)
     {
-        previewUnit.armor = heroUnit.armor;
-        previewUnit.health = heroUnit.health;
-        previewUnit.attack = heroUnit.attack;
-        ShowStats(attack, armor, card, target, previewUnit);
+        float previewThreshold = Time.time - _lastTimePreviewShown;
+        if (previewThreshold > 0.25f)
+        {
+            _lastTimePreviewShown = Time.time;
+        }
+        else
+        {
+            return;
+        }
+        
+        // destroy the last one
+        if (previewUnit != null && previewUnit.gameObject != null)
+        {
+            heroUnit.gameObject.SetActive(true);
+            Destroy(previewUnit.gameObject);
+        }
+
+        // set the spawn pos to be slightly closer to the camera above the actual unit
+        Vector3 spawnPos = heroUnit.transform.position;
+        // spawnPos.z -= 0.2f;
+        heroUnit.gameObject.SetActive(false);
+        previewUnit = Instantiate(_baseHeroPrefab, spawnPos, Quaternion.identity).GetComponent<BaseUnit>();
+
+        int previousArmor = heroUnit.Armor;
+        int previousHealth = heroUnit.Health;
+        int previousAttack = heroUnit.Attack;
+        
+        previewUnit.Armor = previousArmor;
+        previewUnit.Health = previousHealth;
+        previewUnit.Attack = previousAttack;
+        
+        // update the stats based on the card to preview
+        UpdateNewStats(card, target, previewUnit);
+        
+        // animate the change
+        previewUnit.AnimateStatChange(heroUnit);
+
+        if (target == ModifyTarget.None)
+        {
+            heroUnit.gameObject.SetActive(true);
+            Destroy(previewUnit.gameObject);
+        }
     }
 
     public void PlayedCard(CombinedCard card, ModifyTarget target) {
+        
+        // destroy the last one
+        if (previewUnit != null && previewUnit.gameObject != null)
+        {
+            heroUnit.gameObject.SetActive(true);
+            Destroy(previewUnit.gameObject);
+        }
+        
         StartCoroutine(UpdateCurrentStats(card, target, heroUnit));
     }
 
@@ -108,10 +150,13 @@ public class PlayerManager : MonoBehaviour
         return newStat;
     }
 
-    private void ShowStats(int currentAttack, int currentArmor, CombinedCard card, ModifyTarget target, BaseUnit unit)
+    private void UpdateNewStats(CombinedCard card, ModifyTarget target, BaseUnit unit)
     {
-        int newAttack = currentAttack;
-        int newArmor = currentArmor;
+        int currentAttack = unit.Attack;
+        int currentArmor = unit.Armor;
+        
+        int newAttack = unit.Attack;
+        int newArmor = unit.Armor;
 
         if (target == ModifyTarget.Attack)
         {
@@ -139,23 +184,16 @@ public class PlayerManager : MonoBehaviour
         }
         armorText.text = $"{newArmor}";
 
-        unit.armor = newArmor;
-        unit.attack = newAttack;
-
+        unit.Armor = newArmor;
+        unit.Attack = newAttack;
     }
     private IEnumerator UpdateCurrentStats(CombinedCard card, ModifyTarget target, BaseUnit unit) {
-        previewPlayerStats.SetActive(false);
-        ShowStats(attack, armor, card, target, unit);
+        UpdateNewStats(card, target, unit);
 
         yield return new WaitForSeconds(2.5f);
 
         armorText.color = noChangeColor;
         attackText.color = noChangeColor;
 
-    }
-    
-
-    public void HidePreview() {
-        previewPlayerStats.SetActive(false);
     }
 }

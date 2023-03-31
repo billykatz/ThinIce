@@ -24,6 +24,9 @@ public class GridManager : MonoBehaviour
     [SerializeField] private InputActionReference _movementUp;
     [SerializeField] private InputActionReference _movementDown;
 
+    [SerializeField] private GameAnimator _animator;
+    [SerializeField] private FXView _moveToFXView;
+    
     public int BottomMostRowIndex;
     
     // the number of visible rows
@@ -90,7 +93,7 @@ public class GridManager : MonoBehaviour
     // grab all the enemy tiles
     public List<Tile> GetEnemyUnits() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy).Select(s=>s.Value).ToList(); }
     
-    public bool CheckForDeadEnemy() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.health == 0).Count() > 0; }
+    public bool CheckForDeadEnemy() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.Health == 0).Count() > 0; }
 
     public void GenerateGrid() {
         _tiles = new Dictionary<Vector2, Tile>();
@@ -226,7 +229,7 @@ public class GridManager : MonoBehaviour
         if (GameManager.Instance.GameState == GameState.PlaceHero) {
             if (PotentialPlayerStartingPositions().Contains(tappedCoord)) {
                 Debug.Log($"Tile at {x}, {y} was tapped");
-                BaseHero hero = UnitManager.Instance.SpawnHeroUnit();
+                BaseUnit hero = UnitManager.Instance.SpawnHeroUnit();
                 _tiles[tappedCoord].SetUnit(hero);
                 hero.OccupiedTile = _tiles[tappedCoord];
 
@@ -265,7 +268,7 @@ public class GridManager : MonoBehaviour
     /// Destroys the enemy prefab and updates the player's state
     /// </summary>
     public void KillEnemyAndMovePlayer() {
-        Vector2 deadEnemy = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.health == 0).ToList().First().Key;
+        Vector2 deadEnemy = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.Health == 0).ToList().First().Key;
         Tile playerTile = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Value;
         Debug.Log("There is a dead enemy");
         if (deadEnemy != null && playerTile != null) {
@@ -352,43 +355,59 @@ public class GridManager : MonoBehaviour
 
             } else {
                 Debug.Log($"GridManager: Did finish moving");
-                //TODO eventually make it so the player cant got below the board 
-                if (!_tiles[newPlayerCoord].isWalkable) {
-                    // dont let player go into walls
 
-                } else {
+                if (playerTile.coord == newPlayerCoord || !_tiles[newPlayerCoord].isWalkable)
+                {
+                    // player played the "stay" card or player tried to move into a non-walkable space, just finish the movement
+                    FinishMovement();
+                }
+                else
+                {
                     // valid move no combat
                     BaseUnit playerUnit = GetHeroUnit();
                     playerTile.OccupiedUnit = null;
-                    
-                    // if we are moving up then move the board down
                     if (movement == GridMovement.Up)
                     {
                         MovePlayerUpGrid(playerUnit, playerTile, _tiles[newPlayerCoord]);
                     }
                     else
                     {
-                        _tiles[newPlayerCoord].SetUnit(playerUnit);
+                        // animate the hero to move up
+                        AnimationData data = new AnimationData();
+                        data.StartPosition = playerTile.transform.position;
+                        data.EndPosition = _tiles[newPlayerCoord].transform.position;
+                        _animator.Animate(playerUnit.gameObject, data, _moveToFXView, () =>
+                        {
+                            _tiles[newPlayerCoord].SetUnit(playerUnit);
+
+                            FinishMovement();
+                        });
                     }
                 }
 
-                // TODO: Remove hack that we call this from the grid manager
-                if (GetHeroTile() is GoalTile)
-                {
-                    WinLoseManager.Instance.GameWin();
-                }
-                else
-                {
-                    // send it back to the CardRule controller
-                    CardRuleManager.Instance.DidCompleteMovement();
-                }
             }
         } else {
             // invalid move
             Debug.Log($"GridManager: Invalid move");
+            currentlyMoving = false;
+            
         }
         
+    }
+
+    private void FinishMovement()
+    {
         currentlyMoving = false;
+        // TODO: Remove hack that we call this from the grid manager
+        if (GetHeroTile() is GoalTile)
+        {
+            WinLoseManager.Instance.GameWin();
+        }
+        else
+        {
+            // send it back to the CardRule controller
+            CardRuleManager.Instance.DidCompleteMovement();
+        }
     }
 
     /// <summary>
@@ -406,7 +425,15 @@ public class GridManager : MonoBehaviour
 
         if (_stopGenerating)
         {
-            playerUnit.transform.position = newPlayerTile.transform.position;
+            
+            AnimationData data = new AnimationData();
+            data.StartPosition = oldPlayerTile.transform.position;
+            data.EndPosition = newPlayerTile.transform.position;
+            _animator.Animate(playerUnit.gameObject, data, _moveToFXView, () =>
+            {
+                FinishMovement();
+            });
+            
             return;
         }
 
@@ -430,6 +457,7 @@ public class GridManager : MonoBehaviour
         
         // update the bottom most row
         BottomMostRowIndex++;
+        FinishMovement();
 
     }
 

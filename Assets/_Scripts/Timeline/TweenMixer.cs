@@ -23,7 +23,7 @@ public class TweenMixerBehaviour : PlayableBehaviour
         float positionTotalWeight = 0f;
         float rotationTotalWeight = 0f;
 
-        Vector3 blendedPosition = Vector3.zero;
+        Vector3 blendedPosition = trackBinding.position;
         Quaternion blendedRotation = new Quaternion(0f,0f,0f,0f);
         
         for (int i = 0; i < inputCount; i++)
@@ -36,7 +36,7 @@ public class TweenMixerBehaviour : PlayableBehaviour
             float normalisedTime = (float)(playableInput.GetTime() / playableInput.GetDuration ());
             float tweenProgress = input.EvaluateCurrentCurve(normalisedTime);
             
-            if (input.shouldTweenPosition)
+            if (input.shouldTweenPosition && inputWeight > 0f)
             {
                 blendedPosition = Mathfs.Lerp(input.startPosition, input.endPosition, new Vector3(tweenProgress, tweenProgress, tweenProgress)) * inputWeight;
             }

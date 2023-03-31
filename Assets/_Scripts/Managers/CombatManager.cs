@@ -8,88 +8,56 @@ public class CombatManager : MonoBehaviour
 {
    public static CombatManager Instance;
 
-   [SerializeField] private Canvas canvas;
-   [SerializeField] private GameObject combatUIGameObject;
-   [SerializeField] private CombatUIController combatUIController;
+   [SerializeField] private GameAnimator _animator;
+   [SerializeField] private GameObject _damageBadgePrefab;
 
    private void Awake() {
        Instance = this;
        Debug.Log("Combat Manager Awake()");
    }
 
-   private BaseUnit attackingUnit;
-   private BaseUnit defendingUnit;
+   public void ShowCombat(BaseUnit attackerUnit, BaseUnit defenderUnit, Action callback)
+   {
 
-   private CombatUIConfiguration _config;
+       int attackDamage = attackerUnit.Attack;
 
-   public static event Action<BaseUnit> OnUnitDidDie;
+       _animator.AnimateCombat(attackerUnit, defenderUnit,
+           () =>
+           {
+               AnimationData data = new AnimationData();
+               data.StartPosition = defenderUnit.transform.position;
+               data.EndPosition = defenderUnit.transform.position; 
+               GameObject damageBadge = Instantiate(_damageBadgePrefab, defenderUnit.transform.position, Quaternion.identity); 
+               FXView view = damageBadge.GetComponent<FXView>();
+               view.SetUp(damageBadge.transform);
+               view.SetText("-" + attackDamage);
+               _animator.Animate(view, data);
+           },
+           () =>
+           {
+               int defenderHealthPlusArmor = defenderUnit.Health + defenderUnit.Armor;
+               // update defender stats
+               bool defenderHasArmor = attackerUnit.Faction != Faction.Hero;
+               if (defenderHasArmor)
+               {
+                   defenderUnit.Armor = Mathf.Max(0, defenderUnit.Armor - attackerUnit.Attack);
+                   defenderUnit.Health = Mathf.Max(0, defenderUnit.Health + defenderUnit.Armor - attackerUnit.Attack);
+               }
+               else
+               {
+                   defenderUnit.Health = Mathf.Max(0, defenderUnit.Health - attackerUnit.Attack);
+               }
 
-   public void ShowCombat(BaseUnit attackerUnit, BaseUnit defenderUnit, Action callback) {
-        combatUIGameObject.SetActive(true);
-        attackingUnit = attackerUnit;
-        defendingUnit = defenderUnit;
+               if (attackerUnit.Faction == Faction.Hero)
+               {
+                   // players lose Attack stat when they Attack
+                   attackerUnit.Attack = Mathf.Max(0, attackerUnit.Attack - defenderHealthPlusArmor);
+               }
 
-        CombatUIConfiguration config = new CombatUIConfiguration();
-        config.attackerAttackStat = attackerUnit.attack;
-        config.attackerName = attackerUnit.UnitName;
-        config.attackSprite = attackerUnit.sprite;
 
-        config.defenderHealthStat = defenderUnit.health;
-        config.defenderArmorStat = defenderUnit.armor;
-        config.defenderName = defenderUnit.UnitName;
-        config.defenderSprite = defenderUnit.sprite;
+               PlayerManager.Instance.HeroUnitUpdated();
 
-        // hacky for now
-        config.defenderHasArmor = attackerUnit.Faction != Faction.Hero;
-
-        // combat math
-        config.attackerIsPlayer = attackerUnit.Faction == Faction.Hero;
-
-        config.attackerEndAttackStat = attackerUnit.attack;
-        if (attackerUnit.Faction == Faction.Hero) {
-            // players lose attack stat when they attack
-            config.attackerEndAttackStat = Mathf.Max(0, attackerUnit.attack - (defenderUnit.armor + defenderUnit.health));
-        }
-
-        config.defenderEndArmorStat = Mathf.Max(0, defenderUnit.armor - attackerUnit.attack);
-
-        config.defenderEndHealthStat = Mathf.Max(0, Mathf.Min(defenderUnit.health, (defenderUnit.health + defenderUnit.armor) - attackerUnit.attack));
-
-        config.animationCompleteCallback = callback;
-
-        Debug.Log($"CombatManager: Did Configure with config {config}");
-        _config = config;
-        combatUIController.Configure(config);
-   }
-
-   public async void CombatAnimationComplete() {
-        Debug.Log($"CombatManager: Did Complete Combat");
-
-        // wait a quarter of a second
-        await Task.Delay(250);
-
-        // and then remove the combat ui
-        combatUIGameObject.SetActive(false);
-
-        attackingUnit.attack = _config.attackerEndAttackStat;
-        defendingUnit.health = _config.defenderEndHealthStat;
-        defendingUnit.armor = _config.defenderEndArmorStat;
-
-        // and then complete the move or wahtever
-        if (_config.attackerIsPlayer) {
-            // CardRuleManager.Instance.DidCompleteCombat();
-        } else {
-            PlayerManager.Instance.HeroUnitUpdated();
-        }
-
-        if (OnUnitDidDie != null) {
-            if (defendingUnit.health <= 0) {
-                Debug.Log($"{defendingUnit.UnitName} did die");
-                OnUnitDidDie.Invoke(defendingUnit);
-            }
-        }
-
-        _config.animationCompleteCallback.Invoke();
-
+               callback.Invoke();
+           });
    }
 }

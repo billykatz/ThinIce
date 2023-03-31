@@ -7,5 +7,5 @@ public enum GridMovement {
     Right = 1, 
     Up = 2,
     Down = 3,
-    None
+    None = 4
 }

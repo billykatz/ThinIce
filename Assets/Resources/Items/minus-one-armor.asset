@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stat: 2
   amount: -1
-  ItemPrefab: {fileID: 2018494389563734435, guid: b004f31e988d40543b30297ef0c4edf4, type: 3}
+  ItemPrefab: {fileID: 1440553999419205346, guid: b004f31e988d40543b30297ef0c4edf4, type: 3}

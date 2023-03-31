@@ -43,6 +43,7 @@ public abstract class Tile : MonoBehaviour
     }
 
     public BaseUnit OccupiedUnit;
+    public BaseItem OccupiedItem;
     public bool isWalkable => (OccupiedUnit == null) && _isWalkable;
 
     public virtual void Init(Vector2 coord) {
@@ -188,13 +189,31 @@ public abstract class Tile : MonoBehaviour
     
 
     public void SetUnit(BaseUnit baseUnit) {
-        if (baseUnit.OccupiedTile != null) { 
-            baseUnit.OccupiedTile = null;
+        // remove the reference from the old tile to this unit
+        if (baseUnit.OccupiedTile)
+        {
+            baseUnit.OccupiedTile.OccupiedUnit = null;
         }
         
+        // update our position
         baseUnit.transform.position = transform.position;
+        
+        // update this tile's storage of the occupied unit
         OccupiedUnit = baseUnit;
+        
+        // update the unit to point to this tile
         baseUnit.OccupiedTile = this;
+    }
+    
+    /// <summary>
+    ///  Called to set the item on the tile.
+    /// </summary>
+    /// <param name="baseItem"></param>
+    public void SetItem(BaseItem baseItem) {
+        baseItem.transform.position = transform.position;
+        OccupiedItem = baseItem;
+        baseItem.OccupiedTile = this;
+        OccupiedItem.transform.parent = transform;
     }
 
     public void DestroyTile()

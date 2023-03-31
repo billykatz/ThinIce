@@ -138,20 +138,50 @@ public class GridManager : MonoBehaviour
                 Vector2Int coord = new Vector2Int(x, y);
                 
                 // grab the prefab
-                BaseUnit prefab = _scriptableRows[y].Row.Tiles[x].Unit.UnitPrefab;
-                
-                // spawn the unit
-                SpawnUnit(prefab, position, coord);
+                ScriptableUnit unit = _scriptableRows[y].Row.Tiles[x].Unit;
+                if (unit)
+                {
+                    // spawn the unit
+                    SpawnUnit(unit.UnitPrefab, position, coord);
+                }
                 
             }
         }
         GameManager.Instance.EndGameState(GameState.SpawnEnemies);
     }
 
+    public void LoadItems()
+    {
+        for (int x = 0; x < _width; x++) {
+            for (int y = 0; y < _visibleRows; y++) {
+                Vector2 position = new Vector2(x, y);
+                position += _boardOffset;
+                Vector2Int coord = new Vector2Int(x, y);
+                
+                // grab the prefab
+                ScriptableItem item = _scriptableRows[y].Row.Tiles[x].Item;
+                if (item)
+                {
+                    SpawnItem(item, item.ItemPrefab, position, coord);
+                }
+            }
+        }
+        GameManager.Instance.EndGameState(GameState.SpawnItems);
+    }
+
     private void SpawnUnit(BaseUnit prefab, Vector3 position, Vector2Int coord)
     {
         BaseUnit spawnedEnemy = Instantiate(prefab, position, Quaternion.identity);
         _tiles[coord].SetUnit(spawnedEnemy);
+    }
+
+    private void SpawnItem(ScriptableItem scriptableItem, BaseItem item, Vector3 position, Vector2Int coord)
+    {
+        BaseItem prefab = Instantiate(item, position, Quaternion.identity);
+        prefab.Setup(scriptableItem.stat, scriptableItem.amount);
+        _tiles[coord].SetItem(prefab);
+        
+        
     }
 
     private void GenerateRow()
@@ -193,6 +223,11 @@ public class GridManager : MonoBehaviour
             if (tile.Unit != null)
             {
                 SpawnUnit(tile.Unit.UnitPrefab, newPosition, coord);
+            }
+            
+            if (tile.Item != null)
+            {
+                SpawnItem(tile.Item, tile.Item.ItemPrefab, newPosition, coord);
             }
         }
 
@@ -362,7 +397,8 @@ public class GridManager : MonoBehaviour
                 Debug.Log($"GridManager: Did initiate combat {playerTile.OccupiedUnit} {_tiles[newPlayerCoord].OccupiedUnit}");
                 CardRuleManager.Instance.StartCardRuleStep(newStep);
 
-            } else {
+            }
+            else {
                 Debug.Log($"GridManager: Did finish moving");
 
                 if (playerTile.coord == newPlayerCoord || !_tiles[newPlayerCoord].isWalkable)
@@ -436,15 +472,8 @@ public class GridManager : MonoBehaviour
 
         if (_stopGenerating)
         {
-            
-            AnimationData data = new AnimationData();
-            data.StartPosition = oldPlayerTile.transform.position;
-            data.EndPosition = newPlayerTile.transform.position;
-            _animator.Animate(playerUnit.gameObject, data, _moveToFXView, () =>
-            {
-                completion.Invoke();
-            });
-            
+            AnimatePlayerMovement(playerUnit, oldPlayerTile, newPlayerTile, completion);
+
             return;
         }
 
@@ -486,6 +515,14 @@ public class GridManager : MonoBehaviour
 
     }
 
+    private void AnimatePlayerMovement(BaseUnit playerUnit, Tile oldPlayerTile, Tile newPlayerTile, Action completion)
+    {
+        AnimationData data = new AnimationData();
+        data.StartPosition = oldPlayerTile.transform.position;
+        data.EndPosition = newPlayerTile.transform.position;
+        _animator.Animate(playerUnit.gameObject, data, _moveToFXView, () => { completion.Invoke(); });
+    }
+
     async void DestroyBottomRow(int index)
     {
         await Task.Delay(900);
@@ -498,13 +535,45 @@ public class GridManager : MonoBehaviour
 
     }
 
-    private bool DidInitiateCombat(Vector2 targetTile) {
-        if (_tiles[targetTile].OccupiedUnit != null && _tiles[targetTile].OccupiedUnit.Faction != Faction.Hero) {
-            //  combat
-            return true;
-        } else {
-            return false;
-        }
+    private bool DidInitiateCombat(Vector2 targetTile)
+    {
+        return _tiles[targetTile].OccupiedUnit != null && _tiles[targetTile].OccupiedUnit.Faction != Faction.Hero;
+    }
+    
+    private bool DidCollectItem(Vector2 targetTile) {
+        return _tiles[targetTile].OccupiedItem != null;
+    }
+
+    public bool ShouldCollectItem()
+    {
+        return GetHeroTile().OccupiedItem != null;
+    }
+    
+    public void CollectItemAfterCombat()
+    {
+        Vector2 coord = GetHeroTile().coord;
+        // We landed on an item to collect, good to give this to the player before combat
+        CardRuleStep newStep = new CardRuleStep();
+        newStep.state = CardRuleState.Collect;
+        newStep.attackerUnit = GetHeroUnit();
+        newStep.collectedItem = _tiles[coord].OccupiedItem;
+                
+        Debug.Log($"GridManager: Did collect item at { coord } {_tiles[coord].OccupiedUnit}");
+        CardRuleManager.Instance.StartCardRuleStep(newStep);
+    }
+    
+    /// <summary>
+    /// Called by the card rule step to move the player to where the item is
+    /// </summary>
+    /// <param name="targetTile"></param>
+    /// <returns></returns>
+    public void CollectItem(BaseUnit unit, Tile fromTile, Tile targetTile, Action movementCompleteCallback)
+    {
+        AnimatePlayerMovement(unit, fromTile, targetTile, () =>
+        {
+            targetTile.SetUnit(unit);
+            movementCompleteCallback.Invoke();
+        });    
     }
 
 

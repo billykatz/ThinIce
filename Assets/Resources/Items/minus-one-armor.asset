@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 880f18b133b4aa346ad5354f25434aba, type: 3}
+  m_Name: minus-one-armor
+  m_EditorClassIdentifier: 
+  stat: 2
+  amount: -1
+  ItemPrefab: {fileID: 1440553999419205346, guid: b004f31e988d40543b30297ef0c4edf4, type: 3}

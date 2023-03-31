@@ -29,14 +29,18 @@ public class GameManager : MonoBehaviour
         await Task.Delay(100);
         switch (currentGameState) {
             case GameState.GenerateGrid:
+                await Task.Delay(300);
                 ChangeState(GameState.SpawnEnemies);
                 break;
             case GameState.SpawnEnemies:
-                ChangeState(GameState.PlaceHero);
+                await Task.Delay(300);
+                ChangeState(GameState.SpawnItems);
                 break;
             case GameState.SpawnHazards:
                 break;
             case GameState.SpawnItems:
+                await Task.Delay(300);
+                ChangeState(GameState.PlaceHero);
                 break;
             case GameState.PlaceHero:
                 PlayerManager.Instance.HeroUnitUpdated();
@@ -78,15 +82,15 @@ public class GameManager : MonoBehaviour
         MenuManager.Instance.ShowTurnPhase(newState);
         switch (newState) {
             case GameState.GenerateGrid:
-                GridManager.Instance.GenerateGrid();
+                GridManager.Instance.LoadGrid();
                 break;
             case GameState.SpawnEnemies:
-                UnitManager.Instance.SpawnEnemyUnit();
-                UnitManager.Instance.SpawnEnemyUnit();
+                GridManager.Instance.LoadEnemies();
                 break;
             case GameState.SpawnHazards:
                 break;
             case GameState.SpawnItems:
+                GridManager.Instance.LoadItems();
                 break;
             case GameState.PlaceHero:
                 GridManager.Instance.HighlightPlayerStartingPositions();

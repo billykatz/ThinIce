@@ -1,11 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class GridManager : MonoBehaviour
@@ -35,8 +33,9 @@ public class GridManager : MonoBehaviour
     private bool currentlyMoving;
     private bool waitingForInput;
     private int _consecutiveGeneratedRocks;
-    private bool _stopGenerating { get { return _levelRules.LevelLength <= _levelRules.CurrentNumberRows; } }
+    private bool _stopGenerating { get { return _levelRules.Rows.Length <= _levelRules.CurrentNumberRows; } }
 
+    private ScriptableRow[] _scriptableRows;
     private Dictionary<Vector2, Tile> _tiles;
     private CombinedCard currentCard;
     private MovementArrowController movementArrowController;
@@ -46,6 +45,9 @@ public class GridManager : MonoBehaviour
         Instance = this;
 
         Debug.Log("Grid Manager Awake()");
+
+        _scriptableRows = _levelRules.Rows;
+
     }
 
     private void Start()
@@ -95,19 +97,25 @@ public class GridManager : MonoBehaviour
     
     public bool CheckForDeadEnemy() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.Health == 0).Count() > 0; }
 
-    public void GenerateGrid() {
+    /// <summary>
+    /// Called by the game manager to load the tiles based on the scriptable level rules
+    /// </summary>
+    public void LoadGrid() {
+        // ok now we want this load from preset level.
         _tiles = new Dictionary<Vector2, Tile>();
         for (int x = 0; x < _width; x++) {
             for (int y = 0; y < _visibleRows; y++) {
-                //spawns an ice tile, for now
+                // spawns an ice tile, for now
                 Vector2 position = new Vector2(x, y);
                 position += _boardOffset;
-                var spawnTile = Instantiate(_iceTilePrefab, position, Quaternion.identity);
-                spawnTile.name = $"Tile {x} {y}";
+                GameObject prefab = _scriptableRows[y].Row.Tiles[x].TilePrefab;
+                GameObject spawnedObject = Instantiate(prefab, position, Quaternion.identity);
+                spawnedObject.name = $"Tile {x} {y}";
                 Vector2 coord = new Vector2(x, y);
-                spawnTile.Init(coord);
+                Tile spawnedTile = spawnedObject.GetComponent<Tile>();
+                spawnedTile.Init(coord);
                 
-                _tiles[coord] = spawnTile;   
+                _tiles[coord] = spawnedTile;   
             }
         }
         
@@ -117,76 +125,110 @@ public class GridManager : MonoBehaviour
         GameManager.Instance.EndGameState(GameState.GenerateGrid);
     }
 
-    public void GenerateRow()
+    /// <summary>
+    /// Called by the game manager to load enemies based on the scriptable level rules
+    /// </summary>
+    public void LoadEnemies()
+    {
+        for (int x = 0; x < _width; x++) {
+            for (int y = 0; y < _visibleRows; y++) {
+                // spawns an ice tile, for now
+                Vector2 position = new Vector2(x, y);
+                position += _boardOffset;
+                Vector2Int coord = new Vector2Int(x, y);
+                
+                // grab the prefab
+                ScriptableUnit unit = _scriptableRows[y].Row.Tiles[x].Unit;
+                if (unit)
+                {
+                    // spawn the unit
+                    SpawnUnit(unit.UnitPrefab, position, coord);
+                }
+                
+            }
+        }
+        GameManager.Instance.EndGameState(GameState.SpawnEnemies);
+    }
+
+    public void LoadItems()
+    {
+        for (int x = 0; x < _width; x++) {
+            for (int y = 0; y < _visibleRows; y++) {
+                Vector2 position = new Vector2(x, y);
+                position += _boardOffset;
+                Vector2Int coord = new Vector2Int(x, y);
+                
+                // grab the prefab
+                ScriptableItem item = _scriptableRows[y].Row.Tiles[x].Item;
+                if (item)
+                {
+                    SpawnItem(item, item.ItemPrefab, position, coord);
+                }
+            }
+        }
+        GameManager.Instance.EndGameState(GameState.SpawnItems);
+    }
+
+    private void SpawnUnit(BaseUnit prefab, Vector3 position, Vector2Int coord)
+    {
+        BaseUnit spawnedEnemy = Instantiate(prefab, position, Quaternion.identity);
+        _tiles[coord].SetUnit(spawnedEnemy);
+    }
+
+    private void SpawnItem(ScriptableItem scriptableItem, BaseItem item, Vector3 position, Vector2Int coord)
+    {
+        BaseItem prefab = Instantiate(item, position, Quaternion.identity);
+        prefab.Setup(scriptableItem.stat, scriptableItem.amount);
+        _tiles[coord].SetItem(prefab);
+        
+        
+    }
+
+    private void GenerateRow()
     {
         // dont create rows if we are at the level length max
         if (_stopGenerating)
         {
             return;
         }
-        
-        
+
         // get the top left tile and calculate the new position for our Y coord.
         Vector2 topLeftTileCoord = new Vector2(0, _levelRules.CurrentNumberRows-1);
         float posY = _tiles[topLeftTileCoord].transform.position.y + 1 - _boardOffset.y;
-        
-        // store data about the new row
-        Dictionary<Vector2, TileType> newRow = new Dictionary<Vector2, TileType>();
 
-        // generate a ice tile prefab for each coord
         for (int x = 0; x < _width; x++)
         {
-            // the coord
-            Vector2 coord = new Vector2(x, _levelRules.CurrentNumberRows);
-            newRow[coord] = TileType.Ice;   
-        }
-
-        // now we want to generate rocks
-        // we hard code this to generate at most 2 rocks
-        float baseChanceWall = _levelRules.BaseChanceSpawnWall;
-        bool spawnWall = Random.value < baseChanceWall;
-        // bool spawnAnotherWall = Random.value < baseChanceWall;
-        HashSet<Vector2> wallSet = new HashSet<Vector2>();
-        int numWalls = spawnWall ? 1 : 0;
-        // numWalls += (spawnAnotherWall ? 1 : 0);
-        if (numWalls > 0)
-        {
-            _consecutiveGeneratedRocks++;
-            // quick and dirty way to prevent a unescapable level
-            if (_consecutiveGeneratedRocks >= _width)
-            {
-                numWalls = 0;
-            }
-        }
-        else
-        {
-            // TODO: might be worth considering increasing the change to spawn a wall here
-            _consecutiveGeneratedRocks = 0;
-        }
-        while (wallSet.Count < numWalls)
-        {
-            int coordX = Random.Range(0, _width);
-            Vector2 coord = new Vector2(coordX, _levelRules.CurrentNumberRows);
-            wallSet.Add(coord);
-            newRow[coord] = TileType.Wall;
-            Debug.Log("Infinite loop, oops");
-        }
-
-        // Ice, Walls and Goals are the only 3 tile types so now we can instantiate them
-        bool isEndRow = _levelRules.LevelLength == _levelRules.CurrentNumberRows + 1;
-        foreach (Vector2 coordKey in newRow.Keys)
-        {
-            // the coord
-            Vector2 newPosition = new Vector2(coordKey.x, posY);
-            newPosition += _boardOffset;
-            TileType tileType = newRow[coordKey];
-            Tile prefab = tileType == TileType.Ice ? _iceTilePrefab : _wallTilePrefab;
-            Tile spawnTile = Instantiate(isEndRow ? _goalTilePrefab : prefab, newPosition, Quaternion.identity);
-            spawnTile.name = $"Tile {coordKey.x} {coordKey.y}";
-            spawnTile.Init(coordKey);
-            _tiles[coordKey] = spawnTile;
+            // create the coord
+            Vector2Int coord = new Vector2Int(x, _levelRules.CurrentNumberRows);
             
+            // calculcate the screen position
+            Vector2 newPosition = new Vector2(coord.x, posY);
+            newPosition += _boardOffset;
+            
+            // scriptable tile
+            ScriptableTile tile = _scriptableRows[coord.y].Row.Tiles[coord.x];
+            
+            // get and instantiate the prefab
+            GameObject tilePrefab = tile.TilePrefab;
+            Tile spawnTile = Instantiate(tilePrefab, newPosition, Quaternion.identity).GetComponent<Tile>();
+            
+            // set up the tile game object
+            spawnTile.name = $"Tile {coord.x} {coord.y}";
+            spawnTile.Init(coord);
+            _tiles[coord] = spawnTile;
+            
+            // play the animation
             spawnTile.PlayEntranceAnimation();
+
+            if (tile.Unit != null)
+            {
+                SpawnUnit(tile.Unit.UnitPrefab, newPosition, coord);
+            }
+            
+            if (tile.Item != null)
+            {
+                SpawnItem(tile.Item, tile.Item.ItemPrefab, newPosition, coord);
+            }
         }
 
         // update the state of the level
@@ -267,7 +309,7 @@ public class GridManager : MonoBehaviour
     /// <summary>
     /// Destroys the enemy prefab and updates the player's state
     /// </summary>
-    public void KillEnemyAndMovePlayer() {
+    public void KillEnemyAndMovePlayer(Action animationCompleteCallback) {
         Vector2 deadEnemy = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.Health == 0).ToList().First().Key;
         Tile playerTile = _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Value;
         Debug.Log("There is a dead enemy");
@@ -280,7 +322,7 @@ public class GridManager : MonoBehaviour
             // special case where we move up and kill an enemy
             if (deadEnemy.y == playerTile.y + 1)
             {
-                MovePlayerUpGrid(GetHeroUnit(), playerTile, _tiles[deadEnemy]);
+                MovePlayerUpGrid(GetHeroUnit(), playerTile, _tiles[deadEnemy], animationCompleteCallback);
             }
             else
             {
@@ -289,6 +331,8 @@ public class GridManager : MonoBehaviour
                 
                 // remove player from old tile
                 playerTile.OccupiedUnit = null;
+                
+                animationCompleteCallback.Invoke();
             }
             
         }
@@ -333,7 +377,7 @@ public class GridManager : MonoBehaviour
     } 
 
 
-    private void MoveHero(GridMovement movement) {
+    private void MoveHero(GridMovement movement, Action animationFinishedCallback) {
         // current player
         Tile playerTile = GetHeroTile();
 
@@ -353,7 +397,8 @@ public class GridManager : MonoBehaviour
                 Debug.Log($"GridManager: Did initiate combat {playerTile.OccupiedUnit} {_tiles[newPlayerCoord].OccupiedUnit}");
                 CardRuleManager.Instance.StartCardRuleStep(newStep);
 
-            } else {
+            }
+            else {
                 Debug.Log($"GridManager: Did finish moving");
 
                 if (playerTile.coord == newPlayerCoord || !_tiles[newPlayerCoord].isWalkable)
@@ -368,7 +413,7 @@ public class GridManager : MonoBehaviour
                     playerTile.OccupiedUnit = null;
                     if (movement == GridMovement.Up)
                     {
-                        MovePlayerUpGrid(playerUnit, playerTile, _tiles[newPlayerCoord]);
+                        MovePlayerUpGrid(playerUnit, playerTile, _tiles[newPlayerCoord], animationFinishedCallback);
                     }
                     else
                     {
@@ -410,13 +455,15 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    
+    int _expectedCount = 0;
     /// <summary>
     /// We want to move the player up the grid and then do the following:
     /// - move all the tiles down to simulate that the player is moving up
     /// - generate a new row
     /// - potentially spawn enemies.  
     /// </summary>
-    private void MovePlayerUpGrid(BaseUnit playerUnit, Tile oldPlayerTile, Tile newPlayerTile)
+    private void MovePlayerUpGrid(BaseUnit playerUnit, Tile oldPlayerTile, Tile newPlayerTile, Action completion)
     {
         // we dont want to move the player up the screen, so just make the assignments here
         newPlayerTile.OccupiedUnit = playerUnit;
@@ -425,40 +472,55 @@ public class GridManager : MonoBehaviour
 
         if (_stopGenerating)
         {
-            
-            AnimationData data = new AnimationData();
-            data.StartPosition = oldPlayerTile.transform.position;
-            data.EndPosition = newPlayerTile.transform.position;
-            _animator.Animate(playerUnit.gameObject, data, _moveToFXView, () =>
-            {
-                FinishMovement();
-            });
-            
+            AnimatePlayerMovement(playerUnit, oldPlayerTile, newPlayerTile, completion);
+
             return;
         }
 
         GenerateRow();
-        SpawnEnemies();
-        
+
+        // play animations and wait until the last one finishes, then call the completion
         foreach (Vector2 key in _tiles.Keys)
         {
+            _expectedCount++;
             if (key.y == BottomMostRowIndex)
             {
-                _tiles[key].PlayExitAnimation();
-                
+                _tiles[key].PlayExitAnimation(() =>
+                {
+                    _expectedCount--;
+                    if (_expectedCount == 0)
+                    {
+                        DestroyBottomRow(BottomMostRowIndex);
+                        // update the bottom most row
+                        BottomMostRowIndex++;
+                        completion.Invoke();
+                    }
+                });
+
             } else
             {
-                _tiles[key].PlayMoveDownAnimation();
+                _tiles[key].PlayMoveDownAnimation(() =>
+                {
+                    _expectedCount--;
+                    if (_expectedCount == 0)
+                    {
+                        DestroyBottomRow(BottomMostRowIndex);
+                        // update the bottom most row
+                        BottomMostRowIndex++;
+                        completion.Invoke();
+                    }
+                });
             }
         }
-        
-        
-        DestroyBottomRow(BottomMostRowIndex);
-        
-        // update the bottom most row
-        BottomMostRowIndex++;
-        FinishMovement();
 
+    }
+
+    private void AnimatePlayerMovement(BaseUnit playerUnit, Tile oldPlayerTile, Tile newPlayerTile, Action completion)
+    {
+        AnimationData data = new AnimationData();
+        data.StartPosition = oldPlayerTile.transform.position;
+        data.EndPosition = newPlayerTile.transform.position;
+        _animator.Animate(playerUnit.gameObject, data, _moveToFXView, () => { completion.Invoke(); });
     }
 
     async void DestroyBottomRow(int index)
@@ -473,56 +535,45 @@ public class GridManager : MonoBehaviour
 
     }
 
-    private int _consecutiveRowsWithSpawnedEnemy = 0;
-    private void SpawnEnemies()
+    private bool DidInitiateCombat(Vector2 targetTile)
     {
-        if (_stopGenerating)
-        {
-            return;
-        }
-        // check to see if we should spawn an enemy
-        float baseChanceSpawnEnemy = _levelRules.BaseChanceSpawnEnemy;
-        // increase or decrease the chanxe to spawn an enemy based on how many rows have been generated with an enemy or not
-        baseChanceSpawnEnemy += (_levelRules.ChanceDeltaSpawnEnemy * _consecutiveRowsWithSpawnedEnemy);
-        bool spawnEnemy = Random.value < baseChanceSpawnEnemy;
-        if (spawnEnemy)
-        {
-            // yes we spawned an enemy, make this value lower so it is less likely to spawn one in the future
-            _consecutiveRowsWithSpawnedEnemy--;
-        }
-        else
-        {
-            // no we didnt spawn one, ok, make this value higher so there is a better chance an enemy comes in the future
-            _consecutiveRowsWithSpawnedEnemy++;
-        }
-
-        if (spawnEnemy)
-        {
-            BaseUnit enemy = UnitManager.Instance.CreateEnemyUnit();
-            bool hasSpawned = false;
-            while (!hasSpawned)
-            {
-                
-                int randomX = Random.Range(0, _width);
-
-                Vector2 enemyCoord = new Vector2(randomX, _visibleRows);
-                if (_tiles[enemyCoord].tileType == TileType.Ice)
-                {
-                    BaseUnit instanitatedUnit = Instantiate(enemy, _tiles[enemyCoord].transform.position, Quaternion.identity);
-                    _tiles[enemyCoord].SetUnit(instanitatedUnit);
-                    hasSpawned = true;
-                }
-            }
-        }
+        return _tiles[targetTile].OccupiedUnit != null && _tiles[targetTile].OccupiedUnit.Faction != Faction.Hero;
+    }
+    
+    private bool DidCollectItem(Vector2 targetTile) {
+        return _tiles[targetTile].OccupiedItem != null;
     }
 
-    private bool DidInitiateCombat(Vector2 targetTile) {
-        if (_tiles[targetTile].OccupiedUnit != null && _tiles[targetTile].OccupiedUnit.Faction != Faction.Hero) {
-            //  combat
-            return true;
-        } else {
-            return false;
-        }
+    public bool ShouldCollectItem()
+    {
+        return GetHeroTile().OccupiedItem != null;
+    }
+    
+    public void CollectItemAfterCombat()
+    {
+        Vector2 coord = GetHeroTile().coord;
+        // We landed on an item to collect, good to give this to the player before combat
+        CardRuleStep newStep = new CardRuleStep();
+        newStep.state = CardRuleState.Collect;
+        newStep.attackerUnit = GetHeroUnit();
+        newStep.collectedItem = _tiles[coord].OccupiedItem;
+                
+        Debug.Log($"GridManager: Did collect item at { coord } {_tiles[coord].OccupiedUnit}");
+        CardRuleManager.Instance.StartCardRuleStep(newStep);
+    }
+    
+    /// <summary>
+    /// Called by the card rule step to move the player to where the item is
+    /// </summary>
+    /// <param name="targetTile"></param>
+    /// <returns></returns>
+    public void CollectItem(BaseUnit unit, Tile fromTile, Tile targetTile, Action movementCompleteCallback)
+    {
+        AnimatePlayerMovement(unit, fromTile, targetTile, () =>
+        {
+            targetTile.SetUnit(unit);
+            movementCompleteCallback.Invoke();
+        });    
     }
 
 
@@ -581,19 +632,11 @@ public class GridManager : MonoBehaviour
         //TODO we should auto move the player if they choose a card with no choice
         if (gridMovements.Contains(GridMovement.None))
         {
-            ArrowTappedWrapper(GridMovement.None);
+            ArrowTapped(GridMovement.None);
         } else if (gridMovements.Count == 1)
         {
-            ArrowTappedWrapper(gridMovements[0]);
+            ArrowTapped(gridMovements[0]);
         }
-    }
-
-    async void ArrowTappedWrapper(GridMovement gridMovement)
-    {
-        // this is just a hair longer than the tile down animation. 
-        // but of a hack until we figure out the animation and animation completion hooks
-        await Task.Delay(500);
-        ArrowTapped(gridMovement);
     }
 
     public void ArrowTapped(GridMovement gridMovement) {
@@ -602,6 +645,9 @@ public class GridManager : MonoBehaviour
             movementArrowController.OnArrowTapped -= ArrowTapped;
             Destroy(movementArrowGameObject);
         }
-        MoveHero(gridMovement);
+        MoveHero(gridMovement, () =>
+        {
+            FinishMovement();
+        });
     }
 }

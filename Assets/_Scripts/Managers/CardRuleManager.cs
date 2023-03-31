@@ -33,8 +33,17 @@ public class CardRuleManager : MonoBehaviour
     }
 
     public void DidCompleteMovement() {
-        currentCard.movementCard.movementIndex++;
 
+        // After moving we check to see if we should collect something first.
+        if (GridManager.Instance.ShouldCollectItem())
+        {
+            GridManager.Instance.CollectItemAfterCombat();
+            return;
+
+        }
+
+        // now we check to see if the card is done
+        currentCard.movementCard.movementIndex++;
         if (currentCard.movementCard.movementIndex >= currentCard.movementCard.movement.Count) {
             // no more moves
             StartCardRuleStep(CardRuleStep.Init(CardRuleState.Finish));
@@ -52,9 +61,10 @@ public class CardRuleManager : MonoBehaviour
         // kill or dont kill the enemy
         if (GridManager.Instance.CheckForDeadEnemy()) {
             // kill it and move the player to that tile
-            GridManager.Instance.KillEnemyAndMovePlayer();
-            DidCompleteMovement();
-
+            GridManager.Instance.KillEnemyAndMovePlayer(() =>
+            {
+                DidCompleteMovement();
+            });
         }  else {
             DidCompleteMovement();
         }
@@ -79,6 +89,18 @@ public class CardRuleManager : MonoBehaviour
 
                 break;
             case CardRuleState.Collect:
+                // move the player
+                GridManager.Instance.CollectItem(step.attackerUnit, step.attackerUnit.OccupiedTile, step.collectedItem.OccupiedTile, () =>
+                    {
+                        // after movement, play the collect animation
+                        PlayerManager.Instance.CollectItem(step.collectedItem, () =>
+                        {
+                            // after moving and collect call complete movement
+                            DidCompleteMovement();
+                        });
+                    });
+                // then near the end of movement show a animation that they collected this thing.
+                
                 break;
             case CardRuleState.Combat:
                 Debug.Log("CardRuleManager: DidStartCombat");
@@ -107,6 +129,7 @@ public struct CardRuleStep {
     public List<Movement> movement;
     public BaseUnit attackerUnit;
     public BaseUnit defenderUnit;
+    public BaseItem collectedItem;
 
     public static CardRuleStep Init(CardRuleState state) {
         CardRuleStep step = new CardRuleStep();

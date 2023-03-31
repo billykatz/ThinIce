@@ -14,7 +14,7 @@ public enum TileType
 
 public abstract class Tile : MonoBehaviour
 {
-    [SerializeField] private PlayableDirector PlayableDirector;
+    [SerializeField] private PlayableDirector _playableDirector;
     [SerializeField] private PlayableAsset MoveDownTimeline;
     [SerializeField] private PlayableAsset EntranceTimeline;
     [SerializeField] private PlayableAsset ExitTimeline;
@@ -31,6 +31,10 @@ public abstract class Tile : MonoBehaviour
     [SerializeField] private InputActionReference MousePosition;
 
     [SerializeField] private Collider collider;
+
+    private Action _exitAnimationCallback;
+    private Action _moveDownCallback;
+    
     public int x, y;
     public Vector2 coord {
         get {
@@ -39,6 +43,7 @@ public abstract class Tile : MonoBehaviour
     }
 
     public BaseUnit OccupiedUnit;
+    public BaseItem OccupiedItem;
     public bool isWalkable => (OccupiedUnit == null) && _isWalkable;
 
     public virtual void Init(Vector2 coord) {
@@ -57,6 +62,30 @@ public abstract class Tile : MonoBehaviour
     {
         DidSelect.action.performed += OnMouseDown;
         MousePosition.action.performed += MouseMoved;
+
+    }
+
+    private void OnEnable()
+    {
+        _playableDirector.stopped += DidStop;
+    }
+
+    private void OnDisable()
+    {
+        _playableDirector.stopped -= DidStop;
+    }
+
+    private void DidStop(PlayableDirector director)
+    {
+        if (director.playableAsset == MoveDownTimeline)
+        { 
+            _moveDownCallback?.Invoke();
+        }
+
+        if (director.playableAsset == ExitTimeline)
+        {
+            _exitAnimationCallback?.Invoke();
+        }
     }
 
     private void OnDestroy()
@@ -65,10 +94,11 @@ public abstract class Tile : MonoBehaviour
         MousePosition.action.performed -= MouseMoved;
     }
 
-    public void PlayMoveDownAnimation()
+    public void PlayMoveDownAnimation(Action animationCompleteCallback)
     {
-        PlayableDirector.playableAsset = MoveDownTimeline;
-        PlayableDirector.Play();
+        _moveDownCallback = animationCompleteCallback;
+        _playableDirector.playableAsset = MoveDownTimeline;
+        _playableDirector.Play();
         if (OccupiedUnit is BaseEnemy)
         {
             OccupiedUnit.PlayMoveDownAnimation();
@@ -77,14 +107,15 @@ public abstract class Tile : MonoBehaviour
     
     public void PlayEntranceAnimation()
     {
-        PlayableDirector.playableAsset = EntranceTimeline;
-        PlayableDirector.Play();
+        _playableDirector.playableAsset = EntranceTimeline;
+        _playableDirector.Play();
     }
 
-    public void PlayExitAnimation()
+    public void PlayExitAnimation(Action animationCompleteCallback)
     {
-        PlayableDirector.playableAsset = ExitTimeline;
-        PlayableDirector.Play();
+        _exitAnimationCallback = animationCompleteCallback;
+        _playableDirector.playableAsset = ExitTimeline;
+        _playableDirector.Play();
         if (OccupiedUnit is BaseEnemy)
         {
             OccupiedUnit.PlayMoveDownAnimation();
@@ -158,13 +189,31 @@ public abstract class Tile : MonoBehaviour
     
 
     public void SetUnit(BaseUnit baseUnit) {
-        if (baseUnit.OccupiedTile != null) { 
-            baseUnit.OccupiedTile = null;
+        // remove the reference from the old tile to this unit
+        if (baseUnit.OccupiedTile)
+        {
+            baseUnit.OccupiedTile.OccupiedUnit = null;
         }
         
+        // update our position
         baseUnit.transform.position = transform.position;
+        
+        // update this tile's storage of the occupied unit
         OccupiedUnit = baseUnit;
+        
+        // update the unit to point to this tile
         baseUnit.OccupiedTile = this;
+    }
+    
+    /// <summary>
+    ///  Called to set the item on the tile.
+    /// </summary>
+    /// <param name="baseItem"></param>
+    public void SetItem(BaseItem baseItem) {
+        baseItem.transform.position = transform.position;
+        OccupiedItem = baseItem;
+        baseItem.OccupiedTile = this;
+        OccupiedItem.transform.parent = transform;
     }
 
     public void DestroyTile()

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90c5d1349921eaf4bbb6f7f07841445c, type: 3}
+  m_Name: GoalTile
+  m_EditorClassIdentifier: 
+  TileType: 3
+  TilePrefab: {fileID: 1706289240766088073, guid: e9838a8f9bc2c88459a92a7c517eaa8c, type: 3}
+  Item: {fileID: 0}
+  Unit: {fileID: 0}

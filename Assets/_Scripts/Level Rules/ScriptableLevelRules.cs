@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,15 +11,16 @@ public class ScriptableLevelRules : ScriptableObject
     public int totalObjectives;
 
     public int LevelNumber;
-    public int LevelLength;
     public int CurrentNumberRows;
 
     public int Width;
     public int StartingRows;
-    
-    public float BaseChanceSpawnWall;
-    public float BaseChanceSpawnEnemy;
-    public float ChanceDeltaSpawnEnemy;
 
+    public ScriptableRow[] Rows;
+}
 
+[Serializable]
+public class Row
+{
+    public ScriptableTile[] Tiles;
 }

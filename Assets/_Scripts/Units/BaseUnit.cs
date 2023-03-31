@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -10,11 +11,20 @@ public class BaseUnit : MonoBehaviour
     public Faction Faction;
     public string UnitName;
 
-    public Sprite sprite;
-    
     [SerializeField] private int _health;
     [SerializeField] private int _attack;
     [SerializeField] private int _armor;
+    
+    [SerializeField] private TextMeshPro _healthText;
+    [SerializeField] private TextMeshPro _attackText;
+    [SerializeField] private TextMeshPro _armorText;
+
+    // Asset related to the timeline
+    [SerializeField] private PlayableDirector _playableDirector;
+    [SerializeField] private PlayableAsset _moveDownAnimation;
+    [SerializeField] private PlayableAsset _attackAnimation;
+
+    
     public int Health {
      get { return _health; }
      set
@@ -42,17 +52,6 @@ public class BaseUnit : MonoBehaviour
         }
     }
 
-    // Asset related to the timeline
-    [SerializeField] private PlayableDirector _playableDirector;
-    [SerializeField] private PlayableAsset _moveDownAnimation;
-    [SerializeField] private PlayableAsset _attackAnimation;
-
-    // gameobjects representing the stat numbers
-    [SerializeField] private GameObject[] _swordNumbers;
-    [SerializeField] private GameObject[] _armorNumbers;
-    [SerializeField] private GameObject[] _hpNumbers;
-    
-    
     private bool _firstFrameHappened = false;
 
     private void Update()
@@ -62,6 +61,16 @@ public class BaseUnit : MonoBehaviour
             _firstFrameHappened = true;
             SetStats();
         }
+    }
+
+    public void Clone(BaseUnit unit)
+    {
+        unit._armorText = _armorText;
+        unit._attackText = _attackText;
+        unit._healthText = _healthText;
+        unit._armor = _armor;
+        unit._health = _health;
+        unit._attack = _attack;
     }
 
     private void SetStats()
@@ -76,24 +85,18 @@ public class BaseUnit : MonoBehaviour
         ShowHealthFor(Health);
     }
     
-    private void ShowHealthFor(int index)
+    private void ShowHealthFor(int health)
     {
-        for (int i = 0; i < _hpNumbers.Length; i++)
-        {
-            _hpNumbers[i].SetActive(i == index);
-        }
+        _healthText.text = "" + health;
     }
     private void ShowAttack()
     {
         ShowAttackFor(Attack);
     }
     
-    private void ShowAttackFor(int index)
+    private void ShowAttackFor(int attack)
     {
-        for (int i = 0; i < _swordNumbers.Length; i++)
-        {
-            _swordNumbers[i].SetActive(i == index);
-        }
+        _attackText.text = "" + attack;
     }
 
     private void ShowArmor()
@@ -101,18 +104,16 @@ public class BaseUnit : MonoBehaviour
         ShowArmorFor(Armor);
     }
     
-    private void ShowArmorFor(int index)
+    private void ShowArmorFor(int armor)
     {
         if (Faction == Faction.Hero)
         {
-            for (int i = 0; i < _armorNumbers.Length; i++)
-            {
-                _armorNumbers[i].SetActive(i == index);
-            }
+            _armorText.text = "" + armor;
         }
     }
 
-    public void AnimateStatChange(BaseUnit oldUnit)
+    private int _expectedAnimnations = 0;
+    public void AnimateStatChange(BaseUnit oldUnit, Action animationFinishedCallback)
     {
         int oldAttack = oldUnit.Attack;
         int attackChange = _attack - oldAttack;
@@ -125,11 +126,53 @@ public class BaseUnit : MonoBehaviour
         int oldArmor = oldUnit.Armor;
         int armorChange = _armor - oldArmor;
         ShowArmorFor(_armor);
+
+        Color positiveChange = Color.green;
+        Color negativeChange = Color.red;
+        
+        void CheckCompletion()
+        {
+            _expectedAnimnations--;
+            if (_expectedAnimnations <= 0)
+            {
+                _attackText.color = Color.white;
+                _armorText.color = Color.white;
+                _healthText.color = Color.white;
+                animationFinishedCallback.Invoke();
+            }
+        }
+
+
+        if (attackChange != 0)
+        {
+            _expectedAnimnations++;
+            _attackText.color = attackChange > 0 ? positiveChange : negativeChange;
+            StartCoroutine(animationTimer(0.5f, CheckCompletion));
+        }
+
+        if (healthChange != 0)
+        {
+            _expectedAnimnations++;
+            _healthText.color = healthChange > 0 ? positiveChange : negativeChange;
+            StartCoroutine(animationTimer(0.5f, CheckCompletion));
+        }
+        
+        if (armorChange != 0)
+        {
+            _expectedAnimnations++;
+            _armorText.color = armorChange > 0 ? positiveChange : negativeChange;
+            StartCoroutine(animationTimer(0.5f, CheckCompletion));
+        }
+
+        if (_expectedAnimnations == 0)
+        {
+            animationFinishedCallback.Invoke();
+        }
     }
 
-    private IEnumerator animationTimer(int index, Action callback)
+    private IEnumerator animationTimer(float timeToWait, Action callback)
     {
-        yield return new WaitForSeconds(index * 0.08f);
+        yield return new WaitForSeconds(timeToWait);
         callback?.Invoke();
     }
 

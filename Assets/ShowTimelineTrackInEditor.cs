@@ -1,3 +1,5 @@
+
+#if UNITY_EDITOR
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +8,7 @@ using UnityEditor.ShortcutManagement;
 using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using UnityEngine.Timeline;
+
 
 [MenuEntry("Custom Actions/Show In Editor")]
 public class ShowTrackInEditorAction : TrackAction
@@ -36,3 +39,5 @@ public class ShowTrackInEditorAction : TrackAction
         return ActionValidity.Valid;
     }
 }
+
+#endif

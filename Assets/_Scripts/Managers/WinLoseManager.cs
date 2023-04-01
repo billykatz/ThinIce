@@ -27,14 +27,12 @@ public class WinLoseManager : MonoBehaviour
     }
 
     private void Start() {
-        ThinIceCanvasButton.OnClicked += ButtonClicked;
         CheckContinueButton();
         youWonParent.SetActive(false);
         youLoseParent.SetActive(false);
     }
 
     private void OnDestroy() {
-        ThinIceCanvasButton.OnClicked -= ButtonClicked;
     }
 
     public void GameWin() {
@@ -47,20 +45,20 @@ public class WinLoseManager : MonoBehaviour
 
     public void ButtonClicked(bool isSelected, string id) {
         Debug.Log($"id: {id}, isSelected: {isSelected}");
-        buttons.ForEach(btn=>btn.ResetButton());
+        // buttons.ForEach(btn=>btn.ResetButton());
         selectedButton = null;
 
         if (id == "heart" && isSelected) {
             Debug.Log($"WinLoseManager: heart");
-            heartReward.SelectButton();
+            // heartReward.SelectButton();
             selectedButton = heartReward;
         } else if (id == "shield" && isSelected) {
             Debug.Log($"WinLoseManager: shield");
-            shieldReward.SelectButton();
+            // shieldReward.SelectButton();
             selectedButton = shieldReward;
         } else if (id == "Attack" && isSelected) {
             Debug.Log($"WinLoseManager: Attack");
-            attackReward.SelectButton();
+            // attackReward.SelectButton();
             selectedButton = attackReward;
         } 
 

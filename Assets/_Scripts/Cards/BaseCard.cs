@@ -18,6 +18,8 @@ public class BaseCard : MonoBehaviour
     [SerializeField] private InputActionReference DidSelect;
     [SerializeField] private InputActionReference MousePos;
     [SerializeField] public Collider collider;
+
+    public ScriptableCard ScriptableCard;
     
     public string effectDescription;
 

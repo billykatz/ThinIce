@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class CardInDeckView : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public void DidSelectRemove()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void DidSelectUpgrade()
+    {
+        
+    }
+    
+    public void DidSelectAdd()
     {
         
     }

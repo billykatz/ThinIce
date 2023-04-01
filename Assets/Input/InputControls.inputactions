@@ -92,6 +92,17 @@
                 },
                 {
                     "name": "",
+                    "id": "77e4a780-85cb-4bd1-bca5-3bf4e35389d8",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "98d6455b-bf92-48de-b761-0c071655ec78",
                     "path": "<Mouse>/position",
                     "interactions": "",

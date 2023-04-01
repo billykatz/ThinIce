@@ -17,6 +17,8 @@ public class ScriptableLevelRules : ScriptableObject
     public int StartingRows;
 
     public ScriptableRow[] Rows;
+
+    public bool isLevel;
 }
 
 [Serializable]

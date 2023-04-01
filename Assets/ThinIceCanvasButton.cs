@@ -16,6 +16,7 @@ public class ThinIceCanvasButton : MonoBehaviour
     [SerializeField] public UnityEvent WasClicked;
     [SerializeField] public EventSystem _eventSystem;
     [SerializeField] public GraphicRaycaster _raycaster;
+    [SerializeField] public TMP_Text TextField;
 
 
     private void Start()

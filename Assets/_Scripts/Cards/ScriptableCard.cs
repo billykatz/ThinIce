@@ -7,6 +7,7 @@ public class ScriptableCard : ScriptableObject
 {
     public CardType CardType;
     public BaseCard BaseCard;
+    public ScriptableCard UpgradedVersionCard;
 }
 
 public enum CardType {

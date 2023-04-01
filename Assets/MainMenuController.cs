@@ -1,17 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class MainMenuController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private GameObject _worldMapView;
+    public void DidPressStartButton()
+    {
+        
+        _worldMapView.transform.DOMove(Vector3.zero, 1f);
+    }
+    public void DidPressTutorialButton()
     {
         
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    public void DidPressBackButtonFromWorldMap()
     {
         
     }

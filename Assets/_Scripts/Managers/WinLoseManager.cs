@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,82 +8,49 @@ public class WinLoseManager : MonoBehaviour
 {
     public static WinLoseManager Instance;
 
-    [SerializeField] private GameObject youWonParent;
-    [SerializeField] private GameObject youLoseParent;
+    [SerializeField] private GameObject _levelOverParent;
 
-    [SerializeField] private ThinIceCanvasButton heartReward;
-    [SerializeField] private ThinIceCanvasButton shieldReward;
-    [SerializeField] private ThinIceCanvasButton attackReward;
-    [SerializeField] private Button continueButton;
-
-    private ThinIceCanvasButton selectedButton;
-    private List<ThinIceCanvasButton> buttons = new List<ThinIceCanvasButton>();
+    [SerializeField] private GameObject _youWinElements;
+    [SerializeField] private GameObject _youLoseElements;
 
     private void Awake() {
         Instance = this;
-
-        buttons.Add(heartReward);
-        buttons.Add(shieldReward);
-        buttons.Add(attackReward);
     }
 
     private void Start() {
-        CheckContinueButton();
-        youWonParent.SetActive(false);
-        youLoseParent.SetActive(false);
+        _levelOverParent.SetActive(false);
     }
 
     private void OnDestroy() {
     }
 
     public void GameWin() {
-        youWonParent.SetActive(true);
+        _levelOverParent.SetActive(true);
+        _youWinElements.SetActive(true);
+        _youLoseElements.SetActive(false);
     }
 
     public void GameLose() {
-        youLoseParent.SetActive(true);
+        _levelOverParent.SetActive(true);
+        _youWinElements.SetActive(false);
+        _youLoseElements.SetActive(true);
     }
-
-    public void ButtonClicked(bool isSelected, string id) {
-        Debug.Log($"id: {id}, isSelected: {isSelected}");
-        // buttons.ForEach(btn=>btn.ResetButton());
-        selectedButton = null;
-
-        if (id == "heart" && isSelected) {
-            Debug.Log($"WinLoseManager: heart");
-            // heartReward.SelectButton();
-            selectedButton = heartReward;
-        } else if (id == "shield" && isSelected) {
-            Debug.Log($"WinLoseManager: shield");
-            // shieldReward.SelectButton();
-            selectedButton = shieldReward;
-        } else if (id == "Attack" && isSelected) {
-            Debug.Log($"WinLoseManager: Attack");
-            // attackReward.SelectButton();
-            selectedButton = attackReward;
-        } 
-
-        CheckContinueButton();
-    }
-
-    private void CheckContinueButton() {
-        string selectedButtonStr = (selectedButton == null) ? "nothing" : selectedButton.identifier;
-        Debug.Log($"WinLoseManager: Selected button? {selectedButtonStr}");
-
-        continueButton.interactable = (selectedButton != null);
-    }
-
-    public void ContinueButtonPressed() {
-        string selectedButtonStr = (selectedButton == null) ? "nothing" : selectedButton.identifier;
-        Debug.Log($"WinLoseManager: Selected button? {selectedButtonStr}");
-
+    
+    public void DidPressContinueButton() { 
         // save the data to the player
 
         // move to the next scene
+        ThinIceSceneManager.Instance.LoadMainMenu();
     }
 
-    public void MainMenuButtonPressed() {
+    public void DidPressRetryButton() {
+        // move to the next scene
+        ThinIceSceneManager.Instance.LoadGameScene();
         
+    }
+    public void DidPressMainMenuButton() {
+         
+        ThinIceSceneManager.Instance.LoadMainMenu();
     }
 
 

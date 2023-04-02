@@ -24,6 +24,8 @@ public class DeckManager : MonoBehaviour
 
         _startingDeck = Resources.LoadAll<ScriptableCard>("Cards").ToList();
         
+        CreateStarterDeck();
+        
         // lets keep this around from the get go
         DontDestroyOnLoad(gameObject);
     }
@@ -34,6 +36,18 @@ public class DeckManager : MonoBehaviour
         GameManager.Instance.EndGameState(GameState.CreateDeck);
 
     }
+
+    public List<ScriptableCard> GetDeck(CardType cardType)
+    {
+        if (cardType == CardType.Modifier)
+        {
+            return _deckModifier;
+        } else
+        {
+            return _deckMovement;
+        }
+    }
+    
     private void CreateStarterDeck() {
         // separate the cards into movement cards and modifier card. Also shuffles the deck
         _deckMovement = ShuffleDiscardIntoDeck(_startingDeck.Where(t=>t.CardType == CardType.Movement).OrderBy(o=>Random.value).ToList());

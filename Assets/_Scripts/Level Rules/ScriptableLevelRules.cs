@@ -19,10 +19,27 @@ public class ScriptableLevelRules : ScriptableObject
     public ScriptableRow[] Rows;
 
     public bool isLevel;
+
+    public string WorldMapLevelTitle;
+    public ShopType ShopType;
+    public ScriptableCard[] CardsToAdd;
+    public int NumberCardsToRemove;
+    public int NumberCardsToUpgrade;
+    
 }
 
 [Serializable]
 public class Row
 {
     public ScriptableTile[] Tiles;
+}
+
+[Serializable]
+public enum ShopType
+{
+    None,
+    Remove,
+    Upgrade,
+    Add,
+    StatBoost,
 }

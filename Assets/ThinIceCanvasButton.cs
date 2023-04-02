@@ -24,6 +24,11 @@ public class ThinIceCanvasButton : MonoBehaviour
         _pointerClicked.action.performed += PointerDidClick;
     }
 
+    private void OnDisable()
+    {
+        _pointerClicked.action.performed -= PointerDidClick;
+    }
+
     private void PointerDidClick(InputAction.CallbackContext ctx)
     {
         if (ctx.performed)

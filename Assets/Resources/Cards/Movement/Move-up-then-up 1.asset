@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardType: 0
   BaseCard: {fileID: 5634740753262986461, guid: 9b38f64b7fb841248a8f93a09bc6dab7, type: 3}
+  UpgradedVersionCard: {fileID: 0}
+  CardSprite: {fileID: 21300000, guid: a63608995907149b4a3fbd8687f54f58, type: 3}

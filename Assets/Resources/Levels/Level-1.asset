@@ -10,19 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4146832ad62f1449790ffe5011cbdb75, type: 3}
-  m_Name: Level-One
+  m_Name: Level-1
   m_EditorClassIdentifier: 
   numberOfEnemiesToKill: 3
   numberOfCardsToPlay: 0
   totalObjectives: 1
   LevelNumber: 1
-  LevelLength: 8
   CurrentNumberRows: 8
   Width: 4
   StartingRows: 4
-  BaseChanceSpawnWall: 0.25
-  BaseChanceSpawnEnemy: 0.1
-  ChanceDeltaSpawnEnemy: 0.1
   Rows:
   - {fileID: 11400000, guid: 309f8591d36c0ec4da5275f664fd4b3e, type: 2}
   - {fileID: 11400000, guid: 9ea98f785a42e7548969c83509ec9299, type: 2}
@@ -35,3 +31,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a7862dabb4405de43ab1d5a91507ebf8, type: 2}
   - {fileID: 11400000, guid: a0a5ce27dca4a994c800746a765903ef, type: 2}
   - {fileID: 11400000, guid: 3e6b7411c6860dc4889f87c37b20a658, type: 2}
+  isLevel: 1
+  WorldMapLevelTitle: Play Level 1
+  ShopType: 0
+  CardsToAdd: []
+  NumberCardsToRemove: 0
+  NumberCardsToUpgrade: 0

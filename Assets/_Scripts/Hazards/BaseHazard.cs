@@ -7,6 +7,7 @@ public class BaseHazard : MonoBehaviour
     public HazardType HazardType;
     public Movement[] Movements;
     public int Damage;
+    public Tile OccupiedTile;
 
     public void Configure(ScriptableHazards hazards)
     {

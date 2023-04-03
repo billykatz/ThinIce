@@ -13,16 +13,16 @@ MonoBehaviour:
   m_Name: TestLevel
   m_EditorClassIdentifier: 
   LevelNumber: 0
-  CurrentNumberRows: 8
+  CurrentNumberRows: 4
   Width: 4
   StartingRows: 4
   Rows:
-  - {fileID: 11400000, guid: 309f8591d36c0ec4da5275f664fd4b3e, type: 2}
-  - {fileID: 11400000, guid: 9ea98f785a42e7548969c83509ec9299, type: 2}
-  - {fileID: 11400000, guid: 3aa4bc13be55cfe42ae90daaaaa7d971, type: 2}
-  - {fileID: 11400000, guid: 3e6b7411c6860dc4889f87c37b20a658, type: 2}
+  - {fileID: 11400000, guid: 5c854bc673669424190e15268a1abd59, type: 2}
+  - {fileID: 11400000, guid: 2f45328377714314995e1ce373ace28c, type: 2}
+  - {fileID: 11400000, guid: 618ad2477ca80fc4583b70276ff82642, type: 2}
+  - {fileID: 11400000, guid: a8071bab176c4d64eb4e51fd3a9d50f4, type: 2}
   isLevel: 1
-  WorldMapLevelTitle: Play Level 1
+  WorldMapLevelTitle: Play T Level 1
   ShopInstructionText: 
   ShopType: 0
   CardsToAdd: []

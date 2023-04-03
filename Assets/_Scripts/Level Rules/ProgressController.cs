@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,11 @@ public class ProgressController : ScriptableObject
     [SerializeField] private CurrentLevelReference _currentLevelReference;
     [SerializeField] private ScriptableLevelRules[] levels;
     [SerializeField] private int _levelIndex;
+
+    private void OnValidate()
+    {
+        _currentLevelReference.LevelRules = levels[_levelIndex];
+    }
 
     private void Awake()
     {

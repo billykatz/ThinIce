@@ -44,6 +44,7 @@ public abstract class Tile : MonoBehaviour
 
     public BaseUnit OccupiedUnit;
     public BaseItem OccupiedItem;
+    public BaseHazard OccupiedHazard;
     public bool isWalkable => (OccupiedUnit == null) && _isWalkable;
 
     public virtual void Init(Vector2 coord) {
@@ -214,6 +215,17 @@ public abstract class Tile : MonoBehaviour
         OccupiedItem = baseItem;
         baseItem.OccupiedTile = this;
         OccupiedItem.transform.parent = transform;
+    }
+    
+    /// <summary>
+    ///  Called to set the hazard on the tile.
+    /// </summary>
+    /// <param name="baseHazard"></param>
+    public void SetHazard(BaseHazard baseHazard) {
+        baseHazard.transform.position = transform.position;
+        OccupiedHazard = baseHazard;
+        baseHazard.OccupiedTile = this;
+        OccupiedHazard.transform.parent = transform;
     }
 
     public void DestroyTile()

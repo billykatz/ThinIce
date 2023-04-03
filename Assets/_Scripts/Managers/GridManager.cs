@@ -150,6 +150,31 @@ public class GridManager : MonoBehaviour
         GameManager.Instance.EndGameState(GameState.SpawnEnemies);
     }
 
+    /// <summary>
+    /// Called by the game manager to load enemies based on the scriptable level rules
+    /// </summary>
+    public void LoadHazards()
+    {
+        for (int x = 0; x < _width; x++) {
+            for (int y = 0; y < _visibleRows; y++) {
+                // spawns an ice tile, for now
+                Vector2 position = new Vector2(x, y);
+                position += _boardOffset;
+                Vector2Int coord = new Vector2Int(x, y);
+                
+                // grab the prefab
+                ScriptableHazards hazard = _scriptableRows[y].Row.Tiles[x].Hazard;
+                if (hazard)
+                {
+                    // spawn the unit
+                    SpawnHazard(hazard, hazard.HazardPrefab, position, coord);
+                }
+                
+            }
+        }
+        GameManager.Instance.EndGameState(GameState.SpawnHazards);
+    }
+
     public void LoadItems()
     {
         for (int x = 0; x < _width; x++) {
@@ -181,6 +206,13 @@ public class GridManager : MonoBehaviour
         prefab.Setup(scriptableItem.stat, scriptableItem.amount);
         _tiles[coord].SetItem(prefab);
         
+        
+    }
+    private void SpawnHazard(ScriptableHazards scriptableHazards, BaseHazard hazard, Vector3 position, Vector2Int coord)
+    {
+        BaseHazard prefab = Instantiate(hazard, position, Quaternion.identity);
+        prefab.Configure(scriptableHazards);
+        _tiles[coord].SetHazard(prefab);
         
     }
 

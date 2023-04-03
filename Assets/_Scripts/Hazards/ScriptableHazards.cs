@@ -1,0 +1,22 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+
+[CreateAssetMenu(fileName = "New Scriptable Hazard", menuName = "Hazard")]
+public class ScriptableHazards: ScriptableObject
+{
+    public GameObject HazardPrefab;
+    public HazardType HazardType;
+    public Movement[] Movements;
+    public int Damage;
+}
+
+[Serializable]
+public enum HazardType
+{
+    None, 
+    Spikes,
+    Movement
+}

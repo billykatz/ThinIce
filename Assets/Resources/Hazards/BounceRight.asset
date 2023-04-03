@@ -9,7 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96ce3eba08b8b64cbe7c9a51d8e9077, type: 3}
-  m_Name: CurrentLevel
+  m_Script: {fileID: 11500000, guid: 06d30ad07a0bd9042891a6d42ba61a71, type: 3}
+  m_Name: BounceRight
   m_EditorClassIdentifier: 
-  LevelRules: {fileID: 11400000, guid: c1965693e268ce847aba831f9e319457, type: 2}
+  HazardPrefab: {fileID: 8233720761082935175, guid: 730b5168f419d074ba02dd08622d6883, type: 3}
+  HazardType: 2
+  Movements:
+  - movementType: 3
+    movementChoice: 0
+  Damage: 0

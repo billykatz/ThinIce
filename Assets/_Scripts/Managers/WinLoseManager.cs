@@ -43,7 +43,7 @@ public class WinLoseManager : MonoBehaviour
         _progressManager.DidCompleteLevel();
 
         // move to the next scene
-        ThinIceSceneManager.Instance.LoadMainMenu();
+        ThinIceSceneManager.Instance.LoadWorldMap();
     }
 
     public void DidPressRetryButton() {

@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 public class GridManager : MonoBehaviour
 {
     public static GridManager Instance;
-    [SerializeField] private ScriptableLevelRules _levelRules;
+    [SerializeField] private CurrentLevelReference _level;
     [SerializeField] private Tile _iceTilePrefab;
     [SerializeField] private Tile _goalTilePrefab;
     [SerializeField] private Tile _wallTilePrefab;
@@ -33,7 +33,7 @@ public class GridManager : MonoBehaviour
     private bool currentlyMoving;
     private bool waitingForInput;
     private int _consecutiveGeneratedRocks;
-    private bool _stopGenerating { get { return _levelRules.Rows.Length <= _levelRules.CurrentNumberRows; } }
+    private bool _stopGenerating { get { return _level.LevelRules.Rows.Length <= _level.LevelRules.CurrentNumberRows; } }
 
     private ScriptableRow[] _scriptableRows;
     private Dictionary<Vector2, Tile> _tiles;
@@ -46,14 +46,14 @@ public class GridManager : MonoBehaviour
 
         Debug.Log("Grid Manager Awake()");
 
-        _scriptableRows = _levelRules.Rows;
+        _scriptableRows = _level.LevelRules.Rows;
 
     }
 
     private void Start()
     {
-        _visibleRows = _levelRules.StartingRows;
-        _width = _levelRules.Width;
+        _visibleRows = _level.LevelRules.StartingRows;
+        _width = _level.LevelRules.Width;
         BottomMostRowIndex = 0;
         _movementLeft.action.performed += didTapLeft;
         _movementRight.action.performed += didTapRight;
@@ -193,13 +193,13 @@ public class GridManager : MonoBehaviour
         }
 
         // get the top left tile and calculate the new position for our Y coord.
-        Vector2 topLeftTileCoord = new Vector2(0, _levelRules.CurrentNumberRows-1);
+        Vector2 topLeftTileCoord = new Vector2(0, _level.LevelRules.CurrentNumberRows-1);
         float posY = _tiles[topLeftTileCoord].transform.position.y + 1 - _boardOffset.y;
 
         for (int x = 0; x < _width; x++)
         {
             // create the coord
-            Vector2Int coord = new Vector2Int(x, _levelRules.CurrentNumberRows);
+            Vector2Int coord = new Vector2Int(x, _level.LevelRules.CurrentNumberRows);
             
             // calculcate the screen position
             Vector2 newPosition = new Vector2(coord.x, posY);
@@ -232,8 +232,8 @@ public class GridManager : MonoBehaviour
         }
 
         // update the state of the level
-        _visibleRows = _levelRules.CurrentNumberRows;
-        _levelRules.CurrentNumberRows++;
+        _visibleRows = _level.LevelRules.CurrentNumberRows;
+        _level.LevelRules.CurrentNumberRows++;
         
     }
 

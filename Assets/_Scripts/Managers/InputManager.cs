@@ -26,5 +26,7 @@ public class InputManager : MonoBehaviour
         MovementRight.action.Enable();
         MovementUp.action.Enable();
         MovementDown.action.Enable();
+        
+        DontDestroyOnLoad(gameObject);
     }
 }

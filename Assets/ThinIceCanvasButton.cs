@@ -1,45 +1,52 @@
 using System;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
 public class ThinIceCanvasButton : MonoBehaviour
 {
     [SerializeField] private Image image;
-    [SerializeField] private Sprite normal;
-    [SerializeField] private Sprite selected;
-    [SerializeField] private InputAction DidSelect;
+    [SerializeField] private InputActionReference _pointerClicked;
+    [SerializeField] private InputActionReference _pointerPos;
     [SerializeField] public string identifier;
-    
-    private bool isSelected;
-    
-    public static event Action<bool, string> OnClicked;
+    [SerializeField] public UnityEvent WasClicked;
+    [SerializeField] public EventSystem _eventSystem;
+    [SerializeField] public GraphicRaycaster _raycaster;
+    [SerializeField] public TMP_Text TextField;
+
 
     private void Start()
     {
-        DidSelect.Enable();
-        DidSelect.performed += ctx => OnClick();
+        _pointerClicked.action.performed += PointerDidClick;
     }
 
-
-    public void ResetButton() {
-        image.sprite = normal;
-        isSelected = false;
+    private void OnDisable()
+    {
+        _pointerClicked.action.performed -= PointerDidClick;
     }
 
-    public void SelectButton() {
-        image.sprite = selected;
-        isSelected = true;
-    }
+    private void PointerDidClick(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+            var pos = _pointerPos.action.ReadValue<Vector2>();
+            var pointerEventData = new PointerEventData(_eventSystem) { position = pos };
+ 
+            var results = new List<RaycastResult>();
+            _raycaster.Raycast(pointerEventData, results);
 
-    public void OnClick() {
-        Debug.Log($"Custom Button clicked id {identifier} isSelected : {!isSelected}");
-        isSelected = !isSelected;
-        image.sprite = (isSelected) ? selected : normal;
-
-        if (OnClicked != null) {
-            OnClicked.Invoke(isSelected, identifier);
+            for (int i = 0; i < results.Count; i++)
+            {
+                if (results[i].gameObject == gameObject)
+                {
+                    Debug.Log("ive been clicked");
+                    WasClicked.Invoke();
+                }
+            }
         }
     }
-    
 }

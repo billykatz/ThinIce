@@ -66,6 +66,10 @@ public class CombinedCard : BaseCard, MouseInteractionDelegate
     /// <returns></returns>
     public int DoesRayCollides(Ray ray)
     {
+        if (this == null)
+        {
+            return -1;
+        }
         RaycastHit hit;
         if (movementCard.collider.Raycast(ray, out hit, Mathf.Infinity))
         {

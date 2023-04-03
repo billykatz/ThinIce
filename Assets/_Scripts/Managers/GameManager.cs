@@ -6,13 +6,13 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public ScriptableLevelRules _levelRules;
+    public CurrentLevelReference _level;
 
     public GameState GameState;
 
     void Awake() {
         Instance = this;
-        _levelRules.CurrentNumberRows = _levelRules.StartingRows;
+        _level.LevelRules.CurrentNumberRows = _level.LevelRules.StartingRows;
         Debug.Log("Game Manager Awake()");
 
     }

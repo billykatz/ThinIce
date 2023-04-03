@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4146832ad62f1449790ffe5011cbdb75, type: 3}
+  m_Name: Shop-1
+  m_EditorClassIdentifier: 
+  LevelNumber: 1
+  CurrentNumberRows: 0
+  Width: 0
+  StartingRows: 0
+  Rows: []
+  isLevel: 0
+  WorldMapLevelTitle: Enter Shop
+  ShopInstructionText: Remove 2 cards
+  ShopType: 1
+  CardsToAdd: []
+  NumberCardsToRemove: 2
+  NumberCardsToUpgrade: 0

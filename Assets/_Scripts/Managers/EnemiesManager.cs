@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 public class EnemiesManager : MonoBehaviour
 {
     
-    [SerializeField] private ScriptableLevelRules _levelRules;
+    [SerializeField] private CurrentLevelReference _levelRules;
     public static EnemiesManager Instance;
     private List<Tile> enemyTiles;
     private int enemyTurnIndex = 0;
@@ -28,9 +28,9 @@ public class EnemiesManager : MonoBehaviour
 
     public async void DoEnemyTurn(Action callback) {
         Tile heroTile = GridManager.Instance.GetHeroTile();
-        int width = _levelRules.Width;
+        int width = _levelRules.LevelRules.Width;
         int minHeight = GridManager.Instance.BottomMostRowIndex;
-        int maxHeight = _levelRules.CurrentNumberRows;
+        int maxHeight = _levelRules.LevelRules.CurrentNumberRows;
 
         enemyTurnComplete += EnemyTurnDone;
 

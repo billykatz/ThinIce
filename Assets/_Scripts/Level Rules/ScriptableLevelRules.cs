@@ -6,10 +6,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Level Rule", menuName = "Level Rule")]
 public class ScriptableLevelRules : ScriptableObject
 {
-    public int numberOfEnemiesToKill;
-    public int numberOfCardsToPlay;
-    public int totalObjectives;
-
     public int LevelNumber;
     public int CurrentNumberRows;
 
@@ -17,10 +13,31 @@ public class ScriptableLevelRules : ScriptableObject
     public int StartingRows;
 
     public ScriptableRow[] Rows;
+
+    public bool isLevel;
+
+    public string WorldMapLevelTitle;
+    public string ShopInstructionText;
+    public ShopType ShopType;
+    public ScriptableCard[] CardsToAdd;
+    public int NumberCardsToRemove;
+    public int NumberCardsToUpgrade;
+    
+    
 }
 
 [Serializable]
 public class Row
 {
     public ScriptableTile[] Tiles;
+}
+
+[Serializable]
+public enum ShopType
+{
+    None,
+    Remove,
+    Upgrade,
+    Add,
+    StatBoost,
 }

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ef815df29508d947b23402871e80305, type: 3}
+  m_Name: ProgressController
+  m_EditorClassIdentifier: 
+  _currentLevelReference: {fileID: 11400000, guid: 9247815fb2fb5dd41ac521bf454787bb, type: 2}
+  levels:
+  - {fileID: 11400000, guid: 96b83725a4e37ea478dbb0dffb250ae0, type: 2}
+  - {fileID: 11400000, guid: c1965693e268ce847aba831f9e319457, type: 2}
+  - {fileID: 11400000, guid: b8fb3683d3320274dbbd0eccbceb5e71, type: 2}
+  _levelIndex: 0

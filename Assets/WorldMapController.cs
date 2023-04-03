@@ -43,6 +43,9 @@ public class WorldMapController : MonoBehaviour
         // set the hero to the level before
         _hero.transform.position = _levelLocations[previousLevelIndex].position;
         _hero.transform.DOMove(_levelLocations[currentLevelIdx].position, 1.5f);
+        
+        // set the play text
+        _playButton.TextField.text = _currentLevel.WorldMapLevelTitle;
     }
 
     /// <summary>

@@ -9,7 +9,7 @@ public class ScriptableHazards: ScriptableObject
 {
     public BaseHazard HazardPrefab;
     public HazardType HazardType;
-    public Movement[] Movements;
+    public GridMovement[] Movements;
     public int Damage;
 }
 

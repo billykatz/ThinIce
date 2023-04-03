@@ -12,9 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06d30ad07a0bd9042891a6d42ba61a71, type: 3}
   m_Name: BounceUp
   m_EditorClassIdentifier: 
-  HazardPrefab: {fileID: 8233720761082935175, guid: 8c0110d1ee3c2ee47a3c11e892f3a0cf, type: 3}
+  HazardPrefab: {fileID: 6032735423196447379, guid: 8c0110d1ee3c2ee47a3c11e892f3a0cf, type: 3}
   HazardType: 2
-  Movements:
-  - movementType: 0
-    movementChoice: 0
+  Movements: 02000000
   Damage: 0

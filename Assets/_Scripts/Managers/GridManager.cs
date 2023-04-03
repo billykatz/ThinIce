@@ -409,11 +409,20 @@ public class GridManager : MonoBehaviour
     } 
 
 
-    private void MoveHero(GridMovement movement, Action animationFinishedCallback) {
+    /// <summary>
+    /// This function is responsible for resolving game rules after moving the hero.
+    /// It can either:
+    /// - initiated combat by sending a new CardRuleStep to the CardRuleManager
+    /// - or
+    /// - move the player on the grid 
+    /// </summary>
+    /// <param name="movement"></param>
+    /// <param name="animationFinishedCallback"></param>
+    private void MoveHero(GridMovement movement, bool playerWasBounced, Action animationFinishedCallback) {
         // current player
         Tile playerTile = GetHeroTile();
 
-        if (ValidMove(movement)) {
+        if (ValidMove(movement) || playerWasBounced) {
             Debug.Log($"GridManager: Valid movement.");
             waitingForInput = false;
 
@@ -472,11 +481,21 @@ public class GridManager : MonoBehaviour
         
     }
 
+    public bool CheckForWin()
+    {
+        return GetHeroTile() is GoalTile;
+    }
+    
+    public void TriggerWin()
+    {
+        WinLoseManager.Instance.GameWin();
+    }
+
     private void FinishMovement()
     {
         currentlyMoving = false;
         // TODO: Remove hack that we call this from the grid manager
-        if (GetHeroTile() is GoalTile)
+        if (CheckForWin())
         {
             WinLoseManager.Instance.GameWin();
         }
@@ -581,6 +600,42 @@ public class GridManager : MonoBehaviour
         return GetHeroTile().OccupiedItem != null;
     }
     
+    public bool ShouldResolveHazard()
+    {
+        return GetHeroTile().OccupiedHazard != null;
+    }
+    
+    public void ResolveHazard()
+    {
+        Vector2 coord = GetHeroTile().coord;
+        // We landed on an item to collect, good to give this to the player before combat
+        CardRuleStep newStep = new CardRuleStep();
+        newStep.state = CardRuleState.Hazard;
+        newStep.attackerUnit = GetHeroUnit();
+        newStep.hazard = _tiles[coord].OccupiedHazard;
+                
+        Debug.Log($"GridManager: Did step on hazard { coord } {_tiles[coord].OccupiedUnit}");
+        CardRuleManager.Instance.StartCardRuleStep(newStep);
+    }
+
+    public void ResolveHazard(BaseHazard harazrd, BaseUnit unit, Tile fromTile, Action completion)
+    {
+        if (harazrd.HazardType == HazardType.Movement)
+        {
+            // then we need something that moves the player and calls a completion
+            MoveHero(harazrd.Movements[0], true, completion);
+        } 
+        else if (harazrd.HazardType == HazardType.Spikes)
+        {
+            // then we need to damage the player and then cal the completion
+            unit.PlayTakeDamageAnimation(() =>
+            {
+                PlayerManager.Instance.PlayerTakesDamage(harazrd.Damage);
+                completion.Invoke();
+            });
+        }
+    }
+    
     public void CollectItemAfterCombat()
     {
         Vector2 coord = GetHeroTile().coord;
@@ -677,7 +732,7 @@ public class GridManager : MonoBehaviour
             movementArrowController.OnArrowTapped -= ArrowTapped;
             Destroy(movementArrowGameObject);
         }
-        MoveHero(gridMovement, () =>
+        MoveHero(gridMovement, false,() =>
         {
             FinishMovement();
         });

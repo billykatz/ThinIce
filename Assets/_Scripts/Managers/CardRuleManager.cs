@@ -32,7 +32,15 @@ public class CardRuleManager : MonoBehaviour
         StartCardRuleStep(step);
     }
 
-    public void DidCompleteMovement() {
+    /// <summary>
+    /// This function is responsible for completing the movement associated with a card
+    /// It can either initiate item or hazard resolution
+    /// or
+    /// Move to the next movement step of a card
+    /// or
+    /// complete playing the card and moving us to card rule step Finished
+    /// </summary>
+    public void DidCompleteMovement(bool checkForSpikes = true) {
 
         // After moving we check to see if we should collect something first.
         if (GridManager.Instance.ShouldCollectItem())
@@ -40,6 +48,18 @@ public class CardRuleManager : MonoBehaviour
             GridManager.Instance.CollectItemAfterCombat();
             return;
 
+        }
+        
+        if (checkForSpikes && GridManager.Instance.ShouldResolveHazard())
+        {
+            GridManager.Instance.ResolveHazard();
+            return;
+        }
+
+        if (GridManager.Instance.CheckForWin())
+        {
+            GridManager.Instance.TriggerWin();
+            return;
         }
 
         // now we check to see if the card is done
@@ -99,7 +119,15 @@ public class CardRuleManager : MonoBehaviour
                             DidCompleteMovement();
                         });
                     });
-                // then near the end of movement show a animation that they collected this thing.
+
+                break;
+            case CardRuleState.Hazard:
+                GridManager.Instance.ResolveHazard(step.hazard, step.attackerUnit, step.attackerUnit.OccupiedTile,
+                    () =>
+                    {
+                        // pass in a flag so we dont infitinely check for spikes
+                        DidCompleteMovement(false);
+                    });
                 
                 break;
             case CardRuleState.Combat:
@@ -108,8 +136,6 @@ public class CardRuleManager : MonoBehaviour
                 Debug.Log($"CardRuleManager: defender {step.defenderUnit}");
                 combatAnimationComplete += DidCompleteCombat;
                 CombatManager.Instance.ShowCombat(step.attackerUnit, step.defenderUnit, combatAnimationComplete);
-                break;
-            case CardRuleState.Hazard:
                 break;
             case CardRuleState.Finish:
                 FinishCard();
@@ -130,6 +156,7 @@ public struct CardRuleStep {
     public BaseUnit attackerUnit;
     public BaseUnit defenderUnit;
     public BaseItem collectedItem;
+    public BaseHazard hazard;
 
     public static CardRuleStep Init(CardRuleState state) {
         CardRuleStep step = new CardRuleStep();

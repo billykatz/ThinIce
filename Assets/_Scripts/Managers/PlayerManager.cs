@@ -20,27 +20,12 @@ public class PlayerManager : MonoBehaviour
     public int maxAttack;
     public int minAttack;
 
-    [SerializeField] private Color increaseColor;
-    [SerializeField] private Color decreaseColor;
-    [SerializeField] private Color noChangeColor;
     [SerializeField] private GameObject _baseHeroPrefab;
     
     private BaseUnit heroUnit;
     private BaseUnit previewUnit;
 
     private float _lastTimePreviewShown = 0.25f;
-
-    private int armor {
-        get {
-            return heroUnit.Armor;
-        }
-    }
-
-    private int attack {
-        get {
-            return heroUnit.Attack;
-        }
-    }
 
     private void Awake() {
         Debug.Log("PlayerManager Awake()");
@@ -50,6 +35,16 @@ public class PlayerManager : MonoBehaviour
 
     public void HeroUnitUpdated() {
         heroUnit = GridManager.Instance.GetHeroUnit();
+    }
+
+    public void PlayerTakesDamage(int damage)
+    {
+        // save the old hero stats in this dummy class
+        previewUnit = new BaseUnit();
+        heroUnit.Clone(previewUnit);
+        
+        UpdateStatsBasedOnDamage(heroUnit, damage);
+        heroUnit.AnimateStatChange(previewUnit, () => { });
     }
 
     public void CollectItem(BaseItem item, Action animationComplete)
@@ -174,6 +169,11 @@ public class PlayerManager : MonoBehaviour
         return newStat;
     }
 
+    private void UpdateStatsBasedOnDamage(BaseUnit unit, int damage)
+    {
+        unit.Health -= damage;
+        unit.Health = Mathf.Max(0, unit.Health);
+    }
     private BaseUnit UpdateStatsBasedOnItem(BaseUnit unit, BaseItem item)
     {
         if (item.Stat == ItemStat.Armor)

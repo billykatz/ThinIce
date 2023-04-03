@@ -23,6 +23,7 @@ public class BaseUnit : MonoBehaviour
     [SerializeField] private PlayableDirector _playableDirector;
     [SerializeField] private PlayableAsset _moveDownAnimation;
     [SerializeField] private PlayableAsset _attackAnimation;
+    [SerializeField] private PlayableAsset _takesDamageAnimation;
 
     
     public int Health {
@@ -190,6 +191,7 @@ public class BaseUnit : MonoBehaviour
 
     private Action _attackFinishedCallback;
     private Action _attackHitCallback;
+    private Action _takesDamageCallback;
     public void PlayMoveDownAnimation()
     {
         _playableDirector.playableAsset = _moveDownAnimation;
@@ -206,11 +208,21 @@ public class BaseUnit : MonoBehaviour
         _playableDirector.stopped += DidStop;
     }
 
+    public void PlayTakeDamageAnimation(Action completion)
+    {
+        _playableDirector.playableAsset = _takesDamageAnimation;
+        _takesDamageCallback = completion;
+        _playableDirector.Play();
+        _playableDirector.stopped += DidStop;
+    }
+
     private void DidStop(PlayableDirector director)
     {
         _playableDirector.stopped -= DidStop;
         _attackFinishedCallback?.Invoke();
         _attackFinishedCallback = null;
+        _takesDamageCallback?.Invoke();
+        _takesDamageCallback = null;
     }
 
     /// <summary>

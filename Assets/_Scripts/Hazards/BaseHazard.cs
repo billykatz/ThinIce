@@ -5,7 +5,7 @@ using UnityEngine;
 public class BaseHazard : MonoBehaviour
 {
     public HazardType HazardType;
-    public Movement[] Movements;
+    public GridMovement[] Movements;
     public int Damage;
     public Tile OccupiedTile;
 

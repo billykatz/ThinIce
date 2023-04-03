@@ -516,7 +516,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &526577502
 GameObject:
@@ -527,9 +527,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 526577503}
+  - component: {fileID: 526577504}
   - component: {fileID: 526577506}
   - component: {fileID: 526577505}
-  - component: {fileID: 526577504}
   m_Layer: 0
   m_Name: MainMenuBackground
   m_TagString: Untagged
@@ -1005,11 +1005,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7361763784257989908, guid: 78267caa2802588478b5bbb1d85817d1, type: 3}
   m_PrefabInstance: {fileID: 891765103}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &891765105 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4602059279368722947, guid: 78267caa2802588478b5bbb1d85817d1, type: 3}
-  m_PrefabInstance: {fileID: 891765103}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &891765106 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7361763783692888462, guid: 78267caa2802588478b5bbb1d85817d1, type: 3}
@@ -1044,7 +1039,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8095242874395051582, guid: 078b7146b5f8e464f8285b3c1725e9cf, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8095242874395051582, guid: 078b7146b5f8e464f8285b3c1725e9cf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1164,14 +1159,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35588b1742bf86a46a5fe61caeddd112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _worldMapController: {fileID: 1402113676}
   _gridParent: {fileID: 891765108}
   _cardInModalView: {fileID: 1377946981722679170, guid: 439a3e2ea164d40489344d702b2b50b9, type: 3}
   _titleTextView: {fileID: 891765107}
-  _instructionsTextView: {fileID: 891765105}
+  _instructionsTextView: {fileID: 1740316899}
   _deckManagementView: {fileID: 332335058}
   _deckManager: {fileID: 912803001}
   _raycaster: {fileID: 1865963842}
   _eventSystem: {fileID: 1900258728}
+  _progressManager: {fileID: 11400000, guid: 49dc4bc67c6926642b40f86c957d55cc, type: 2}
 --- !u!4 &1105158265
 Transform:
   m_ObjectHideFlags: 0
@@ -1185,7 +1182,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1216511662
 PrefabInstance:
@@ -1196,7 +1193,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6957345276130267876, guid: 8fce3c4c8ef33364f848edf1276b30ca, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6957345276130267876, guid: 8fce3c4c8ef33364f848edf1276b30ca, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1560,8 +1557,8 @@ MonoBehaviour:
   - {fileID: 127974124}
   _hero: {fileID: 383088076}
   _playButton: {fileID: 1273754355}
-  _progressManager: {fileID: 1928136932}
   _deckModificationController: {fileID: 1105158264}
+  _currentLevelReference: {fileID: 11400000, guid: 9247815fb2fb5dd41ac521bf454787bb, type: 2}
 --- !u!1 &1701876976
 GameObject:
   m_ObjectHideFlags: 0
@@ -1634,6 +1631,17 @@ RectTransform:
   m_AnchoredPosition: {x: 146.5, y: 371.5}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1740316899 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6153504119023535568, guid: 78267caa2802588478b5bbb1d85817d1, type: 3}
+  m_PrefabInstance: {fileID: 891765103}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1865963841
 GameObject:
   m_ObjectHideFlags: 0
@@ -1812,54 +1820,6 @@ MonoBehaviour:
   m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
---- !u!1 &1928136931
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1928136933}
-  - component: {fileID: 1928136932}
-  m_Layer: 0
-  m_Name: ProgressManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1928136932
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1928136931}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de2584c834d19aa4e9d480b9bcfc68de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levels:
-  - {fileID: 11400000, guid: c4bfff5581b194063bf3187711c53ad4, type: 2}
-  - {fileID: 11400000, guid: c1965693e268ce847aba831f9e319457, type: 2}
-  _levelIndex: 1
---- !u!4 &1928136933
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1928136931}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2074625561
 PrefabInstance:
   m_ObjectHideFlags: 0

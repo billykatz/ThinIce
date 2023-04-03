@@ -10,17 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4146832ad62f1449790ffe5011cbdb75, type: 3}
-  m_Name: Shop-1
+  m_Name: Level-2
   m_EditorClassIdentifier: 
-  LevelNumber: 1
-  CurrentNumberRows: 0
-  Width: 0
-  StartingRows: 0
-  Rows: []
-  isLevel: 0
-  WorldMapLevelTitle: Enter Shop
-  ShopInstructionText: Remove 2 cards
-  ShopType: 1
+  LevelNumber: 2
+  CurrentNumberRows: 8
+  Width: 4
+  StartingRows: 4
+  Rows:
+  - {fileID: 0}
+  isLevel: 1
+  WorldMapLevelTitle: Play Level 2
+  ShopInstructionText: 
+  ShopType: 0
   CardsToAdd: []
-  NumberCardsToRemove: 2
+  NumberCardsToRemove: 0
   NumberCardsToUpgrade: 0

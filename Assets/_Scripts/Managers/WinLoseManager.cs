@@ -13,6 +13,8 @@ public class WinLoseManager : MonoBehaviour
     [SerializeField] private GameObject _youWinElements;
     [SerializeField] private GameObject _youLoseElements;
 
+    [SerializeField] private ProgressController _progressManager;
+
     private void Awake() {
         Instance = this;
     }
@@ -38,6 +40,7 @@ public class WinLoseManager : MonoBehaviour
     
     public void DidPressContinueButton() { 
         // save the data to the player
+        _progressManager.DidCompleteLevel();
 
         // move to the next scene
         ThinIceSceneManager.Instance.LoadMainMenu();
@@ -49,7 +52,6 @@ public class WinLoseManager : MonoBehaviour
         
     }
     public void DidPressMainMenuButton() {
-         
         ThinIceSceneManager.Instance.LoadMainMenu();
     }
 

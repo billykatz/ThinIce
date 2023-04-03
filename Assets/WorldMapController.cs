@@ -11,14 +11,15 @@ public class WorldMapController : MonoBehaviour
     [SerializeField] private GameObject _hero;
 
     [SerializeField] private ThinIceCanvasButton _playButton;
-    [SerializeField] private ProgressManager _progressManager;
     [SerializeField] private DeckModificationController _deckModificationController;
+
+    [SerializeField] private CurrentLevelReference _currentLevelReference;
     
     private ScriptableLevelRules _currentLevel;
 
     private void Start()
     {
-        _currentLevel = _progressManager.CurrentLevel();
+        _currentLevel = _currentLevelReference.LevelRules;
         _playButton.TextField.text = _currentLevel.WorldMapLevelTitle;
     }
 
@@ -36,10 +37,20 @@ public class WorldMapController : MonoBehaviour
 
     public void DidAppearOnScreen()
     {
-        int currentLevelIdx = _progressManager.CurrentLevelIndex();
+        int currentLevelIdx = _currentLevel.LevelNumber;
         int previousLevelIndex = Mathf.Max(0, currentLevelIdx-1);
+        
         // set the hero to the level before
         _hero.transform.position = _levelLocations[previousLevelIndex].position;
         _hero.transform.DOMove(_levelLocations[currentLevelIdx].position, 1.5f);
+    }
+
+    /// <summary>
+    ///  Called after completing a in map level, like a shop
+    /// </summary>
+    public void DidCompleteLevel()
+    {
+        _currentLevel = _currentLevelReference.LevelRules;
+        DidAppearOnScreen();
     }
 }

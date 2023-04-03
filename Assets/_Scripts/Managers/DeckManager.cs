@@ -135,12 +135,12 @@ public class DeckManager : MonoBehaviour
         }
     }
     
-    public void RemoveCardFromDeck(ScriptableCard card, CardType cardType)
+    public void RemoveCardFromDeck(ScriptableCard card)
     {
-        if (cardType == CardType.Modifier)
+        if (card.CardType == CardType.Modifier)
         {
             _deckModifier.Remove(card);
-        } else if (cardType == CardType.Movement)
+        } else if (card.CardType == CardType.Movement)
         {
             _deckMovement.Remove(card);
         }

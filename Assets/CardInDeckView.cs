@@ -22,15 +22,17 @@ public class CardInDeckView : MonoBehaviour
     [SerializeField] private GameObject _removeCardOverlay;
     
     private Action<int> _didSelectButton;
+    private Action<int> _didDeselectButton;
     private ScriptableCard _card;
     private int _index;
     private ShopType _shopType;
 
-    public void Configure(ScriptableCard card, int index, ShopType shopType, Action<int> didSelectButton, GraphicRaycaster raycaster, EventSystem eventSystem)
+    public void Configure(ScriptableCard card, int index, ShopType shopType, Action<int> didSelectButton, Action<int> didDeselectButton, GraphicRaycaster raycaster, EventSystem eventSystem)
     {
         _card = card;
         _index = index;
         _didSelectButton = didSelectButton;
+        _didDeselectButton = didDeselectButton;
         _shopType = shopType;
 
         ResetOverlaysAndBackgrounds();
@@ -82,6 +84,11 @@ public class CardInDeckView : MonoBehaviour
     {
         _didSelectButton?.Invoke(_index);
     }
+    
+    private void DidDeselectButton()
+    {
+        _didDeselectButton?.Invoke(_index);
+    }
 
     public void ResetOverlaysAndBackgrounds()
     {
@@ -100,8 +107,17 @@ public class CardInDeckView : MonoBehaviour
     
     public void DidSelectRemove()
     {
-        ActivateOverlayBackground(_removeCardOverlay);
-        DidSelectButton();
+        if (_removeCardOverlay.activeSelf)
+        {
+            // unremove
+            ResetOverlaysAndBackgrounds();
+            DidDeselectButton();
+        }
+        else
+        {
+            ActivateOverlayBackground(_removeCardOverlay);
+            DidSelectButton();
+        }
     }
 
     public void DidSelectUpgrade()

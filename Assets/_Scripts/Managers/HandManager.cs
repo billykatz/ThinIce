@@ -174,7 +174,7 @@ public class HandManager : MonoBehaviour
             return;
 
         Vector2 mousePos = MousePosition.action.ReadValue<Vector2>();
-        Ray ray = GetRayWorldPositionOnPlane(mousePos, 0);// Camera.main.ScreenPointToRay(mousePos);
+        Ray ray = GetRayWorldPositionOnPlane(mousePos, 0);
         for (int i = 0; i < cards.Count; i++)
         {
             if (cards[i].DoesRayCollides(ray) == _selectedIndex)

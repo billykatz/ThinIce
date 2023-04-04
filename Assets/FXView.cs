@@ -49,6 +49,7 @@ public class FXView : MonoBehaviour
     {
         DidStop.Invoke(this);
         _animationComplete?.Invoke();
+        _animationComplete = null;
     }
 
     public void SetText(string text)

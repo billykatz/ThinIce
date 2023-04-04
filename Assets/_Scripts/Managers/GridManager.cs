@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
+using Extensions;
 
 public class GridManager : MonoBehaviour
 {
@@ -96,7 +97,8 @@ public class GridManager : MonoBehaviour
     public Tile GetHeroTile() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Value; }
 
     // grab all the enemy tiles
-    public List<Tile> GetEnemyUnits() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy).Select(s=>s.Value).ToList(); }
+    public List<Tile> GetEnemyTiles() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy).Select(s=>s.Value).ToList(); }
+    public List<BaseUnit> GetEnemyUnits() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy).Select(s=>s.Value.OccupiedUnit).ToList(); }
     
     public bool CheckForDeadEnemy() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.Health == 0).Count() > 0; }
 
@@ -158,6 +160,7 @@ public class GridManager : MonoBehaviour
                 
             }
         }
+        DrawEnemiesAttackIndicators();
         GameManager.Instance.EndGameState(GameState.SpawnEnemies);
     }
 
@@ -309,7 +312,7 @@ public class GridManager : MonoBehaviour
         return _tiles.Where(t => t.Value.isWalkable && !PotentialPlayerStartingPositions().Contains(t.Key)).OrderBy(o=>Random.value).First().Value;
     }
     
-    public async void TileWasTapped(int x, int y) {
+    public void TileWasTapped(int x, int y) {
         Vector2 tappedCoord = new Vector2(x, y);
         if (GameManager.Instance.GameState == GameState.PlaceHero) {
             if (PotentialPlayerStartingPositions().Contains(tappedCoord)) {
@@ -324,12 +327,6 @@ public class GridManager : MonoBehaviour
                 // we are done placing the hero, move the game along
                 GameManager.Instance.EndGameState(GameState.PlaceHero);
             } else {
-                RemoveHighlightPlayerStartingPositions();
-                await Task.Delay(100);
-                HighlightPlayerStartingPositions();
-                await Task.Delay(50);
-                RemoveHighlightPlayerStartingPositions();
-                await Task.Delay(100);
                 HighlightPlayerStartingPositions();
             }
         } 
@@ -379,6 +376,12 @@ public class GridManager : MonoBehaviour
             }
             
         }
+        else
+        {
+            animationCompleteCallback.Invoke();
+        }
+        
+        
     }
     
     
@@ -555,6 +558,7 @@ public class GridManager : MonoBehaviour
                         DestroyBottomRow(BottomMostRowIndex);
                         // update the bottom most row
                         BottomMostRowIndex++;
+                        DrawEnemiesAttackIndicators();
                         completion.Invoke();
                     }
                 });
@@ -569,6 +573,7 @@ public class GridManager : MonoBehaviour
                         DestroyBottomRow(BottomMostRowIndex);
                         // update the bottom most row
                         BottomMostRowIndex++;
+                        DrawEnemiesAttackIndicators();
                         completion.Invoke();
                     }
                 });
@@ -584,10 +589,49 @@ public class GridManager : MonoBehaviour
         data.EndPosition = newPlayerTile.transform.position;
         _animator.Animate(playerUnit.gameObject, data, _moveToFXView, () => { completion.Invoke(); });
     }
-
-    async void DestroyBottomRow(int index)
+    
+    public void AnimateEnemyMovement(BaseUnit unit, Tile oldTile, Vector2 toCoord, Action completion)
     {
-        await Task.Delay(900);
+        AnimationData data = new AnimationData();
+        data.StartPosition = oldTile.transform.position;
+        data.EndPosition = _tiles[toCoord].transform.position;
+        _animator.Animate(unit.gameObject, data, _moveToFXView, () =>
+        {
+            // update data store
+            MoveUnit(unit, oldTile, toCoord);
+            // update the UI
+            DrawEnemyAttackIndicators(unit);
+            completion.Invoke();
+        });
+    }
+
+    public void DrawEnemyAttackIndicators(BaseUnit unit)
+    {
+        int width = _level.LevelRules.Width;
+        int minHeight = BottomMostRowIndex;
+        int maxHeight = _level.LevelRules.CurrentNumberRows;
+        unit.ToggleAttackIndicators(false);
+        for (int i = 0; i < unit.AttackVectors.Length; i++)
+        {
+            Vector2 checkCoord = unit.OccupiedTile.coord + unit.AttackVectors[i];
+            bool isInBounds = checkCoord.IsInBounds(width, minHeight, maxHeight);
+            if (isInBounds)
+            {
+                unit.ToggleAttackIndicator(unit.AttackVectors[i], _tiles[checkCoord].tileType != TileType.Wall);
+            }
+        }
+    }
+    public void DrawEnemiesAttackIndicators()
+    {
+        List<BaseUnit> enemies = GetEnemyUnits();
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            DrawEnemyAttackIndicators(enemies[i]);
+        }
+    }
+
+    private void DestroyBottomRow(int index)
+    {
         for (int i = 0; i < _width; i++)
         {
             Vector2 coord = new Vector2(i, index);

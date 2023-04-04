@@ -24,6 +24,9 @@ public class BaseUnit : MonoBehaviour
     [SerializeField] private PlayableAsset _moveDownAnimation;
     [SerializeField] private PlayableAsset _attackAnimation;
     [SerializeField] private PlayableAsset _takesDamageAnimation;
+    
+    public Vector2[] AttackVectors;
+    public GameObject[] AttackIndicators;
 
     
     public int Health {
@@ -183,6 +186,25 @@ public class BaseUnit : MonoBehaviour
 
     public virtual List<Vector2> AttackTiles(Tile currentTile) {
         return new List<Vector2>();
+    }
+
+    public void ToggleAttackIndicators(bool onOff)
+    {
+        for (int i = 0; i < AttackIndicators.Length; i++)
+        {
+            AttackIndicators[i].SetActive(onOff);
+        }
+    }
+
+    public void ToggleAttackIndicator(Vector2 attackVector, bool onOff)
+    {
+        for (int i = 0; i < AttackVectors.Length; i++)
+        {
+            if (attackVector == AttackVectors[i])
+            {
+                AttackIndicators[i].SetActive(onOff);
+            }
+        }
     }
 
     public virtual List<Vector2> WantToMoveTo(Tile currentTile, Tile playerTile) {

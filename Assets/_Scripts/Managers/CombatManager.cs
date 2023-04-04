@@ -21,6 +21,7 @@ public class CombatManager : MonoBehaviour
 
        int attackDamage = attackerUnit.Attack;
 
+       attackerUnit.ToggleAttackIndicators(false);
        _animator.AnimateCombat(attackerUnit, defenderUnit,
            () =>
            {
@@ -55,6 +56,7 @@ public class CombatManager : MonoBehaviour
                }
 
 
+               attackerUnit.ToggleAttackIndicators(true);
                PlayerManager.Instance.HeroUnitUpdated();
 
                callback.Invoke();

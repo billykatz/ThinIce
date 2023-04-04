@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Freya;
@@ -35,6 +36,7 @@ public class HandManager : MonoBehaviour
     [SerializeField] private Vector3 _shieldOptionOrigin;
     [SerializeField] private Vector3 ShowOptionAreaVector;
     [SerializeField] private Vector3 HighlightOptionAreaVector;
+    [SerializeField] private Color _highlightOptionAreaColor;
     private Dictionary<ModifyTarget, GameObject> _optionAreas;
 
     private int _selectedIndex;
@@ -274,6 +276,7 @@ public class HandManager : MonoBehaviour
             AnimationData data = new AnimationData();
             data.StartPosition = _optionAreas[target].transform.position;
             data.EndPosition = (target == ModifyTarget.Armor ? _shieldOptionOrigin : _swordOptionOrigin);
+            _optionAreas[target].GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.white);
             _gameAnimator.Animate(_optionAreas[target], data, AnimateCardsView);
         }
     }
@@ -288,7 +291,15 @@ public class HandManager : MonoBehaviour
             GameObject animationParent = _optionAreas[key];
             if (animationParent)
             {
-                // animationParent.transform.position = animate[key].EndPosition;
+                if (key == target)
+                {
+                    
+                    animationParent.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", _highlightOptionAreaColor);
+                }
+                else
+                {
+                    animationParent.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.white);
+                }
                 _gameAnimator.Animate(animationParent, animate[key], AnimateOptionAreaViews);
             }
         }
@@ -440,7 +451,8 @@ public class HandManager : MonoBehaviour
         HideOptionAreas();
     }
 
-    public void ShowDrawCard(CombinedCard card, float itemRadius, float arcRadius)
+    // private int _expectedCardDrawnAnimations;
+    public void ShowDrawCard(CombinedCard card, float itemRadius, float arcRadius, Action completion)
     {
 
         float[] itemRadii = new float[cards.Count];
@@ -448,9 +460,11 @@ public class HandManager : MonoBehaviour
         {
             itemRadii[i] = itemRadius;
         }
+
+        int expectedAnimationCount = cards.Count;
         
         AnimationData[] data = CalculateCardAnimationData(itemRadii, arcRadius);
-        
+
         for (int i = 0; i < data.Length; i++)
         {
             if (card.index == i)
@@ -458,7 +472,14 @@ public class HandManager : MonoBehaviour
                 data[i].StartPosition = MovementDeckTransform.position;
                 data[i].StartRotation = Quaternion.identity;
             }
-            _gameAnimator.Animate(cards[i].cardParent, data[i], AnimateCardsView);
+            _gameAnimator.Animate(cards[i].cardParent, data[i], AnimateCardsView, () =>
+            {
+                expectedAnimationCount--;
+                if (expectedAnimationCount == 0)
+                {
+                    completion.Invoke();
+                }
+            });
         }
     }
     
@@ -507,25 +528,37 @@ public class HandManager : MonoBehaviour
         DiscardHand();
         GameManager.Instance.EndGameState(GameState.HeroTurnCleanUp);
     }
-    
-    public async void DrawHand() {
+
+    public void DrawHand()
+    {
         Debug.Log("HandManager: Start drawing a card");
         _numPlayedCards = 0;
-        while (cards.Count < 3) {
-            
-            CombinedCard drawnCard = DeckManager.Instance.DrawCard();
-            drawnCard.cardParent.transform.position = MovementDeckTransform.position;
-            drawnCard.SetIndex(cards.Count);
-            cards.Add(drawnCard);
-            ShowDrawCard(drawnCard, itemRadius, arcRadius);
-            
-            await Task.Delay(250);
-        }
-        Debug.Log("HandManager: Finishing drawing a card");
 
-        GameManager.Instance.EndGameState(GameState.DrawHand);
+        DrawCardHelper(DidDrawCard);
     }
-    
+
+    private void DrawCardHelper(Action completion)
+    {
+        CombinedCard drawnCard = DeckManager.Instance.DrawCard();
+        drawnCard.cardParent.transform.position = MovementDeckTransform.position;
+        drawnCard.SetIndex(cards.Count);
+        cards.Add(drawnCard);
+        ShowDrawCard(drawnCard, itemRadius, arcRadius, completion);
+    }
+
+
+    private void DidDrawCard()
+    {
+        if (cards.Count < 3)
+        {
+            DrawCardHelper(DidDrawCard);
+        }
+        else
+        {
+            GameManager.Instance.EndGameState(GameState.DrawHand);
+        }
+    }
+
     public void DidPlayCard(CombinedCard card, ModifyTarget target) {
         _numPlayedCards++;
         _playerIsPlayingCard = true;

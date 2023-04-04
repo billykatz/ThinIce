@@ -10,8 +10,6 @@ public class CardRuleManager : MonoBehaviour
 
     private CombinedCard currentCard;
 
-    public static event Action combatAnimationComplete;
-
     private void Awake() {
         Debug.Log("Card Rule Manager Awake()");
         Instance = this;
@@ -41,6 +39,7 @@ public class CardRuleManager : MonoBehaviour
     /// complete playing the card and moving us to card rule step Finished
     /// </summary>
     public void DidCompleteMovement(bool checkForSpikes = true) {
+        Debug.Log("DidCompleteMovement");
 
         // After moving we check to see if we should collect something first.
         if (GridManager.Instance.ShouldCollectItem())
@@ -77,7 +76,6 @@ public class CardRuleManager : MonoBehaviour
     }
 
     public void DidCompleteCombat() {
-        combatAnimationComplete -= DidCompleteCombat;
         // kill or dont kill the enemy
         if (GridManager.Instance.CheckForDeadEnemy()) {
             // kill it and move the player to that tile
@@ -93,11 +91,7 @@ public class CardRuleManager : MonoBehaviour
         PlayerManager.Instance.HeroUnitUpdated();
 
     }
-
-    public void OnDisable() {
-        combatAnimationComplete -= DidCompleteCombat;
-    }
-
+    
     public void StartCardRuleStep(CardRuleStep step) {
         switch (step.state) {
             case CardRuleState.Start:
@@ -134,8 +128,7 @@ public class CardRuleManager : MonoBehaviour
                 Debug.Log("CardRuleManager: DidStartCombat");
                 Debug.Log($"CardRuleManager: attacker {step.attackerUnit}");
                 Debug.Log($"CardRuleManager: defender {step.defenderUnit}");
-                combatAnimationComplete += DidCompleteCombat;
-                CombatManager.Instance.ShowCombat(step.attackerUnit, step.defenderUnit, combatAnimationComplete);
+                CombatManager.Instance.ShowCombat(step.attackerUnit, step.defenderUnit, DidCompleteCombat);
                 break;
             case CardRuleState.Finish:
                 FinishCard();

@@ -76,10 +76,7 @@ public class GameManager : MonoBehaviour
                     ChangeState(GameState.EnemyTurn);
                     break;
                 case GameState.EnemyTurn:
-                    StartCoroutine(ArtificalWaitForSeconds(0.9f, () =>
-                    {
-                        ChangeState(GameState.EndTurn);
-                    }));
+                    ChangeState(GameState.EndTurn);
                     break;
                 case GameState.EndTurn:
                     ChangeState(GameState.DrawHand);

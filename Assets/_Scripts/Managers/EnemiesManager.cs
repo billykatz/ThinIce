@@ -26,128 +26,99 @@ public class EnemiesManager : MonoBehaviour
         Destroy(tile.OccupiedUnit.gameObject);
     }
 
-    public async void DoEnemyTurn(Action callback) {
+    public void DoEnemyTurn(Action callback) {
         Tile heroTile = GridManager.Instance.GetHeroTile();
         int width = _levelRules.LevelRules.Width;
         int minHeight = GridManager.Instance.BottomMostRowIndex;
         int maxHeight = _levelRules.LevelRules.CurrentNumberRows;
-
-        enemyTurnComplete += EnemyTurnDone;
-
+        
         bool enemyAttacked = false;
+        bool enemyHasTakenTurn = false;
 
         if (enemyTiles.Count <= 0) { 
-            EnemyTurnDone();
+            callback.Invoke();
             return; 
         }
         
         Tile tile = enemyTiles[enemyTurnIndex];
-        
-        // HACK: ugh, these async functions are awful, Ill need to do a proper refactor to avoid this NREs
-        if (tile == null)
-        {
-            enemyTurnComplete?.Invoke();
-            return;
-        }
-        
-        BaseUnit enemyUnit = tile.OccupiedUnit;
-        // check to see if the player is in the enemies Attack zone
-        // give a little time between each enemy
-        MenuManager.Instance.SetTextForEnemyTurn(tile.OccupiedUnit.UnitName, "Thinking...");
-        await Task.Delay(1000);
-        if (tile == null)
-        {
-            enemyTurnComplete?.Invoke();
-            return;
-        }
 
         if (tile.OccupiedUnit.ShouldAttack(tile, heroTile)) {
             Debug.Log($"EnemiesManager: Enemy {tile.OccupiedUnit.UnitName} attacks from {tile.coord} to {heroTile.coord}");
-            MenuManager.Instance.SetTextForEnemyTurn(tile.OccupiedUnit.UnitName, "Attacks you!");
-            CombatManager.Instance.ShowCombat(tile.OccupiedUnit, heroTile.OccupiedUnit, enemyTurnComplete);
-            enemyAttacked = true;
+            MenuManager.Instance.SetTextForEnemyTurn(tile.OccupiedUnit.UnitName, "attacks you!");
+            CombatManager.Instance.ShowCombat(tile.OccupiedUnit, heroTile.OccupiedUnit, callback);
+            return;
         } else {
             List<Vector2> wantToMove = tile.OccupiedUnit.WantToMoveTo(tile, heroTile).Where(coord=>coord.IsNeighbor(tile.coord)).ToList();
-            bool enemyHasTakenTurn = false;
             foreach (Vector2 coord in wantToMove) {
                 if (!GridManager.Instance.IsOccupied(coord)) {
                     Debug.Log($"EnemiesManager: Can't Attack. Enemy moves from {tile.coord} to {coord} to Attack next turn");
                     // if coord is not occupied then move there
-                    GridManager.Instance.MoveUnit(tile.OccupiedUnit, tile, coord);
+                    // GridManager.Instance.MoveUnit(tile.OccupiedUnit, tile, coord);
                     enemyHasTakenTurn = true;
-                    break;
+                    GridManager.Instance.AnimateEnemyMovement(tile.OccupiedUnit, tile, coord, () =>
+                    {
+                        callback.Invoke();
+                    });
+                    return;
                 }
             }
             // then move towards the closest "want to move" that isnt occupied
             // could be optimized for sure
             foreach (Vector2 wantToMoveCoord in wantToMove) {
                 if (!enemyHasTakenTurn) {
-                    // creates a list of all neighbors and orders them by which one would be closest to where I eventually ant to be (within Attack range of the player)
+                    // creates a list of all neighbors and orders them by which one would be closest to where I eventually want to be (within Attack range of the player)
                     List<Vector2> potentialMoves = tile.coord.MyNeighbors().Where(coord=>coord.IsInBounds(width, minHeight, maxHeight)).OrderBy(coord=>Vector2.Distance(wantToMoveCoord, coord)).ToList();
                     foreach (Vector2 moveTo in potentialMoves) {
                         if (!GridManager.Instance.IsOccupied(moveTo)) {
                             Debug.Log($"EnemiesManager: Can't Attack next turn. Enemy moves from {tile.coord} to {moveTo} to Attack next turn");
                             // if coord is not occupied then move there
-                            GridManager.Instance.MoveUnit(tile.OccupiedUnit, tile, moveTo);
                             enemyHasTakenTurn = true;
-                            break;
+                            GridManager.Instance.AnimateEnemyMovement(tile.OccupiedUnit, tile, moveTo, () =>
+                            {
+                                callback.Invoke();
+                            });
+                            return;
                         }
                     }
                 }
             }
-
+            
             //fall back in case we havent moved the enemy yet
             if (!enemyHasTakenTurn) {
                 Debug.Log($"EnemiesManager: Fall back to random movement that puts us closer to the player");
                 List<Vector2> potentialMoves = tile.coord.MyNeighbors().Where(coord=>coord.IsInBounds(width, minHeight, maxHeight)).OrderBy(coord=>Vector2.Distance(heroTile.coord, coord)).ToList();
                 foreach (Vector2 moveTo in potentialMoves) {
                     if (!GridManager.Instance.IsOccupied(moveTo)) {
-                        Debug.Log($"EnemiesManager: Moving to unoccupied tile closest to the player");
-                        GridManager.Instance.MoveUnit(tile.OccupiedUnit, tile, moveTo);
-                        enemyHasTakenTurn = true;
-                        break;
+                        Debug.Log($"EnemiesManager: Can't Attack next turn. Enemy moves from {tile.coord} to {moveTo} to Attack next turn");
+                        // if coord is not occupied then move there
+                        GridManager.Instance.AnimateEnemyMovement(tile.OccupiedUnit, tile, moveTo, () =>
+                        {
+                            callback.Invoke();
+                        });
+                        return;
                     }
                 }
             }
-
-            await Task.Delay(500);
-
-            if (!enemyHasTakenTurn) {
-                Debug.Log($"EnemiesManager: Enemy couldnt move or Attack.  Likely a bug");
-                MenuManager.Instance.SetTextForEnemyTurn(enemyUnit.UnitName, "Is paralyzed and didn't move!");
-            } else {
-                MenuManager.Instance.SetTextForEnemyTurn(enemyUnit.UnitName, "Decides to move!");
-                Debug.Log($"EnemiesManager: Enemy successfully ends its turn");
-            }
         }
-
-        if (enemyAttacked) {
-
-        } else {
-            await Task.Delay(500);
-            enemyTurnComplete.Invoke();
-        }
-
     }
     public void StartEnemiesTurns() {
         
         // get the enemies from the grid manager
-        enemyTiles = GridManager.Instance.GetEnemyUnits();
+        enemyTiles = GridManager.Instance.GetEnemyTiles();
         enemyTurnIndex = 0;
 
-        DoEnemyTurn(enemyTurnComplete);
+        DoEnemyTurn(DidCompleteEnemyTurn);
 
     }
 
-    public void EnemyTurnDone() {
-        enemyTurnComplete -= EnemyTurnDone;
+    public void DidCompleteEnemyTurn()
+    {
         enemyTurnIndex++;
         if (enemyTurnIndex >= enemyTiles.Count) {
             EndAllEnemiesTurn();
         } else {
-            DoEnemyTurn(enemyTurnComplete);
+            DoEnemyTurn(DidCompleteEnemyTurn);
         }
-
     }
 
     public void EndAllEnemiesTurn() {

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +13,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject _floatingTileDetailView;
     [SerializeField] private GameObject _floatingUnitDetailView;
     [SerializeField] private GameObject _floatingTurnPhaseView;
-    [SerializeField] private GameObject _floatingTurnTutorialView;
+    [SerializeField] private TMP_Text _floatingTurnTextView;
 
     [SerializeField] private GameObject movementHelperText;
 
@@ -26,25 +27,22 @@ public class MenuManager : MonoBehaviour
     }
 
     public void ShowTurnPhase(GameState gameState) {
-        _floatingTurnTutorialView.SetActive(false);
         string turnPhase = "";
-        string turnTutorial = "";
         switch (gameState) {
             case GameState.GenerateGrid:
-                turnPhase = "Generate Grid";
+                turnPhase = "Generating Grid";
                 break;
             case GameState.SpawnEnemies:
-                turnPhase = "Spawn Enemies";
+                turnPhase = "Spawning Enemies";
                 break;
             case GameState.SpawnHazards:
-                turnPhase = "Spawn Hazards";
+                turnPhase = "Spawning Hazards";
                 break;
             case GameState.SpawnItems:
-                turnPhase = "Spawn Items";
+                turnPhase = "Spawning Items";
                 break;
             case GameState.PlaceHero:
-                turnPhase = "Place Hero";
-                turnTutorial = "Place Buck in the highlighted area";
+                turnPhase = "Select a starting tile";
                 break;
             case GameState.CreateDeck:
                 turnPhase = "Create Deck";
@@ -53,12 +51,10 @@ public class MenuManager : MonoBehaviour
                 turnPhase = "Draw Hand";
                 break;
             case GameState.HeroTurnPlayCardOne:
-                turnPhase = "Hero Turn";
-                turnTutorial = "Play your first card (you will play 2 cards total)";
+                turnPhase = "Play a card. (0/2)";
                 break;
             case GameState.HeroTurnPlayCardTwo:
-                turnPhase = "Hero Turn";
-                turnTutorial = "Play your second card (the unplayed card is discarded)";
+                turnPhase = "Play another card. (1/2)";
                 break;
             case GameState.HeroTurnCleanUp:
                 turnPhase = "Hero Turn Clean Up";
@@ -71,20 +67,13 @@ public class MenuManager : MonoBehaviour
                 break;
 
         }
-        _floatingTurnPhaseView.GetComponentInChildren<Text>().text = turnPhase;
-
-        if (turnTutorial != "") {
-            _floatingTurnTutorialView.SetActive(true);
-            _floatingTurnTutorialView.GetComponentInChildren<Text>().text = turnTutorial;
-        }
+        _floatingTurnTextView.text = turnPhase;
 
     }
 
     public void SetTextForEnemyTurn(string unitName, string intentions) {
         _floatingTurnPhaseView.SetActive(true);
-        _floatingTurnPhaseView.GetComponentInChildren<Text>().text = $"{unitName} takes a turn";
-        _floatingTurnTutorialView.SetActive(true);
-        _floatingTurnTutorialView.GetComponentInChildren<Text>().text = $"{intentions}";
+        _floatingTurnTextView.text = $"{unitName} takes a turn and {intentions}";
     }
 
     public void ShowSelectedUnit(BaseUnit unit) {
@@ -105,13 +94,9 @@ public class MenuManager : MonoBehaviour
         _floatingTileDetailView.GetComponentInChildren<Text>().text = tile.TileName;
         _floatingTileDetailView.SetActive(true);
     }
-
-
-    private bool playingCardIgnoreInput = false;
+    
     public void PlayCardInstructions(CombinedCard card, int moveIndex) {
-        playingCardIgnoreInput = true;
-        _floatingTurnPhaseView.GetComponentInChildren<Text>().text = "Move your Hero";
-        _floatingTurnTutorialView.GetComponentInChildren<Text>().text = $"{card.movementCard.MovementTutorialText(moveIndex)}";
+        _floatingTurnTextView.text =  $"{card.movementCard.MovementTutorialText(moveIndex)}";
     }
 
 

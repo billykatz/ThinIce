@@ -50,8 +50,12 @@ public class DeckManager : MonoBehaviour
     
     private void CreateStarterDeck() {
         // separate the cards into movement cards and modifier card. Also shuffles the deck
-        _deckMovement = ShuffleDiscardIntoDeck(_startingDeck.Where(t=>t.CardType == CardType.Movement).OrderBy(o=>Random.value).ToList());
-        _deckModifier = ShuffleDiscardIntoDeck(_startingDeck.Where(t=>t.CardType == CardType.Modifier).OrderBy(o=>Random.value).ToList());
+        _deckMovement = _startingDeck.Where(t=>t.CardType == CardType.Movement).OrderBy(o=>o.name).ToList();
+        _deckModifier = _startingDeck.Where(t=>t.CardType == CardType.Modifier).OrderBy(o=>o.name).ToList();
+        
+        //
+        // _deckMovement = ShuffleDiscardIntoDeck(_startingDeck.Where(t=>t.CardType == CardType.Movement).ToList());
+        // _deckModifier = ShuffleDiscardIntoDeck(_startingDeck.Where(t=>t.CardType == CardType.Modifier).ToList());
     }
 
     private List<ScriptableCard> ShuffleDiscardIntoDeck(List<ScriptableCard> discardedCards)

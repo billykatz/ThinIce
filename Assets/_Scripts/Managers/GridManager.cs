@@ -275,6 +275,11 @@ public class GridManager : MonoBehaviour
             {
                 SpawnItem(tile.Item, tile.Item.ItemPrefab, newPosition, coord);
             }
+            
+            if (tile.Hazard != null)
+            {
+                SpawnHazard(tile.Hazard, tile.Hazard.HazardPrefab, newPosition, coord);
+            }
         }
 
         // update the state of the level

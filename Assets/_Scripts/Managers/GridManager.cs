@@ -24,6 +24,9 @@ public class GridManager : MonoBehaviour
 
     [SerializeField] private GameAnimator _animator;
     [SerializeField] private FXView _moveToFXView;
+
+    [SerializeField] private GameObject _levelBackground;
+    [SerializeField] private GameObject _handBackground;
     
     public int BottomMostRowIndex;
     
@@ -120,7 +123,15 @@ public class GridManager : MonoBehaviour
         }
         
         // put the camera at the center of our grid
-        _cam.transform.position = new Vector3((float)_width /2 - 0.5f, (float)_visibleRows / 2 - 1.75f, -10);
+        Vector3 center = new Vector3((float)_width /2 - 0.5f, (float)_visibleRows / 2 - 1.75f, -10);
+        _cam.transform.position = center;
+        Vector3 backgroundCenter = center;
+        backgroundCenter.z = 1.5f;
+        _levelBackground.transform.position = backgroundCenter;
+        Vector3 handAreaBackgroundPos = backgroundCenter;
+        handAreaBackgroundPos.y -= 4.5f;
+        handAreaBackgroundPos.z = 0f;
+        _handBackground.transform.position = handAreaBackgroundPos;
 
         GameManager.Instance.EndGameState(GameState.GenerateGrid);
     }

@@ -9,8 +9,13 @@ using UnityEngine;
 public class ProgressController : ScriptableObject
 {
     [SerializeField] private CurrentLevelReference _currentLevelReference;
+    [SerializeField] private ScriptableLevelRules _levelRulesBeforeTutorial;
+    
+    
     [SerializeField] private ScriptableLevelRules[] levels;
+    [SerializeField] private ScriptableLevelRules TutorialLevel;
     [SerializeField] private int _levelIndex;
+    public bool CompletedTutorial;
 
     private void OnValidate()
     {
@@ -30,6 +35,18 @@ public class ProgressController : ScriptableObject
     public int CurrentLevelIndex()
     {
         return _levelIndex;
+    }
+
+    public void DidCompleteTutorial()
+    {
+        CompletedTutorial = true;
+        _currentLevelReference.LevelRules = _levelRulesBeforeTutorial;
+    }
+
+    public void DidStartTutorial()
+    {
+        _levelRulesBeforeTutorial = _currentLevelReference.LevelRules;
+        _currentLevelReference.LevelRules = TutorialLevel;
     }
 
     public void DidCompleteLevel()

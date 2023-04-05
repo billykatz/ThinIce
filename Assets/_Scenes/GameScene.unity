@@ -581,6 +581,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _worldMapView: {fileID: 1402113672}
   _worldMapController: {fileID: 1402113676}
+  _progressController: {fileID: 11400000, guid: 49dc4bc67c6926642b40f86c957d55cc, type: 2}
 --- !u!114 &526577505
 MonoBehaviour:
   m_ObjectHideFlags: 0

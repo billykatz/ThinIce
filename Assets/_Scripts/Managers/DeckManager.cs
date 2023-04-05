@@ -16,25 +16,31 @@ public class DeckManager : MonoBehaviour
     private List<ScriptableCard> _deckMovement;
     private List<ScriptableCard> _deckModifier;
 
+    public bool IsTutorial;
+    public bool ShouldCreateStarterDeck;
+
     private void Awake() {
         Instance = this;
+        IsTutorial = false;
         Debug.Log("Deck Manager Awake()");
         _deckMovement = new List<ScriptableCard>();
         _deckModifier = new List<ScriptableCard>();
 
         _startingDeck = Resources.LoadAll<ScriptableCard>("Cards").ToList();
-        
-        CreateStarterDeck();
-        
+
         // lets keep this around from the get go
         DontDestroyOnLoad(gameObject);
     }
 
     public void CreateDeck() {
-        CreateStarterDeck();
-
+        if (IsTutorial)
+        {
+            CreateTutorialDeck();
+        } else if (ShouldCreateStarterDeck)
+        {
+            CreateStarterDeck();
+        }
         GameManager.Instance.EndGameState(GameState.CreateDeck);
-
     }
 
     public List<ScriptableCard> GetDeck(CardType cardType)
@@ -50,12 +56,19 @@ public class DeckManager : MonoBehaviour
     
     private void CreateStarterDeck() {
         // separate the cards into movement cards and modifier card. Also shuffles the deck
-        _deckMovement = _startingDeck.Where(t=>t.CardType == CardType.Movement).OrderBy(o=>o.name).ToList();
-        _deckModifier = _startingDeck.Where(t=>t.CardType == CardType.Modifier).OrderBy(o=>o.name).ToList();
+        //_deckMovement = _startingDeck.Where(t=>t.CardType == CardType.Movement).OrderBy(o=>o.name).ToList();
+        //_deckModifier = _startingDeck.Where(t=>t.CardType == CardType.Modifier).OrderBy(o=>o.name).ToList();
         
-        //
-        // _deckMovement = ShuffleDiscardIntoDeck(_startingDeck.Where(t=>t.CardType == CardType.Movement).ToList());
-        // _deckModifier = ShuffleDiscardIntoDeck(_startingDeck.Where(t=>t.CardType == CardType.Modifier).ToList());
+
+        _deckMovement = ShuffleDiscardIntoDeck(_startingDeck.Where(t=>t.CardType == CardType.Movement).ToList());
+        _deckModifier = ShuffleDiscardIntoDeck(_startingDeck.Where(t=>t.CardType == CardType.Modifier).ToList());
+    }
+    
+    private void CreateTutorialDeck() {
+        // separate the cards into movement cards and modifier card. Also shuffles the deck
+        List<ScriptableCard> tutorialCards = Resources.LoadAll<ScriptableCard>("TutorialCards").ToList();
+        _deckMovement = ShuffleDiscardIntoDeck(tutorialCards.Where(t=>t.CardType == CardType.Movement).ToList());
+        _deckModifier = ShuffleDiscardIntoDeck(tutorialCards.Where(t=>t.CardType == CardType.Modifier).ToList());
     }
 
     private List<ScriptableCard> ShuffleDiscardIntoDeck(List<ScriptableCard> discardedCards)

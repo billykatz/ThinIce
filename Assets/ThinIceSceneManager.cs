@@ -28,6 +28,13 @@ public class ThinIceSceneManager : MonoBehaviour
     {
         SceneManager.LoadScene(0);
     }
+    
+    public void LoadTutorial()
+    {
+        
+        DeckManager.Instance.IsTutorial = true;
+        SceneManager.LoadScene(2);
+    }
 
     public void LoadWorldMap()
     {

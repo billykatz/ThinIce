@@ -21,7 +21,7 @@ public class DeckManager : MonoBehaviour
 
     private void Awake() {
         Instance = this;
-        IsTutorial = false;
+        // IsTutorial = false;
         Debug.Log("Deck Manager Awake()");
         _deckMovement = new List<ScriptableCard>();
         _deckModifier = new List<ScriptableCard>();

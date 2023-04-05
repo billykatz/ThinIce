@@ -99,6 +99,8 @@ public class GridManager : MonoBehaviour
     // grab all the enemy tiles
     public List<Tile> GetEnemyTiles() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy).Select(s=>s.Value).ToList(); }
     public List<BaseUnit> GetEnemyUnits() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy).Select(s=>s.Value.OccupiedUnit).ToList(); }
+    public List<Tile> GetHazardTiles() { return _tiles.Where(t=>(t.Value.OccupiedHazard != null)).Select(s=>s.Value).ToList(); }
+    public List<Tile> GetItemTiles() { return _tiles.Where(t=>(t.Value.OccupiedItem != null)).Select(s=>s.Value).ToList(); }
     
     public bool CheckForDeadEnemy() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.Health == 0).Count() > 0; }
 
@@ -217,7 +219,7 @@ public class GridManager : MonoBehaviour
     private void SpawnItem(ScriptableItem scriptableItem, BaseItem item, Vector3 position, Vector2Int coord)
     {
         BaseItem prefab = Instantiate(item, position, Quaternion.identity);
-        prefab.Setup(scriptableItem.stat, scriptableItem.amount);
+        prefab.Setup(scriptableItem.stat, scriptableItem.amount, scriptableItem.Name);
         _tiles[coord].SetItem(prefab);
         
         

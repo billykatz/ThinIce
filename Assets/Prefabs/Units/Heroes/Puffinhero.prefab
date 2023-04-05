@@ -1663,7 +1663,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OccupiedTile: {fileID: 0}
   Faction: 0
-  UnitName: Buck, the Puffin
+  UnitName: Bucky
   _health: 4
   _attack: 1
   _armor: 1
@@ -1674,6 +1674,8 @@ MonoBehaviour:
   _moveDownAnimation: {fileID: 11400000, guid: dff2f19db719c274299c94daff67c9ea, type: 2}
   _attackAnimation: {fileID: 11400000, guid: 27f32bc099b688a408543272627d9250, type: 2}
   _takesDamageAnimation: {fileID: 11400000, guid: b8c9c8be9be700d4faf0b2fa74435711, type: 2}
+  AttackVectors: []
+  AttackIndicators: []
 --- !u!320 &3750774931363768869
 PlayableDirector:
   m_ObjectHideFlags: 0

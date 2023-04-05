@@ -8,12 +8,14 @@ public class BaseHazard : MonoBehaviour
     public GridMovement[] Movements;
     public int Damage;
     public Tile OccupiedTile;
+    public string Name;
 
     public void Configure(ScriptableHazards hazards)
     {
         HazardType = hazards.HazardType;
         Movements = hazards.Movements;
         Damage = hazards.Damage;
+        Name = hazards.name;
     }
     
 }

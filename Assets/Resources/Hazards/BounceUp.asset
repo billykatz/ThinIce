@@ -16,3 +16,4 @@ MonoBehaviour:
   HazardType: 2
   Movements: 02000000
   Damage: 0
+  Name: Bounce Up

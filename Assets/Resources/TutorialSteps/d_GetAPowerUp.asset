@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c08abe1f90174d4cb520b3c523fa2b1, type: 3}
+  m_Name: d_GetAPowerUp
+  m_EditorClassIdentifier: 
+  Texts:
+  - See those? Try to get one.
+  SpeakerImage:
+  - {fileID: 21300000, guid: b39bbdfe195f843628249fd54df5571d, type: 3}
+  SpeakerName:
+  - Bucky
+  DetailImage:
+  - {fileID: 21300000, guid: 0e90934e8ff02644ab981c67cdf02013, type: 3}
+  DetailText:
+  - Powerups increase your Attack or Armor
+  DetailRenderTexture: []
+  DetailVideoClip: []
+  StateToTrigger: 6
+  TriggerOnItemSpawn: 1
+  TriggerOnHazardSpawn: 0
+  TriggerOnGoalSpawn: 0
+  TriggerOnEnemySpawn: 0
+  TriggerOnEnemyDead: 0

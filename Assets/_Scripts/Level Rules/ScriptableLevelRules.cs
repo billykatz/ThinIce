@@ -15,6 +15,7 @@ public class ScriptableLevelRules : ScriptableObject
     public ScriptableRow[] Rows;
 
     public bool isLevel;
+    public bool isTutorial;
 
     public string WorldMapLevelTitle;
     public string ShopInstructionText;

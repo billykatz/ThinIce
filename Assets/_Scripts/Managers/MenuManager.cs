@@ -8,15 +8,13 @@ public class MenuManager : MonoBehaviour
 {
     public static MenuManager Instance;
 
-    [SerializeField] private Canvas mainCanvas;
 
     [SerializeField] private GameObject _floatingTileDetailView;
     [SerializeField] private GameObject _floatingUnitDetailView;
     [SerializeField] private GameObject _floatingTurnPhaseView;
     [SerializeField] private TMP_Text _floatingTurnTextView;
-
-    [SerializeField] private GameObject movementHelperText;
-
+    [SerializeField] private TMP_Text _floatingTileDetailTextView;
+    [SerializeField] private TMP_Text _floatingTileDetailUnitView;
 
     private CombinedCard selectedCard;
     private ModifyTarget selectedTarget;
@@ -81,17 +79,40 @@ public class MenuManager : MonoBehaviour
             _floatingUnitDetailView.SetActive(false);
             return;
         }
+        
+        ShowItemDetail(unit.UnitName);
+    }
+    
+    public void ShowSelectedHazard(BaseHazard hazard) {
+        if (hazard == null) {
+            _floatingUnitDetailView.SetActive(false);
+            return;
+        }
+        ShowItemDetail(hazard.Name);
+    }
 
+    
+    public void ShowSelectedItem(BaseItem item) {
+        if (item == null) {
+            _floatingUnitDetailView.SetActive(false);
+            return;
+        } 
+        ShowItemDetail(item.Name);
+    }
+
+    private void ShowItemDetail(string name)
+    {
         _floatingUnitDetailView.SetActive(true);
-        _floatingUnitDetailView.GetComponentInChildren<Text>().text = unit.UnitName;
+        _floatingTileDetailUnitView.text = name;
     }
 
     public void ShowSelectedTile(Tile tile) {
         if (tile == null) {
             _floatingTileDetailView.SetActive(false);
+            _floatingUnitDetailView.SetActive(false);
             return;
         }
-        _floatingTileDetailView.GetComponentInChildren<Text>().text = tile.TileName;
+        _floatingTileDetailTextView.text = tile.TileName;
         _floatingTileDetailView.SetActive(true);
     }
     

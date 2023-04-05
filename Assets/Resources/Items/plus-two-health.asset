@@ -15,3 +15,4 @@ MonoBehaviour:
   stat: 3
   amount: 2
   ItemPrefab: {fileID: 1440553999419205346, guid: fa7b6a3d0baeb8b48b4dd8c0579b4ab9, type: 3}
+  Name: +2 Health

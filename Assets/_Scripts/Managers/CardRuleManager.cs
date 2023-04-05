@@ -81,6 +81,10 @@ public class CardRuleManager : MonoBehaviour
             // kill it and move the player to that tile
             GridManager.Instance.KillEnemyAndMovePlayer(() =>
             {
+                if (TutorialManager.Instance != null)
+                {
+                    TutorialManager.Instance.EnemyDidDie();
+                }
                 DidCompleteMovement();
             });
         }  else {

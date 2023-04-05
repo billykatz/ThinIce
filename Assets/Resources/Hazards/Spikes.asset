@@ -16,3 +16,4 @@ MonoBehaviour:
   HazardType: 1
   Movements: 
   Damage: 1
+  Name: Spikes (1 damage)

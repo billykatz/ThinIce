@@ -11,6 +11,7 @@ public class ScriptableHazards: ScriptableObject
     public HazardType HazardType;
     public GridMovement[] Movements;
     public int Damage;
+    public string Name;
 }
 
 [Serializable]

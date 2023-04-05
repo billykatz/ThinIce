@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: tutorial-movement-right
   m_EditorClassIdentifier: 
   CardType: 0
-  BaseCard: {fileID: 3413007140285753544, guid: b7a81e4aeb11ba84e8349a4e01d5856b, type: 3}
+  BaseCard: {fileID: 3413007140285753544, guid: daaf490487dd1b048a28c9cc2761c27e, type: 3}
   UpgradedVersionCard: {fileID: 0}
   CardSprite: {fileID: 0}

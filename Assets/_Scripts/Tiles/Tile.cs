@@ -149,6 +149,10 @@ public abstract class Tile : MonoBehaviour
 
         if (OccupiedUnit != null) {
             MenuManager.Instance.ShowSelectedUnit(OccupiedUnit);
+        } else if (OccupiedHazard != null) {
+            MenuManager.Instance.ShowSelectedHazard(OccupiedHazard);
+        } else if (OccupiedItem != null) {
+            MenuManager.Instance.ShowSelectedItem(OccupiedItem);
         } else {
             MenuManager.Instance.ShowSelectedUnit(null);
         }

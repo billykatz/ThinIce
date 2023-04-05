@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 57e6dd40ee30d4f718794fa2ad756e6f, type: 3}
-  m_Name: k_11Modify-Add-One 1
+  m_Name: K_7Modify-Minus-Two 1
   m_EditorClassIdentifier: 
   CardType: 1
-  BaseCard: {fileID: -8490539296955501415, guid: 5dbd99444ed9b4bdb86ece7a43d9f890, type: 3}
+  BaseCard: {fileID: -1971117012229995531, guid: 112d1655cac124559b395b7a34732622, type: 3}

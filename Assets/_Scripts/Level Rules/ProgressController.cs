@@ -15,8 +15,9 @@ public class ProgressController : ScriptableObject
     [SerializeField] private ScriptableLevelRules TutorialLevel;
     [SerializeField] private int _levelIndex;
     public bool CompletedTutorial;
+    public bool JustForTesting;
 
-    private bool _haveInitiatedStarterDeck;
+    public bool _haveInitiatedStarterDeck;
 
     private void OnValidate()
     {

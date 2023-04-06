@@ -18,13 +18,9 @@ public class ScriptableLevelRules : ScriptableObject
     public bool isTutorial;
 
     public string WorldMapLevelTitle;
-    public string ShopInstructionText;
-    public ShopType ShopType;
-    public ScriptableCard[] CardsToAdd;
-    public int NumberCardsToRemove;
-    public int NumberCardsToUpgrade;
-    
-    
+
+    public DeckImprovementModel[] DeckImprovementModels;
+
 }
 
 [Serializable]

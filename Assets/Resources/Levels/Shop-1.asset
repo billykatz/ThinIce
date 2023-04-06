@@ -18,9 +18,31 @@ MonoBehaviour:
   StartingRows: 0
   Rows: []
   isLevel: 0
-  WorldMapLevelTitle: Enter Shop
-  ShopInstructionText: Remove 2 cards
-  ShopType: 1
+  isTutorial: 0
+  WorldMapLevelTitle: Upgrade Cards
+  DeckImprovementModels:
+  - CardType: 0
+    ShopType: 2
+    ShopInstructionTitle: Upgrade
+    ShopInstructionText: Upgrade 1 Movement Card
+    NumberCardsToAdd: 0
+    NumberCardsToRemove: 0
+    NumberCardsToUpgrade: 1
+    StatType: 
+    StatAmount: 
+    CardChoicesToAdd: []
+  - CardType: 1
+    ShopType: 2
+    ShopInstructionTitle: Upgrade
+    ShopInstructionText: Upgrade 1 Modifier Card
+    NumberCardsToAdd: 0
+    NumberCardsToRemove: 0
+    NumberCardsToUpgrade: 1
+    StatType: 
+    StatAmount: 
+    CardChoicesToAdd: []
+  ShopInstructionText: Upgrade 2 cards
+  ShopType: 2
   CardsToAdd: []
-  NumberCardsToRemove: 2
+  NumberCardsToRemove: 0
   NumberCardsToUpgrade: 0

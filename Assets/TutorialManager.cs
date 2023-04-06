@@ -21,6 +21,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] TMP_Text _tutorialDetailText;
     [SerializeField] RawImage _tutorialDetailVideoParent;
     [SerializeField] private VideoPlayer _videoPlayer;
+    [SerializeField] private RenderTexture _renderTexture;
     
     [SerializeField] TutorialStep[] _tutorialSteps;
     [SerializeField] private CurrentLevelReference _level;
@@ -204,17 +205,19 @@ public class TutorialManager : MonoBehaviour
             _tutorialDetailText.text = step.DetailText[_innerStepCount];
         }
         
-        if (step.DetailRenderTexture.Length > _innerStepCount && step.DetailRenderTexture[_innerStepCount] != null)
+        if (step.PlayVideo)
         {
             _tutorialDetailParent.SetActive(true);
             _tutorialDetailVideoParent.gameObject.SetActive(true);
             
-            // give the image the render texture
-            _tutorialDetailVideoParent.texture = step.DetailRenderTexture[_innerStepCount];
+            // // give the image the render texture
+            _tutorialDetailVideoParent.texture = _renderTexture;
             
             //set up the video player with the clip and render texture
-            _videoPlayer.targetTexture = step.DetailRenderTexture[_innerStepCount];
-            _videoPlayer.clip = step.DetailVideoClip[_innerStepCount];
+            // _videoPlayer.targetTexture = step.DetailRenderTexture[_innerStepCount];
+            // _videoPlayer.clip = step.DetailVideoClip[_innerStepCount];
+            _videoPlayer.url = System.IO.Path.Combine(Application.streamingAssetsPath,"drag-a-card.mp4");
+            _videoPlayer.targetTexture = _renderTexture;
             _videoPlayer.Play();
         }
 

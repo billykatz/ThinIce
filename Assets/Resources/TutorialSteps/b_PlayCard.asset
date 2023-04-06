@@ -23,12 +23,7 @@ MonoBehaviour:
   - Bucky
   DetailImage: []
   DetailText: []
-  DetailRenderTexture:
-  - {fileID: 8400000, guid: 61fee11d14ed8a345a689cd86c63a1c6, type: 2}
-  - {fileID: 8400000, guid: 61fee11d14ed8a345a689cd86c63a1c6, type: 2}
-  DetailVideoClip:
-  - {fileID: 32900000, guid: f99f85e3e659ba541b7b178b445631bc, type: 3}
-  - {fileID: 32900000, guid: f99f85e3e659ba541b7b178b445631bc, type: 3}
+  PlayVideo: 1
   StateToTrigger: 6
   TriggerOnItemSpawn: 0
   TriggerOnHazardSpawn: 0

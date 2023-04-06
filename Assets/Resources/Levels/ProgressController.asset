@@ -18,6 +18,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c4bfff5581b194063bf3187711c53ad4, type: 2}
   - {fileID: 11400000, guid: c1965693e268ce847aba831f9e319457, type: 2}
   - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
+  - {fileID: 11400000, guid: 8b00eb781487f3143948129e10137598, type: 2}
+  - {fileID: 11400000, guid: 29db72d035ed37442a68f13905697179, type: 2}
+  - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
+  - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
+  - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
+  - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
+  - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
+  - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
   TutorialLevel: {fileID: 11400000, guid: 68270f93872674c47bf30ddd81b01790, type: 2}
   _levelIndex: 0
   CompletedTutorial: 0
+  JustForTesting: 0
+  _haveInitiatedStarterDeck: 0

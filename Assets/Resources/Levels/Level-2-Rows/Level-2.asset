@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4146832ad62f1449790ffe5011cbdb75, type: 3}
+  m_Name: Level-2
+  m_EditorClassIdentifier: 
+  LevelNumber: 2
+  CurrentNumberRows: 4
+  Width: 4
+  StartingRows: 4
+  Rows:
+  - {fileID: 11400000, guid: 8766c109764412e4db4eb37c0ddc992e, type: 2}
+  - {fileID: 11400000, guid: 0fa00cc1b25215241ad35a2582a0bfd7, type: 2}
+  - {fileID: 11400000, guid: 9dd6f1e87f9843d4dbe843bae7e35a74, type: 2}
+  - {fileID: 11400000, guid: 6594bd80aff59f048b141977ec2b52da, type: 2}
+  - {fileID: 11400000, guid: f6f5780bd8e27fb44bba6af0b6fb082a, type: 2}
+  - {fileID: 11400000, guid: 76a434f7c83240b4e8bad976002c3b32, type: 2}
+  - {fileID: 11400000, guid: cb66bc313beb13042a6a550e39b12a3b, type: 2}
+  - {fileID: 11400000, guid: b0c63341c21fd9a4cb414c15cc547558, type: 2}
+  - {fileID: 11400000, guid: 48cca048bf9ab904f86608cc4189eede, type: 2}
+  - {fileID: 11400000, guid: 123570004c72a97498b33ab6ae8cb154, type: 2}
+  - {fileID: 11400000, guid: 3c6756d32e0e02f45a88c475b534a5f9, type: 2}
+  isLevel: 1
+  isTutorial: 0
+  WorldMapLevelTitle: Play Level 2
+  DeckImprovementModels: []

@@ -86,13 +86,17 @@ public class CardRuleManager : MonoBehaviour
                     TutorialManager.Instance.EnemyDidDie();
                 }
                 DidCompleteMovement();
+                
+                // the player should have updated stats so let the player manager know
+                PlayerManager.Instance.HeroUnitUpdated();
             });
         }  else {
             DidCompleteMovement();
+            
+            // the player should have updated stats so let the player manager know
+            PlayerManager.Instance.HeroUnitUpdated();
         }
 
-        // the player should have updated stats so let the player manager know
-        PlayerManager.Instance.HeroUnitUpdated();
 
     }
     

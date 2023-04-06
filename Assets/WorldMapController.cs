@@ -15,8 +15,11 @@ public class WorldMapController : MonoBehaviour
 
     [SerializeField] private CurrentLevelReference _currentLevelReference;
     [SerializeField] private ProgressController _progressController;
+    [SerializeField] private GameObject _thanksForPlayingView;
     
     private ScriptableLevelRules _currentLevel;
+
+    public bool IsShowingDeckModification;
 
     private void Start()
     {
@@ -28,11 +31,17 @@ public class WorldMapController : MonoBehaviour
     {
         if (_currentLevel.isLevel)
         {
+            if (_currentLevel.LevelNumber == 4)
+            {
+                _thanksForPlayingView.SetActive(true);
+                return;
+            }
             _progressController.DidStartLevel();
             ThinIceSceneManager.Instance.LoadGameScene();
         }
-        else
+        else if (!IsShowingDeckModification)
         {
+            IsShowingDeckModification = true;
             _deckModificationController.Configure(_currentLevel);
         }
     }
@@ -55,6 +64,7 @@ public class WorldMapController : MonoBehaviour
     /// </summary>
     public void DidCompleteLevel()
     {
+        IsShowingDeckModification = false;
         _currentLevel = _currentLevelReference.LevelRules;
         DidAppearOnScreen();
     }

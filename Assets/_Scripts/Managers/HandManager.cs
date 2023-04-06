@@ -570,9 +570,6 @@ public class HandManager : MonoBehaviour
         // let the player move their character
         Debug.Log($"HandManager: {card}");
         CardRuleManager.Instance.PlayCard(card, target);
-        
-        // let the deck know we played a card
-        DeckManager.Instance.DidPlayCard(card);
     }
 
     public void DidFinishPlayingCard(CombinedCard card) {

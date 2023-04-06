@@ -10,6 +10,8 @@ public class CardRuleManager : MonoBehaviour
 
     private CombinedCard currentCard;
 
+    [SerializeField] private WinLoseManager _winLoseManager;
+
     private void Awake() {
         Debug.Log("Card Rule Manager Awake()");
         Instance = this;
@@ -90,7 +92,12 @@ public class CardRuleManager : MonoBehaviour
                 // the player should have updated stats so let the player manager know
                 PlayerManager.Instance.HeroUnitUpdated();
             });
-        }  else {
+        } else if (GridManager.Instance.CheckForDeadHero())
+        {
+            _winLoseManager.GameLose();
+        }  
+        
+        else {
             DidCompleteMovement();
             
             // the player should have updated stats so let the player manager know

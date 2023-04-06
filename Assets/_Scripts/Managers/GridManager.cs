@@ -103,6 +103,7 @@ public class GridManager : MonoBehaviour
     public List<Tile> GetItemTiles() { return _tiles.Where(t=>(t.Value.OccupiedItem != null)).Select(s=>s.Value).ToList(); }
     
     public bool CheckForDeadEnemy() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.Health == 0).Count() > 0; }
+    public bool CheckForDeadHero() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero && t.Value.OccupiedUnit.Health == 0).Count() > 0; }
 
     /// <summary>
     /// Called by the game manager to load the tiles based on the scriptable level rules

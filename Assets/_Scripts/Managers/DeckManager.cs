@@ -224,9 +224,9 @@ public class DeckManager : MonoBehaviour
 
     private void RecycleCard(CombinedCard card)
     {
-        card.DestroyCard();
         GetDiscard(CardType.Movement).Add(card.movementCard.ScriptableCard);
         GetDiscard(CardType.Modifier).Add(card.modifierCard.ScriptableCard);
+        card.DestroyCard();
     }
 
     public void AddCardToDeck(ScriptableCard card, CardType cardType)

@@ -14,6 +14,7 @@ public class WorldMapController : MonoBehaviour
     [SerializeField] private DeckModificationController _deckModificationController;
 
     [SerializeField] private CurrentLevelReference _currentLevelReference;
+    [SerializeField] private ProgressController _progressController;
     
     private ScriptableLevelRules _currentLevel;
 
@@ -27,6 +28,7 @@ public class WorldMapController : MonoBehaviour
     {
         if (_currentLevel.isLevel)
         {
+            _progressController.DidStartLevel();
             ThinIceSceneManager.Instance.LoadGameScene();
         }
         else

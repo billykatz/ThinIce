@@ -15,7 +15,7 @@ MonoBehaviour:
   Texts:
   - One very important thing!
   - Right now your max Power, Armor and Health is 4
-  - 4 is your max right now, but we will improve that later
+  - You can improve the max cap by beating levels
   SpeakerImage:
   - {fileID: 21300000, guid: b39bbdfe195f843628249fd54df5571d, type: 3}
   - {fileID: 21300000, guid: b39bbdfe195f843628249fd54df5571d, type: 3}
@@ -31,7 +31,7 @@ MonoBehaviour:
   DetailText:
   - Your max is 4... for now
   - Your max is 4... for now
-  - Look out for opporunities to increase it in the future
+  - Your max is 4... for now
   DetailRenderTexture: []
   DetailVideoClip: []
   StateToTrigger: 6

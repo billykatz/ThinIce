@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Texts:
   - Enemies have attack patterns and power too
-  - They attack you if you end your turn in the red zone
+  - They will attack if you finish your turn in their red attack pattern.
   SpeakerImage:
   - {fileID: 21300000, guid: b39bbdfe195f843628249fd54df5571d, type: 3}
   - {fileID: 21300000, guid: b39bbdfe195f843628249fd54df5571d, type: 3}
@@ -26,7 +26,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a5bab5fa603ba5c4cb8c98c135708b36, type: 3}
   DetailText:
   - Each enemy has a different pattern
-  - Enemies power doesn't get used up
+  - Each enemy has a different pattern
   DetailRenderTexture: []
   DetailVideoClip: []
   StateToTrigger: 6

@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Texts:
   - Nice, when you play a card you move based on the arrows
-  - And you also affect your Attack or Armor with the bottom card.
+  - And you also affect your Power or Armor with the bottom card.
+  - You will play two cards a turn and discard the last
   SpeakerImage:
   - {fileID: 21300000, guid: b39bbdfe195f843628249fd54df5571d, type: 3}
   - {fileID: 21300000, guid: b39bbdfe195f843628249fd54df5571d, type: 3}
@@ -25,8 +26,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6eae1c737b2c97d4aa0ae7f9a5543c34, type: 3}
   - {fileID: 21300000, guid: efd93af79b24a1f438fad44c3bc93f03, type: 3}
   DetailText:
-  - This card auto moves you
-  - And increases your attack
+  - Cards auto move you if possible
+  - Cards auto move you if possible
   DetailRenderTexture: []
   DetailVideoClip: []
   StateToTrigger: 6

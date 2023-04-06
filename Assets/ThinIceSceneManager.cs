@@ -31,8 +31,6 @@ public class ThinIceSceneManager : MonoBehaviour
     
     public void LoadTutorial()
     {
-        
-        DeckManager.Instance.IsTutorial = true;
         SceneManager.LoadScene(2);
     }
 

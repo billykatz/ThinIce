@@ -25,8 +25,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 77e5b39d95b629343bc0502e3bda91cc, type: 3}
   - {fileID: 21300000, guid: 77e5b39d95b629343bc0502e3bda91cc, type: 3}
   DetailText:
-  - Yellow tiles bounce you in a direction
-  - Spike tiles deal 1 damage to you
+  - Yellow tiles bounce you in a direction. Spike tiles deal 1 damage to you
+  - Yellow tiles bounce you in a direction. Spike tiles deal 1 damage to you
   DetailRenderTexture: []
   DetailVideoClip: []
   StateToTrigger: 6

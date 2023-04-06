@@ -10,12 +10,13 @@ public class ProgressController : ScriptableObject
 {
     [SerializeField] private CurrentLevelReference _currentLevelReference;
     [SerializeField] private ScriptableLevelRules _levelRulesBeforeTutorial;
-    
-    
+
     [SerializeField] private ScriptableLevelRules[] levels;
     [SerializeField] private ScriptableLevelRules TutorialLevel;
     [SerializeField] private int _levelIndex;
     public bool CompletedTutorial;
+
+    private bool _haveInitiatedStarterDeck;
 
     private void OnValidate()
     {
@@ -37,6 +38,20 @@ public class ProgressController : ScriptableObject
         return _levelIndex;
     }
 
+    public void DidStartLevel()
+    {
+        DeckManager.Instance.IsTutorial = false;
+        if (!_haveInitiatedStarterDeck)
+        {
+            _haveInitiatedStarterDeck = true;
+            DeckManager.Instance.ShouldCreateStarterDeck = true;
+        }
+        else
+        {
+            DeckManager.Instance.ShouldCreateStarterDeck = false;
+        }
+    }
+
     public void DidCompleteTutorial()
     {
         CompletedTutorial = true;
@@ -46,6 +61,7 @@ public class ProgressController : ScriptableObject
     public void DidStartTutorial()
     {
         _levelRulesBeforeTutorial = _currentLevelReference.LevelRules;
+        DeckManager.Instance.IsTutorial = true;
         _currentLevelReference.LevelRules = TutorialLevel;
     }
 
@@ -53,6 +69,7 @@ public class ProgressController : ScriptableObject
     {
         _levelIndex++;
         _currentLevelReference.LevelRules = levels[_levelIndex];
+        DeckManager.Instance.ShuffleEverything();
     }
 
 }

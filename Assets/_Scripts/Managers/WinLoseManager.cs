@@ -38,9 +38,17 @@ public class WinLoseManager : MonoBehaviour
         _youLoseElements.SetActive(true);
     }
     
-    public void DidPressContinueButton() { 
-        // save the data to the player
-        _progressManager.DidCompleteLevel();
+    public void DidPressContinueButton() {
+        if (DeckManager.Instance.IsTutorial)
+        {
+            
+            _progressManager.DidCompleteTutorial();
+        }
+        else
+        {
+            // save the data to the player
+            _progressManager.DidCompleteLevel();
+        }
 
         // move to the next scene
         ThinIceSceneManager.Instance.LoadWorldMap();

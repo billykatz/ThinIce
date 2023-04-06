@@ -99,7 +99,6 @@ public class TutorialManager : MonoBehaviour
         {
             // tutorial is over
             _tutorialComplete = true;
-            _progressController.DidCompleteTutorial();
             return;
         }
 

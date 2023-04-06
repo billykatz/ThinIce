@@ -5110,8 +5110,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8095242874395051583, guid: 078b7146b5f8e464f8285b3c1725e9cf, type: 3}
-      propertyPath: IsTutorial
+      propertyPath: IsVideo
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8095242874395051583, guid: 078b7146b5f8e464f8285b3c1725e9cf, type: 3}
+      propertyPath: IsTutorial
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 078b7146b5f8e464f8285b3c1725e9cf, type: 3}

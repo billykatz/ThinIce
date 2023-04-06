@@ -21,7 +21,7 @@ MonoBehaviour:
   DetailImage:
   - {fileID: 21300000, guid: 0e90934e8ff02644ab981c67cdf02013, type: 3}
   DetailText:
-  - Powerups increase your Attack or Armor
+  - Powerups increase your Power or Armor
   DetailRenderTexture: []
   DetailVideoClip: []
   StateToTrigger: 6

@@ -28,7 +28,10 @@ public class GameManager : MonoBehaviour
 
     public void EndGameState(GameState currentGameState) {
         Debug.Log($"Game Manager: End Game State {currentGameState}");
-        TutorialManager.Instance.EndGameState(currentGameState);
+        if (DeckManager.Instance.IsTutorial)
+        {
+            TutorialManager.Instance.EndGameState(currentGameState);
+        }
         StartCoroutine(ArtificalWaitForSeconds(0.1f, () =>
         {
             switch (currentGameState)
@@ -102,7 +105,10 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Game Manager: Start Game State {newState}");
         GameState = newState;
         MenuManager.Instance.ShowTurnPhase(newState);
-        TutorialManager.Instance.ChangeState(newState);
+        if (DeckManager.Instance.IsTutorial)
+        {
+            TutorialManager.Instance.ChangeState(newState);
+        }
         switch (newState) {
             case GameState.GenerateGrid:
                 GridManager.Instance.LoadGrid();

@@ -15,6 +15,11 @@ public class DeckManager : MonoBehaviour
     private List<ScriptableCard> _discardModifier;
     private List<ScriptableCard> _deckMovement;
     private List<ScriptableCard> _deckModifier;
+    
+    private List<ScriptableCard> _tutorialDeckMovement;
+    private List<ScriptableCard> _tutorialDeckModifier;
+    private List<ScriptableCard> _tutorialDiscardMovement;
+    private List<ScriptableCard> _tutorialDiscardModifier;
 
     public bool IsTutorial;
     public bool ShouldCreateStarterDeck;
@@ -27,7 +32,7 @@ public class DeckManager : MonoBehaviour
         _deckModifier = new List<ScriptableCard>();
 
         _startingDeck = Resources.LoadAll<ScriptableCard>("Cards").ToList();
-
+        
         // lets keep this around from the get go
         DontDestroyOnLoad(gameObject);
     }
@@ -47,19 +52,54 @@ public class DeckManager : MonoBehaviour
     {
         if (cardType == CardType.Modifier)
         {
-            return _deckModifier;
+            if (IsTutorial)
+            {
+                return _tutorialDeckModifier;
+            } else
+            {
+                return _deckModifier;
+            }
         } else
         {
-            return _deckMovement;
+            if (IsTutorial)
+            {
+                return _tutorialDeckMovement;
+            }
+            else
+            {
+                return _deckMovement;
+            }
         }
     }
     
+    public List<ScriptableCard> GetDiscard(CardType cardType)
+    {
+        if (cardType == CardType.Modifier)
+        {
+            if (IsTutorial)
+            {
+                return _tutorialDiscardModifier;
+            } else
+            {
+                return _discardModifier;
+            }
+        } else
+        {
+            if (IsTutorial)
+            {
+                return _tutorialDeckMovement;
+            }
+            else
+            {
+                return _discardMovement;
+            }
+        }
+    }
+
     private void CreateStarterDeck() {
         // separate the cards into movement cards and modifier card. Also shuffles the deck
         //_deckMovement = _startingDeck.Where(t=>t.CardType == CardType.Movement).OrderBy(o=>o.name).ToList();
         //_deckModifier = _startingDeck.Where(t=>t.CardType == CardType.Modifier).OrderBy(o=>o.name).ToList();
-        
-
         _deckMovement = ShuffleDiscardIntoDeck(_startingDeck.Where(t=>t.CardType == CardType.Movement).ToList());
         _deckModifier = ShuffleDiscardIntoDeck(_startingDeck.Where(t=>t.CardType == CardType.Modifier).ToList());
     }
@@ -67,8 +107,8 @@ public class DeckManager : MonoBehaviour
     private void CreateTutorialDeck() {
         // separate the cards into movement cards and modifier card. Also shuffles the deck
         List<ScriptableCard> tutorialCards = Resources.LoadAll<ScriptableCard>("TutorialCards").ToList();
-        _deckMovement = ShuffleDiscardIntoDeck(tutorialCards.Where(t=>t.CardType == CardType.Movement).ToList());
-        _deckModifier = ShuffleDiscardIntoDeck(tutorialCards.Where(t=>t.CardType == CardType.Modifier).ToList());
+        _tutorialDeckMovement = ShuffleDiscardIntoDeck(tutorialCards.Where(t=>t.CardType == CardType.Movement).ToList());
+        _tutorialDeckModifier = ShuffleDiscardIntoDeck(tutorialCards.Where(t=>t.CardType == CardType.Modifier).ToList());
     }
 
     private List<ScriptableCard> ShuffleDiscardIntoDeck(List<ScriptableCard> discardedCards)
@@ -81,17 +121,36 @@ public class DeckManager : MonoBehaviour
 
         return shuffledDeck.OrderBy((o) => Random.value).ToList();
     }
+    
+    private List<ScriptableCard> ShuffleDeckAndDiscard(List<ScriptableCard> deck, List<ScriptableCard> discardedCards)
+    {
+        List<ScriptableCard> shuffledDeck = deck;
+        for (int i = 0; i < discardedCards.Count; i++)
+        {
+            shuffledDeck.Add(discardedCards[i]);
+        }
 
+        return shuffledDeck.OrderBy((o) => Random.value).ToList();
+    }
+
+    
     public CombinedCard DrawCard() {
         Debug.Log("Draw a card");
         
         CombinedCard drawnCard = CreateTopCard();
 
         // remove them from the deck
-        _deckMovement.RemoveAt(0);
-        _deckModifier.RemoveAt(0);
+        GetDeck(CardType.Movement).RemoveAt(0);
+        GetDeck(CardType.Modifier).RemoveAt(0);
 
         return drawnCard;
+    }
+
+    public void ShuffleEverything()
+    {
+        _deckMovement = ShuffleDeckAndDiscard(_deckMovement, GetDiscard(CardType.Movement));
+        _deckModifier = ShuffleDeckAndDiscard(_deckModifier, GetDiscard(CardType.Modifier));
+        
     }
 
     public CombinedCard CreateTopCard()
@@ -99,23 +158,37 @@ public class DeckManager : MonoBehaviour
         Debug.Log("Create the top");
         
         // make sure neither deck is empty
-        if (_deckMovement.Count == 0)
+        if (GetDeck(CardType.Movement).Count == 0)
         {
             Debug.Log("Shuffling Movement");
-            _deckMovement = ShuffleDiscardIntoDeck(_discardMovement);
+            if (IsTutorial)
+            {
+                _tutorialDeckMovement = ShuffleDiscardIntoDeck(GetDiscard(CardType.Movement));
+            }
+            else
+            {
+                _deckMovement = ShuffleDiscardIntoDeck(GetDiscard(CardType.Movement));
+            }
         }
 
-        if (_deckModifier.Count == 0)
+        if (GetDeck(CardType.Modifier).Count == 0)
         {
             Debug.Log("Shuffling MODIFIER");
-            _deckModifier = ShuffleDiscardIntoDeck(_discardModifier);
+            if (IsTutorial)
+            {
+                _tutorialDeckModifier = ShuffleDiscardIntoDeck(GetDiscard(CardType.Modifier));
+            }
+            else
+            {
+                _deckModifier = ShuffleDiscardIntoDeck(GetDiscard(CardType.Modifier));
+            }
         }
 
         // create the movement and modifier cards
-        MovementCard movementCard = (MovementCard)_deckMovement[0].BaseCard;
-        movementCard.ScriptableCard = _deckMovement[0];
-        ModifierCard modifierCard = (ModifierCard)_deckModifier[0].BaseCard;
-        modifierCard.ScriptableCard = _deckModifier[0];
+        MovementCard movementCard = (MovementCard)GetDeck(CardType.Movement)[0].BaseCard;
+        movementCard.ScriptableCard = GetDeck(CardType.Movement)[0];
+        ModifierCard modifierCard = (ModifierCard)GetDeck(CardType.Modifier)[0].BaseCard;
+        modifierCard.ScriptableCard = GetDeck(CardType.Modifier)[0];
         
         // create the combined card
         GameObject newCard = Instantiate(CombinedCardPrefab);
@@ -137,18 +210,18 @@ public class DeckManager : MonoBehaviour
     private void RecycleCard(CombinedCard card)
     {
         card.DestroyCard();
-        _discardMovement.Add(card.movementCard.ScriptableCard);
-        _discardModifier.Add(card.modifierCard.ScriptableCard);
+        GetDiscard(CardType.Movement).Add(card.movementCard.ScriptableCard);
+        GetDiscard(CardType.Modifier).Add(card.modifierCard.ScriptableCard);
     }
 
     public void AddCardToDeck(ScriptableCard card, CardType cardType)
     {
         if (cardType == CardType.Modifier)
         {
-            _discardModifier.Add(card);
+            GetDiscard(CardType.Modifier).Add(card);
         } else if (cardType == CardType.Movement)
         {
-            _discardMovement.Add(card);
+            GetDiscard(CardType.Movement).Add(card);
         }
     }
     
@@ -156,10 +229,10 @@ public class DeckManager : MonoBehaviour
     {
         if (card.CardType == CardType.Modifier)
         {
-            _deckModifier.Remove(card);
+            GetDeck(CardType.Modifier).Remove(card);
         } else if (card.CardType == CardType.Movement)
         {
-            _deckMovement.Remove(card);
+            GetDeck(CardType.Movement).Remove(card);
         }
     }
 
@@ -167,12 +240,12 @@ public class DeckManager : MonoBehaviour
     {
         if (cardType == CardType.Modifier)
         {
-            _deckModifier.Remove(card);
-            _deckModifier.Add(card.UpgradedVersionCard);
+            GetDeck(CardType.Modifier).Remove(card);
+            GetDeck(CardType.Modifier).Add(card.UpgradedVersionCard);
         } else if (cardType == CardType.Movement)
         {
-            _deckMovement.Remove(card);
-            _deckMovement.Add(card.UpgradedVersionCard);
+            GetDeck(CardType.Modifier).Remove(card);
+            GetDeck(CardType.Modifier).Add(card.UpgradedVersionCard);
         }
     }
 }

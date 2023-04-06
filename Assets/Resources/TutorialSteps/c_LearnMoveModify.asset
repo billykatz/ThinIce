@@ -19,15 +19,19 @@ MonoBehaviour:
   SpeakerImage:
   - {fileID: 21300000, guid: b39bbdfe195f843628249fd54df5571d, type: 3}
   - {fileID: 21300000, guid: b39bbdfe195f843628249fd54df5571d, type: 3}
+  - {fileID: 21300000, guid: b39bbdfe195f843628249fd54df5571d, type: 3}
   SpeakerName:
+  - Bucky
   - Bucky
   - Bucky
   DetailImage:
   - {fileID: 21300000, guid: 6eae1c737b2c97d4aa0ae7f9a5543c34, type: 3}
   - {fileID: 21300000, guid: efd93af79b24a1f438fad44c3bc93f03, type: 3}
+  - {fileID: 0}
   DetailText:
   - Cards auto move you if possible
   - Cards auto move you if possible
+  - 
   DetailRenderTexture: []
   DetailVideoClip: []
   StateToTrigger: 6

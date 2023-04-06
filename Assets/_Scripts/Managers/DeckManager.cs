@@ -11,15 +11,15 @@ public class DeckManager : MonoBehaviour
 
     [SerializeField] private GameObject CombinedCardPrefab;
     private List<ScriptableCard> _startingDeck;
-    private List<ScriptableCard> _discardMovement;
-    private List<ScriptableCard> _discardModifier;
-    private List<ScriptableCard> _deckMovement;
-    private List<ScriptableCard> _deckModifier;
+    private List<ScriptableCard> _discardMovement = new List<ScriptableCard>();
+    private List<ScriptableCard> _discardModifier = new List<ScriptableCard>();
+    private List<ScriptableCard> _deckMovement = new List<ScriptableCard>();
+    private List<ScriptableCard> _deckModifier = new List<ScriptableCard>();
     
-    private List<ScriptableCard> _tutorialDeckMovement;
-    private List<ScriptableCard> _tutorialDeckModifier;
-    private List<ScriptableCard> _tutorialDiscardMovement;
-    private List<ScriptableCard> _tutorialDiscardModifier;
+    private List<ScriptableCard> _tutorialDeckMovement = new List<ScriptableCard>();
+    private List<ScriptableCard> _tutorialDeckModifier = new List<ScriptableCard>();
+    private List<ScriptableCard> _tutorialDiscardMovement = new List<ScriptableCard>();
+    private List<ScriptableCard> _tutorialDiscardModifier = new List<ScriptableCard>();
 
     public bool IsTutorial;
     public bool ShouldCreateStarterDeck;
@@ -87,7 +87,7 @@ public class DeckManager : MonoBehaviour
         {
             if (IsTutorial)
             {
-                return _tutorialDeckMovement;
+                return _tutorialDiscardMovement;
             }
             else
             {

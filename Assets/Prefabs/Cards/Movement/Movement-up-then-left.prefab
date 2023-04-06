@@ -7,6 +7,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1505701982896572171, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
+      propertyPath: m_Size.x
+      value: 6.2990513
+      objectReference: {fileID: 0}
+    - target: {fileID: 1505701982896572171, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
+      propertyPath: m_Size.y
+      value: 9.826268
+      objectReference: {fileID: 0}
+    - target: {fileID: 1505701982896572171, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
+      propertyPath: m_Center.x
+      value: -0.012870312
+      objectReference: {fileID: 0}
+    - target: {fileID: 1505701982896572171, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
+      propertyPath: m_Center.y
+      value: -1.6384023
+      objectReference: {fileID: 0}
     - target: {fileID: 1801880933360553825, guid: 1abb6cadcc62b48ee918930e5e2ff4f4, type: 3}
       propertyPath: effectDescription
       value: Move Up then LEFT

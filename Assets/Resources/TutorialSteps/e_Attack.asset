@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: e_Attack
   m_EditorClassIdentifier: 
   Texts:
-  - 'Bleh! Pesty plastic. '
-  - 'Recycle that cup by moving into it.  '
+  - 'Bleh! Pesty packing peanut. '
+  - 'Recycle that trash by moving into it.  '
   SpeakerImage:
   - {fileID: 21300000, guid: b39bbdfe195f843628249fd54df5571d, type: 3}
   - {fileID: 21300000, guid: b39bbdfe195f843628249fd54df5571d, type: 3}
@@ -25,8 +25,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 3106ec718254cb041963c069d88aa3bd, type: 3}
   - {fileID: 21300000, guid: 3106ec718254cb041963c069d88aa3bd, type: 3}
   DetailText:
-  - This enemy has 3 health
-  - Attacking them uses up your attack
+  - This enemy has 1 health
+  - Attacking them uses up your power
   DetailRenderTexture: []
   DetailVideoClip: []
   StateToTrigger: 6

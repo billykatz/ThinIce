@@ -41,8 +41,12 @@ public class CombatManager : MonoBehaviour
                bool defenderHasArmor = attackerUnit.Faction != Faction.Hero;
                if (defenderHasArmor)
                {
+                   int extraDamage = defenderUnit.Armor - attackerUnit.Attack;
                    defenderUnit.Armor = Mathf.Max(0, defenderUnit.Armor - attackerUnit.Attack);
-                   defenderUnit.Health = Mathf.Max(0, defenderUnit.Health + defenderUnit.Armor - attackerUnit.Attack);
+                   if (extraDamage < 0)
+                   {
+                       defenderUnit.Health = Mathf.Max(0, defenderUnit.Health + extraDamage);
+                   }
                }
                else
                {

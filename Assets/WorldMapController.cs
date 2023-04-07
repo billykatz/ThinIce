@@ -25,17 +25,22 @@ public class WorldMapController : MonoBehaviour
     {
         _currentLevel = _currentLevelReference.LevelRules;
         _playButton.TextField.text = _currentLevel.WorldMapLevelTitle;
+        
+        int currentLevelIdx = _currentLevel.LevelNumber;
+        int previousLevelIndex = Mathf.Max(0, currentLevelIdx-1);
+        // set the hero to the level before
+        _hero.transform.position = _levelLocations[previousLevelIndex].position;
     }
 
     public void PlayButtonPressed()
     {
         if (_currentLevel.isLevel)
         {
-            // if (_currentLevel.LevelNumber == 4)
-            // {
-            //     _thanksForPlayingView.SetActive(true);
-            //     return;
-            // }
+            if (_currentLevel.LevelNumber == 10)
+            {
+                _thanksForPlayingView.SetActive(true);
+                return;
+            }
             _progressController.DidStartLevel();
             ThinIceSceneManager.Instance.LoadGameScene();
         }
@@ -49,10 +54,6 @@ public class WorldMapController : MonoBehaviour
     public void DidAppearOnScreen()
     {
         int currentLevelIdx = _currentLevel.LevelNumber;
-        int previousLevelIndex = Mathf.Max(0, currentLevelIdx-1);
-        
-        // set the hero to the level before
-        _hero.transform.position = _levelLocations[previousLevelIndex].position;
         _hero.transform.DOMove(_levelLocations[currentLevelIdx].position, 1.5f);
         
         // set the play text

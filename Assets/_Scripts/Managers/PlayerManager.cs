@@ -19,6 +19,8 @@ public class PlayerManager : MonoBehaviour
     public int minArmor;
     public int maxAttack;
     public int minAttack;
+    public int startAttack;
+    public int startArmor;
 
     [SerializeField] private GameObject _baseHeroPrefab;
     
@@ -40,12 +42,20 @@ public class PlayerManager : MonoBehaviour
         maxHp = health;
     }
     
+    public void SetPlayerStartingStats(int attack, int armor)
+    {
+        startAttack = attack;
+        startArmor = armor;
+    }
+
+    
     public void SetPlayerStartingStats(BaseUnit hero)
     {
-        hero.Attack = 1;
-        hero.Armor = 1;
+        hero.Attack = startAttack;
+        hero.Armor = startArmor;
         hero.Health = maxHp;
     }
+    
     public void HeroUnitUpdated() {
         heroUnit = GridManager.Instance.GetHeroUnit();
     }
@@ -138,6 +148,12 @@ public class PlayerManager : MonoBehaviour
             newArmor = ComputeNewStat(currentArmor, minArmor, maxArmor, card);
         }
 
+        if (card.modifierCard.AffectsHealth)
+        {
+            unit.Health = unit.Health + card.modifierCard.modifyAmount;
+            unit.Health = Mathf.Min(maxHp, unit.Health);
+        }
+
         unit.Armor = newArmor;
         unit.Attack = newAttack;
     }
@@ -184,8 +200,16 @@ public class PlayerManager : MonoBehaviour
 
     private void UpdateStatsBasedOnDamage(BaseUnit unit, int damage)
     {
-        unit.Health -= damage;
-        unit.Health = Mathf.Max(0, unit.Health);
+        if (damage > unit.Armor)
+        {
+            unit.Health -= (damage - unit.Armor);
+            unit.Armor = 0;
+            unit.Health = Mathf.Max(0, unit.Health);
+        }
+        else
+        {
+            unit.Armor -= damage;
+        }
     }
     private BaseUnit UpdateStatsBasedOnItem(BaseUnit unit, BaseItem item)
     {

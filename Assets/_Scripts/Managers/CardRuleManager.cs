@@ -12,6 +12,9 @@ public class CardRuleManager : MonoBehaviour
 
     [SerializeField] private WinLoseManager _winLoseManager;
 
+    // bit of state to avoid the infinite cycle of arrow into enemy over and over again
+    private int _hazardsInARow = 0;
+
     private void Awake() {
         Debug.Log("Card Rule Manager Awake()");
         Instance = this;
@@ -30,6 +33,8 @@ public class CardRuleManager : MonoBehaviour
         step.card = card;
         step.movement = card.movementCard.movement;
         StartCardRuleStep(step);
+
+        _hazardsInARow = 0;
     }
 
     /// <summary>
@@ -57,8 +62,15 @@ public class CardRuleManager : MonoBehaviour
 
         }
         
-        if (checkForSpikes && GridManager.Instance.ShouldResolveHazard())
+        if (checkForSpikes && GridManager.Instance.ShouldResolveSpikes())
         {
+            GridManager.Instance.ResolveHazard();
+            return;
+        }
+        
+        if (_hazardsInARow < 5 && GridManager.Instance.ShouldResolveBounceTile())
+        {
+            _hazardsInARow++;
             GridManager.Instance.ResolveHazard();
             return;
         }
@@ -93,10 +105,10 @@ public class CardRuleManager : MonoBehaviour
                 {
                     TutorialManager.Instance.EnemyDidDie();
                 }
-                DidCompleteMovement();
-                
                 // the player should have updated stats so let the player manager know
                 PlayerManager.Instance.HeroUnitUpdated();
+                
+                DidCompleteMovement();
             });
         } else if (GridManager.Instance.CheckForDeadHero())
         {

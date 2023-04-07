@@ -28,6 +28,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 74ef06adb6da40b49917cc38d72169fc, type: 2}
   - {fileID: 11400000, guid: ca5a7f5f971e8a64490d083a00f0846a, type: 2}
   - {fileID: 11400000, guid: 52787a5326620e645a2edf9291aeda49, type: 2}
+  - {fileID: 11400000, guid: f7f111e053fd6a341a4b6c2869363b06, type: 2}
+  - {fileID: 11400000, guid: 93204ace0a2b7ac4fb15a3513e158529, type: 2}
+  - {fileID: 11400000, guid: 3792abc639e1c9e4ba64b353854cca0c, type: 2}
   isLevel: 1
   isTutorial: 0
   WorldMapLevelTitle: Play Level 6

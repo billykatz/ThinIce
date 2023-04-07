@@ -218,10 +218,6 @@ public class DeckManager : MonoBehaviour
     {
         RecycleCard(card);
     }
-    public void DidPlayCard(CombinedCard card) {
-        RecycleCard(card);
-    }
-
     private void RecycleCard(CombinedCard card)
     {
         GetDiscard(CardType.Movement).Add(card.movementCard.ScriptableCard);
@@ -256,11 +252,11 @@ public class DeckManager : MonoBehaviour
         if (cardType == CardType.Modifier)
         {
             GetDeck(CardType.Modifier).Remove(card);
-            GetDeck(CardType.Modifier).Add(card.UpgradedVersionCard);
+            GetDiscard(CardType.Modifier).Add(card.UpgradedVersionCard);
         } else if (cardType == CardType.Movement)
         {
             GetDeck(CardType.Movement).Remove(card);
-            GetDeck(CardType.Movement).Add(card.UpgradedVersionCard);
+            GetDiscard(CardType.Movement).Add(card.UpgradedVersionCard);
         }
     }
 }

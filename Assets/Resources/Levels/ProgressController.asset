@@ -22,15 +22,17 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 29db72d035ed37442a68f13905697179, type: 2}
   - {fileID: 11400000, guid: c29629b956f52d94e865f755589b7673, type: 2}
   - {fileID: 11400000, guid: 6789d85a7fd54c54d91d25c1eb2f2d70, type: 2}
-  - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
-  - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
-  - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
-  - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
+  - {fileID: 11400000, guid: 288ddb9b5537be14d8c9b31151c52bce, type: 2}
+  - {fileID: 11400000, guid: 71bd71a625d38594abee35697e35057e, type: 2}
+  - {fileID: 11400000, guid: 2a44f85ade271b24a9f3c56e113b8c0f, type: 2}
+  - {fileID: 11400000, guid: 823005c9e02b24c429f82779b9dc64e3, type: 2}
   TutorialLevel: {fileID: 11400000, guid: 68270f93872674c47bf30ddd81b01790, type: 2}
   _levelIndex: 0
   CompletedTutorial: 0
-  JustForTesting: 1
+  JustForTesting: 0
   playerMaxAttack: 4
   playerMaxArmor: 4
   playerMaxHealth: 4
-  _haveInitiatedStarterDeck: 1
+  playerStartAttack: 1
+  playerStartArmor: 1
+  _haveInitiatedStarterDeck: 0

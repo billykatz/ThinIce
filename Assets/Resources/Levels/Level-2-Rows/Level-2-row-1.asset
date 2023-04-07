@@ -15,6 +15,6 @@ MonoBehaviour:
   Row:
     Tiles:
     - {fileID: 11400000, guid: 3af10a2e8896101478ca8280cae99fa7, type: 2}
-    - {fileID: 11400000, guid: 3af10a2e8896101478ca8280cae99fa7, type: 2}
-    - {fileID: 11400000, guid: 3af10a2e8896101478ca8280cae99fa7, type: 2}
+    - {fileID: 11400000, guid: e018c94663d69394bb95f903b4eb3909, type: 2}
+    - {fileID: 11400000, guid: 3781d99c7ac39484cbaddf8acadf0085, type: 2}
     - {fileID: 11400000, guid: 3af10a2e8896101478ca8280cae99fa7, type: 2}

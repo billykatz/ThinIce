@@ -24,20 +24,22 @@ MonoBehaviour:
   - CardType: 0
     ShopType: 2
     ShopInstructionTitle: Upgrade
-    ShopInstructionText: Upgrade 1 Movement Card
+    ShopInstructionText: Upgrade 2 Movement Cards
     NumberCardsToAdd: 0
     NumberCardsToRemove: 0
     NumberCardsToUpgrade: 2
-    StatType: 
-    StatAmount: 
+    StatMax: 0
+    StatStart: 0
+    StatSprite: {fileID: 0}
     CardChoicesToAdd: []
   - CardType: 1
     ShopType: 2
     ShopInstructionTitle: Upgrade
-    ShopInstructionText: Upgrade 1 Modifier Card
+    ShopInstructionText: Upgrade 2 Modifier Cards
     NumberCardsToAdd: 0
     NumberCardsToRemove: 0
     NumberCardsToUpgrade: 2
-    StatType: 
-    StatAmount: 
+    StatMax: 0
+    StatStart: 0
+    StatSprite: {fileID: 0}
     CardChoicesToAdd: []

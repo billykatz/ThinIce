@@ -20,6 +20,8 @@ public class ProgressController : ScriptableObject
     public int playerMaxAttack;
     public int playerMaxArmor;
     public int playerMaxHealth;
+    public int playerStartAttack;
+    public int playerStartArmor;
 
     public bool _haveInitiatedStarterDeck;
 
@@ -37,19 +39,30 @@ public class ProgressController : ScriptableObject
         playerMaxAttack = 4;
         playerMaxArmor = 4;
         playerMaxHealth = 4;
+        playerStartArmor = 1;
+        playerStartAttack = 1;
     }
     
 
     public void WillGenerateGrid()
     {
-        FindObjectOfType<PlayerManager>().SetPlayerMaxStats(playerMaxAttack, playerMaxArmor, playerMaxHealth);
+        PlayerManager playerManager = FindObjectOfType<PlayerManager>();
+        playerManager.SetPlayerMaxStats(playerMaxAttack, playerMaxArmor, playerMaxHealth);
+        playerManager.SetPlayerStartingStats(playerStartAttack, playerStartArmor);
     }
     
-    public void UpdatePlayerStats(int newMax)
+    public void UpdatePlayerMaxStats(int newMax)
     {
         playerMaxAttack = newMax;
         playerMaxArmor = newMax;
         playerMaxHealth = newMax;
+    }
+    
+    public void UpdatePlayersStartStats(int newStart)
+    {
+        playerStartArmor = newStart;
+        playerStartAttack = newStart;
+
     }
 
     

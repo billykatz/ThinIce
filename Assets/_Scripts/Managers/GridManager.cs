@@ -665,9 +665,14 @@ public class GridManager : MonoBehaviour
         return GetHeroTile().OccupiedItem != null;
     }
     
-    public bool ShouldResolveHazard()
+    public bool ShouldResolveSpikes()
     {
-        return GetHeroTile().OccupiedHazard != null;
+        return GetHeroTile().OccupiedHazard != null && GetHeroTile().OccupiedHazard.HazardType == HazardType.Spikes;
+    }
+    
+    public bool ShouldResolveBounceTile()
+    {
+        return GetHeroTile().OccupiedHazard != null && GetHeroTile().OccupiedHazard.HazardType != HazardType.Spikes;
     }
     
     public void ResolveHazard()

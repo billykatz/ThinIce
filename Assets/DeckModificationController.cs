@@ -18,6 +18,7 @@ public class DeckImprovementModel
     public int NumberCardsToRemove;
     public int NumberCardsToUpgrade;
     public int StatMax;
+    public int StatStart;
     public Sprite StatSprite;
     public ScriptableCard[] CardChoicesToAdd;
 
@@ -220,10 +221,14 @@ public class DeckModificationController : MonoBehaviour
             else
             {
                 // remove the cards from the deck
+                List<ScriptableCard> cardsToRemove = new List<ScriptableCard>();
                 for (int i = 0; i < _cardIndexesRemoved.Count; i++)
                 {
                     ScriptableCard card = _deckWeAreEditing[_cardIndexesRemoved[i]];
-                    _deckManager.RemoveCardFromDeck(card);
+                    cardsToRemove.Add(card);
+                }
+                for (int i = 0 ; i < cardsToRemove.Count; i++) {
+                    _deckManager.RemoveCardFromDeck(cardsToRemove[i]);
                 }
                 
                 DidCompleteShop();
@@ -237,10 +242,15 @@ public class DeckModificationController : MonoBehaviour
             else
             {
                 // upgrade the cards from the deck
+                List<ScriptableCard> cardsToUpgrade = new List<ScriptableCard>();
                 for (int i = 0; i < _cardIndexesUpgraded.Count; i++)
                 {
                     ScriptableCard card = _deckWeAreEditing[_cardIndexesUpgraded[i]];
-                    _deckManager.UpgradeCard(card, _deckImprovements[_deckImprovementIndex].CardType);
+                    cardsToUpgrade.Add(card);
+                }
+                for (int i = 0; i < cardsToUpgrade.Count; i++)
+                {
+                    _deckManager.UpgradeCard(cardsToUpgrade[i], _deckImprovements[_deckImprovementIndex].CardType);
                 }
                 
                 DidCompleteShop();
@@ -264,7 +274,17 @@ public class DeckModificationController : MonoBehaviour
             }
         } else if (_shopType == ShopType.StatBoost)
         {
-            _progressManager.UpdatePlayerStats(_deckImprovements[_deckImprovementIndex].StatMax);
+            if (_deckImprovements[_deckImprovementIndex].StatMax > 0)
+            {
+
+                _progressManager.UpdatePlayerMaxStats(_deckImprovements[_deckImprovementIndex].StatMax);
+            }
+            else
+            {
+                
+                _progressManager.UpdatePlayersStartStats(_deckImprovements[_deckImprovementIndex].StatStart);
+            }
+
             DidCompleteShop();
         }
     }

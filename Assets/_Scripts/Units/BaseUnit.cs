@@ -251,11 +251,9 @@ public class BaseUnit : MonoBehaviour
         Action tempCallback = _attackFinishedCallback;
         _attackFinishedCallback = null;
         tempCallback?.Invoke();
-
-
-        Action anotherTempCallback = _takesDamageCallback;
+        
+        _takesDamageCallback?.Invoke();
         _takesDamageCallback = null;
-        anotherTempCallback.Invoke();
     }
     
     /// <summary>

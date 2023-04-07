@@ -24,12 +24,13 @@ MonoBehaviour:
   - CardType: 1
     ShopType: 4
     ShopInstructionTitle: Stat Boost!
-    ShopInstructionText: Max now 6!
+    ShopInstructionText: Start with 3 Power and Armor
     NumberCardsToAdd: 0
     NumberCardsToRemove: 0
     NumberCardsToUpgrade: 0
-    StatMax: 6
-    StatSprite: {fileID: 21300000, guid: 0238576bc71075c469046ca83edcb96b, type: 3}
+    StatMax: 0
+    StatStart: 3
+    StatSprite: {fileID: 21300000, guid: 1394b07f4e24a5b4fa5d2035cf537cda, type: 3}
     CardChoicesToAdd: []
   - CardType: 0
     ShopType: 1
@@ -39,6 +40,7 @@ MonoBehaviour:
     NumberCardsToRemove: 1
     NumberCardsToUpgrade: 0
     StatMax: 0
+    StatStart: 0
     StatSprite: {fileID: 0}
     CardChoicesToAdd: []
   - CardType: 1
@@ -46,8 +48,9 @@ MonoBehaviour:
     ShopInstructionTitle: Remove
     ShopInstructionText: Remove 1 modifier card
     NumberCardsToAdd: 0
-    NumberCardsToRemove: 2
+    NumberCardsToRemove: 1
     NumberCardsToUpgrade: 0
     StatMax: 0
+    StatStart: 0
     StatSprite: {fileID: 0}
     CardChoicesToAdd: []

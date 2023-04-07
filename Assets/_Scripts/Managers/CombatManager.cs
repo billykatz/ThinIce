@@ -21,9 +21,13 @@ public class CombatManager : MonoBehaviour
 
        int attackDamage = attackerUnit.Attack;
 
+       
+       Debug.Log($"{attackerUnit.name} showing combat");
+       attackerUnit.ToggleAttackIndicators(false);
        _animator.AnimateCombat(attackerUnit, defenderUnit,
            () =>
            {
+               Debug.Log($"{attackerUnit.name} attack did hit");
                AnimationData data = new AnimationData();
                data.StartPosition = defenderUnit.transform.position;
                data.EndPosition = defenderUnit.transform.position; 
@@ -35,13 +39,18 @@ public class CombatManager : MonoBehaviour
            },
            () =>
            {
+               Debug.Log($"{attackerUnit.name} attack animation did finish");
                int defenderHealthPlusArmor = defenderUnit.Health + defenderUnit.Armor;
                // update defender stats
                bool defenderHasArmor = attackerUnit.Faction != Faction.Hero;
                if (defenderHasArmor)
                {
+                   int extraDamage = defenderUnit.Armor - attackerUnit.Attack;
                    defenderUnit.Armor = Mathf.Max(0, defenderUnit.Armor - attackerUnit.Attack);
-                   defenderUnit.Health = Mathf.Max(0, defenderUnit.Health + defenderUnit.Armor - attackerUnit.Attack);
+                   if (extraDamage < 0)
+                   {
+                       defenderUnit.Health = Mathf.Max(0, defenderUnit.Health + extraDamage);
+                   }
                }
                else
                {
@@ -55,6 +64,7 @@ public class CombatManager : MonoBehaviour
                }
 
 
+               attackerUnit.ToggleAttackIndicators(true);
                PlayerManager.Instance.HeroUnitUpdated();
 
                callback.Invoke();

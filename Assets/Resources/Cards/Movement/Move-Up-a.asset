@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 802496ae4666843ff85292fbea196277, type: 3}
+  m_Name: Move-Up-a
+  m_EditorClassIdentifier: 
+  CardType: 0
+  BaseCard: {fileID: 7595061383620350611, guid: 5dce8bdc012574bf984b7699ccd81107, type: 3}
+  UpgradedVersionCard: {fileID: 11400000, guid: 295f3bf92b720774e9c678ecf1363012, type: 2}
+  CardSprite: {fileID: 21300000, guid: a171b83ac6507406da34af16a5c2f658, type: 3}

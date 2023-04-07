@@ -6,4 +6,5 @@ public class ModifierCard : BaseCard
 {
     [SerializeField] public ModifyOperation modifyOperation;
     [SerializeField] public int modifyAmount;
+    [SerializeField] public bool AffectsHealth;
 }

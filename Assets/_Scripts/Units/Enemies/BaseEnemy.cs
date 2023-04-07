@@ -6,6 +6,5 @@ using UnityEngine.Playables;
 
 public class BaseEnemy : BaseUnit
 {
-    [SerializeField] protected ScriptableLevelRules _levelRules;
-
+    [SerializeField] protected CurrentLevelReference _level;
 }

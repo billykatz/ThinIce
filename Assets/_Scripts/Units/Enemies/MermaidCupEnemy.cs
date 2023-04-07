@@ -8,24 +8,20 @@ public class MermaidCupEnemy : BaseEnemy
 {
     public override bool ShouldAttack(Tile currentTile, Tile playerTile)
     {
-        List<Vector2> attackTiles = AttackTiles(currentTile);
-        return attackTiles.Contains(playerTile.coord);
+        return AttackVectors.Contains(playerTile.coord - currentTile.coord);
     }
 
-    public override List<Vector2> AttackTiles(Tile currentTile) {
-        Vector2 currentCoord = new Vector2((float)currentTile.x, (float)currentTile.y);
-
-        Vector2 attackCoord1 = new Vector2((float)currentTile.x-2, (float)currentTile.y);
-        Vector2 attackCoord2 = new Vector2((float)currentTile.x+2, (float)currentTile.y);
-        Vector2 attackCoord3 = new Vector2((float)currentTile.x, (float)currentTile.y-2);
-        Vector2 attackCoord4 = new Vector2((float)currentTile.x, (float)currentTile.y+2);
+    public override List<Vector2> AttackTiles(Tile currentTile)
+    {
 
         List<Vector2> attackTiles = new List<Vector2>();
-        attackTiles.Add(attackCoord1);
-        attackTiles.Add(attackCoord2);
-        attackTiles.Add(attackCoord3);
-        attackTiles.Add(attackCoord4);
-
+        for (int i = 0; i < AttackVectors.Length; i++)
+        {
+            Vector2 attackCoord = new Vector2(currentTile.coord.x + AttackVectors[i].x,
+                currentTile.coord.y + AttackVectors[i].y);
+            attackTiles.Add(attackCoord);
+        }
+        
         return attackTiles;
 
     }
@@ -34,9 +30,9 @@ public class MermaidCupEnemy : BaseEnemy
     {
         // get Attack tiles from the player tile to know where we want to be.
         List<Vector2> idealAttackTiles = AttackTiles(playerTile);  
-        int width = _levelRules.Width;
+        int width = _level.LevelRules.Width;
         int minHeight = GridManager.Instance.BottomMostRowIndex;
-        int maxHeight = _levelRules.CurrentNumberRows;
+        int maxHeight = _level.LevelRules.CurrentNumberRows;
         return idealAttackTiles.Where(coord => coord.IsInBounds(width, minHeight, maxHeight)).OrderBy(coord => Vector2.Distance(currentTile.coord, coord)).ToList();
 
 

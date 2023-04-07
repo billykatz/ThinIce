@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4146832ad62f1449790ffe5011cbdb75, type: 3}
+  m_Name: Shop-5
+  m_EditorClassIdentifier: 
+  LevelNumber: 5
+  CurrentNumberRows: 0
+  Width: 0
+  StartingRows: 0
+  Rows: []
+  isLevel: 0
+  isTutorial: 0
+  WorldMapLevelTitle: Remove Cards
+  DeckImprovementModels:
+  - CardType: 1
+    ShopType: 4
+    ShopInstructionTitle: Stat Boost!
+    ShopInstructionText: Start with 3 Power and Armor
+    NumberCardsToAdd: 0
+    NumberCardsToRemove: 0
+    NumberCardsToUpgrade: 0
+    StatMax: 0
+    StatStart: 3
+    StatSprite: {fileID: 21300000, guid: 1394b07f4e24a5b4fa5d2035cf537cda, type: 3}
+    CardChoicesToAdd: []
+  - CardType: 0
+    ShopType: 1
+    ShopInstructionTitle: Remove
+    ShopInstructionText: Remove 1 movement card
+    NumberCardsToAdd: 0
+    NumberCardsToRemove: 1
+    NumberCardsToUpgrade: 0
+    StatMax: 0
+    StatStart: 0
+    StatSprite: {fileID: 0}
+    CardChoicesToAdd: []
+  - CardType: 1
+    ShopType: 1
+    ShopInstructionTitle: Remove
+    ShopInstructionText: Remove 1 modifier card
+    NumberCardsToAdd: 0
+    NumberCardsToRemove: 1
+    NumberCardsToUpgrade: 0
+    StatMax: 0
+    StatStart: 0
+    StatSprite: {fileID: 0}
+    CardChoicesToAdd: []

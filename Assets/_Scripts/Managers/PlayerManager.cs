@@ -19,10 +19,9 @@ public class PlayerManager : MonoBehaviour
     public int minArmor;
     public int maxAttack;
     public int minAttack;
+    public int startAttack;
+    public int startArmor;
 
-    [SerializeField] private Color increaseColor;
-    [SerializeField] private Color decreaseColor;
-    [SerializeField] private Color noChangeColor;
     [SerializeField] private GameObject _baseHeroPrefab;
     
     private BaseUnit heroUnit;
@@ -30,26 +29,45 @@ public class PlayerManager : MonoBehaviour
 
     private float _lastTimePreviewShown = 0.25f;
 
-    private int armor {
-        get {
-            return heroUnit.Armor;
-        }
-    }
-
-    private int attack {
-        get {
-            return heroUnit.Attack;
-        }
-    }
-
     private void Awake() {
         Debug.Log("PlayerManager Awake()");
         Instance = this;
         previewUnit = Instantiate(_baseHeroPrefab, new Vector3(-100, -100, 0), Quaternion.identity).GetComponent<BaseUnit>();
     }
 
+    public void SetPlayerMaxStats(int attack, int armor, int health)
+    {
+        maxAttack = attack;
+        maxArmor = armor;
+        maxHp = health;
+    }
+    
+    public void SetPlayerStartingStats(int attack, int armor)
+    {
+        startAttack = attack;
+        startArmor = armor;
+    }
+
+    
+    public void SetPlayerStartingStats(BaseUnit hero)
+    {
+        hero.Attack = startAttack;
+        hero.Armor = startArmor;
+        hero.Health = maxHp;
+    }
+    
     public void HeroUnitUpdated() {
         heroUnit = GridManager.Instance.GetHeroUnit();
+    }
+
+    public void PlayerTakesDamage(int damage)
+    {
+        // save the old hero stats in this dummy class
+        previewUnit = new BaseUnit();
+        heroUnit.Clone(previewUnit);
+        
+        UpdateStatsBasedOnDamage(heroUnit, damage);
+        heroUnit.AnimateStatChange(previewUnit, () => { });
     }
 
     public void CollectItem(BaseItem item, Action animationComplete)
@@ -130,6 +148,12 @@ public class PlayerManager : MonoBehaviour
             newArmor = ComputeNewStat(currentArmor, minArmor, maxArmor, card);
         }
 
+        if (card.modifierCard.AffectsHealth)
+        {
+            unit.Health = unit.Health + card.modifierCard.modifyAmount;
+            unit.Health = Mathf.Min(maxHp, unit.Health);
+        }
+
         unit.Armor = newArmor;
         unit.Attack = newAttack;
     }
@@ -174,6 +198,19 @@ public class PlayerManager : MonoBehaviour
         return newStat;
     }
 
+    private void UpdateStatsBasedOnDamage(BaseUnit unit, int damage)
+    {
+        if (damage > unit.Armor)
+        {
+            unit.Health -= (damage - unit.Armor);
+            unit.Armor = 0;
+            unit.Health = Mathf.Max(0, unit.Health);
+        }
+        else
+        {
+            unit.Armor -= damage;
+        }
+    }
     private BaseUnit UpdateStatsBasedOnItem(BaseUnit unit, BaseItem item)
     {
         if (item.Stat == ItemStat.Armor)

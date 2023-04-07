@@ -1,0 +1,102 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6051978389189916261
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3050438058911645587, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_Name
+      value: Modify-Plus-One-HP
+      objectReference: {fileID: 0}
+    - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4476714807620934152, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 5932559725543664733, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 404f19704fcf55047b14b4581cf1c6b3, type: 3}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6762099181255073763, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+--- !u!212 &119448627546479160 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 5932559725543664733, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+  m_PrefabInstance: {fileID: 6051978389189916261}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8766721798474811894 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3050438058911645587, guid: c69c88c59d25a403cb50fc79b8beb69c, type: 3}
+  m_PrefabInstance: {fileID: 6051978389189916261}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-7160619143617554130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8766721798474811894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b890b666cb81e40bf8e30069dc44ad54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spriteRenderer: {fileID: 119448627546479160}
+  DidSelect: {fileID: 0}
+  MousePos: {fileID: 0}
+  collider: {fileID: 0}
+  ScriptableCard: {fileID: 0}
+  effectDescription: + 1 to attack or armor and 1 HP
+  modifyOperation: 0
+  modifyAmount: 1
+  AffectsHealth: 1

@@ -14,23 +14,39 @@ public class WorldMapController : MonoBehaviour
     [SerializeField] private DeckModificationController _deckModificationController;
 
     [SerializeField] private CurrentLevelReference _currentLevelReference;
+    [SerializeField] private ProgressController _progressController;
+    [SerializeField] private GameObject _thanksForPlayingView;
     
     private ScriptableLevelRules _currentLevel;
+
+    public bool IsShowingDeckModification;
 
     private void Start()
     {
         _currentLevel = _currentLevelReference.LevelRules;
         _playButton.TextField.text = _currentLevel.WorldMapLevelTitle;
+        
+        int currentLevelIdx = _currentLevel.LevelNumber;
+        int previousLevelIndex = Mathf.Max(0, currentLevelIdx-1);
+        // set the hero to the level before
+        _hero.transform.position = _levelLocations[previousLevelIndex].position;
     }
 
     public void PlayButtonPressed()
     {
         if (_currentLevel.isLevel)
         {
+            if (_currentLevel.LevelNumber == 10)
+            {
+                _thanksForPlayingView.SetActive(true);
+                return;
+            }
+            _progressController.DidStartLevel();
             ThinIceSceneManager.Instance.LoadGameScene();
         }
-        else
+        else if (!IsShowingDeckModification)
         {
+            IsShowingDeckModification = true;
             _deckModificationController.Configure(_currentLevel);
         }
     }
@@ -38,10 +54,6 @@ public class WorldMapController : MonoBehaviour
     public void DidAppearOnScreen()
     {
         int currentLevelIdx = _currentLevel.LevelNumber;
-        int previousLevelIndex = Mathf.Max(0, currentLevelIdx-1);
-        
-        // set the hero to the level before
-        _hero.transform.position = _levelLocations[previousLevelIndex].position;
         _hero.transform.DOMove(_levelLocations[currentLevelIdx].position, 1.5f);
         
         // set the play text
@@ -53,6 +65,7 @@ public class WorldMapController : MonoBehaviour
     /// </summary>
     public void DidCompleteLevel()
     {
+        IsShowingDeckModification = false;
         _currentLevel = _currentLevelReference.LevelRules;
         DidAppearOnScreen();
     }

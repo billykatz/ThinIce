@@ -10,7 +10,10 @@ public class CardRuleManager : MonoBehaviour
 
     private CombinedCard currentCard;
 
-    public static event Action combatAnimationComplete;
+    [SerializeField] private WinLoseManager _winLoseManager;
+
+    // bit of state to avoid the infinite cycle of arrow into enemy over and over again
+    private int _hazardsInARow = 0;
 
     private void Awake() {
         Debug.Log("Card Rule Manager Awake()");
@@ -30,9 +33,26 @@ public class CardRuleManager : MonoBehaviour
         step.card = card;
         step.movement = card.movementCard.movement;
         StartCardRuleStep(step);
+
+        _hazardsInARow = 0;
     }
 
-    public void DidCompleteMovement() {
+    /// <summary>
+    /// This function is responsible for completing the movement associated with a card
+    /// It can either initiate item or hazard resolution
+    /// or
+    /// Move to the next movement step of a card
+    /// or
+    /// complete playing the card and moving us to card rule step Finished
+    /// </summary>
+    public void DidCompleteMovement(bool checkForSpikes = true) {
+        Debug.Log($"DidCompleteMovement, check for spikes? {checkForSpikes}");
+
+        if (currentCard == null)
+        {
+            Debug.Log($"Calling did complete movement even though current card is null, whoops checking for spikes? {checkForSpikes}");
+            
+        }
 
         // After moving we check to see if we should collect something first.
         if (GridManager.Instance.ShouldCollectItem())
@@ -40,6 +60,25 @@ public class CardRuleManager : MonoBehaviour
             GridManager.Instance.CollectItemAfterCombat();
             return;
 
+        }
+        
+        if (checkForSpikes && GridManager.Instance.ShouldResolveSpikes())
+        {
+            GridManager.Instance.ResolveHazard();
+            return;
+        }
+        
+        if (_hazardsInARow < 5 && GridManager.Instance.ShouldResolveBounceTile())
+        {
+            _hazardsInARow++;
+            GridManager.Instance.ResolveHazard();
+            return;
+        }
+
+        if (GridManager.Instance.CheckForWin())
+        {
+            GridManager.Instance.TriggerWin();
+            return;
         }
 
         // now we check to see if the card is done
@@ -57,27 +96,35 @@ public class CardRuleManager : MonoBehaviour
     }
 
     public void DidCompleteCombat() {
-        combatAnimationComplete -= DidCompleteCombat;
         // kill or dont kill the enemy
         if (GridManager.Instance.CheckForDeadEnemy()) {
             // kill it and move the player to that tile
             GridManager.Instance.KillEnemyAndMovePlayer(() =>
             {
+                if (TutorialManager.Instance != null)
+                {
+                    TutorialManager.Instance.EnemyDidDie();
+                }
+                // the player should have updated stats so let the player manager know
+                PlayerManager.Instance.HeroUnitUpdated();
+                
                 DidCompleteMovement();
             });
-        }  else {
+        } else if (GridManager.Instance.CheckForDeadHero())
+        {
+            _winLoseManager.GameLose();
+        }  
+        
+        else {
             DidCompleteMovement();
+            
+            // the player should have updated stats so let the player manager know
+            PlayerManager.Instance.HeroUnitUpdated();
         }
 
-        // the player should have updated stats so let the player manager know
-        PlayerManager.Instance.HeroUnitUpdated();
 
     }
-
-    public void OnDisable() {
-        combatAnimationComplete -= DidCompleteCombat;
-    }
-
+    
     public void StartCardRuleStep(CardRuleStep step) {
         switch (step.state) {
             case CardRuleState.Start:
@@ -90,6 +137,7 @@ public class CardRuleManager : MonoBehaviour
                 break;
             case CardRuleState.Collect:
                 // move the player
+                Debug.Log("CardRuleManager: Collect");
                 GridManager.Instance.CollectItem(step.attackerUnit, step.attackerUnit.OccupiedTile, step.collectedItem.OccupiedTile, () =>
                     {
                         // after movement, play the collect animation
@@ -99,17 +147,24 @@ public class CardRuleManager : MonoBehaviour
                             DidCompleteMovement();
                         });
                     });
-                // then near the end of movement show a animation that they collected this thing.
+
+                break;
+            case CardRuleState.Hazard:
+                
+                Debug.Log("CardRuleManager: Hazard");
+                GridManager.Instance.ResolveHazard(step.hazard, step.attackerUnit, step.attackerUnit.OccupiedTile,
+                    () =>
+                    {
+                        // pass in a flag so we dont infitinely check for spikes
+                        DidCompleteMovement(false);
+                    });
                 
                 break;
             case CardRuleState.Combat:
                 Debug.Log("CardRuleManager: DidStartCombat");
                 Debug.Log($"CardRuleManager: attacker {step.attackerUnit}");
                 Debug.Log($"CardRuleManager: defender {step.defenderUnit}");
-                combatAnimationComplete += DidCompleteCombat;
-                CombatManager.Instance.ShowCombat(step.attackerUnit, step.defenderUnit, combatAnimationComplete);
-                break;
-            case CardRuleState.Hazard:
+                CombatManager.Instance.ShowCombat(step.attackerUnit, step.defenderUnit, DidCompleteCombat);
                 break;
             case CardRuleState.Finish:
                 FinishCard();
@@ -130,6 +185,7 @@ public struct CardRuleStep {
     public BaseUnit attackerUnit;
     public BaseUnit defenderUnit;
     public BaseItem collectedItem;
+    public BaseHazard hazard;
 
     public static CardRuleStep Init(CardRuleState state) {
         CardRuleStep step = new CardRuleStep();

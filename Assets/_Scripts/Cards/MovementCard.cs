@@ -90,31 +90,31 @@ public class MovementCard : BaseCard
     public string MovementTutorialText(int movementIndex) {
         switch (movement[movementIndex].movementType) {
             case MovementType.Up:
-                return "Move 1 tile up";
+                return "Moving 1 tile up";
             case MovementType.Down:
-                return "Move 1 tile down";
+                return "Moving 1 tile down";
             case MovementType.Left:
-                return "Move 1 tile left";
+                return "Moving 1 tile left";
             case MovementType.Right:
-                return "Move 1 tile Right";
+                return "Moving 1 tile Right";
             case MovementType.UpLeft:
-                return "Move 1 tile Up and Left";
+                return "Moving 1 tile Up and Left";
             case MovementType.UpRight:
-                return "Move 1 tile Up and Right";
+                return "Moving 1 tile Up and Right";
             case MovementType.DownRight:
-                return "Move 1 tile Down and Right";
+                return "Moving 1 tile Down and Right";
             case MovementType.DownLeft:
-                return "Move 1 tile Down and Left";
+                return "Moving 1 tile Down and Left";
             case MovementType.LeftOrRight:
-                return "Move 1 tile Left or Right";
+                return "Use arrow keys to move 1 tile Left or Right";
             case MovementType.UpOrDown:
-                return "Move 1 tile Up or Down";
+                return "Moving 1 tile Up or Down";
             case MovementType.Any:
-                return "Move 1 tile in any direction";
+                return "Moving 1 tile in any direction";
             case MovementType.Teleport:
-                return "Move to any tile";
+                return "Moving to any tile";
             case MovementType.None:
-                return "Stay in place";
+                return "Staying in place";
         }
 
         return "Error";

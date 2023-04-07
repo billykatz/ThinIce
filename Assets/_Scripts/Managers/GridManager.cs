@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
+using Extensions;
 
 public class GridManager : MonoBehaviour
 {
@@ -24,6 +25,9 @@ public class GridManager : MonoBehaviour
 
     [SerializeField] private GameAnimator _animator;
     [SerializeField] private FXView _moveToFXView;
+
+    [SerializeField] private GameObject _levelBackground;
+    [SerializeField] private GameObject _handBackground;
     
     public int BottomMostRowIndex;
     
@@ -93,9 +97,13 @@ public class GridManager : MonoBehaviour
     public Tile GetHeroTile() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero).ToList().First().Value; }
 
     // grab all the enemy tiles
-    public List<Tile> GetEnemyUnits() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy).Select(s=>s.Value).ToList(); }
+    public List<Tile> GetEnemyTiles() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy).Select(s=>s.Value).ToList(); }
+    public List<BaseUnit> GetEnemyUnits() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy).Select(s=>s.Value.OccupiedUnit).ToList(); }
+    public List<Tile> GetHazardTiles() { return _tiles.Where(t=>(t.Value.OccupiedHazard != null)).Select(s=>s.Value).ToList(); }
+    public List<Tile> GetItemTiles() { return _tiles.Where(t=>(t.Value.OccupiedItem != null)).Select(s=>s.Value).ToList(); }
     
     public bool CheckForDeadEnemy() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Enemy && t.Value.OccupiedUnit.Health == 0).Count() > 0; }
+    public bool CheckForDeadHero() { return _tiles.Where(t=>(t.Value.OccupiedUnit != null) && t.Value.OccupiedUnit.Faction == Faction.Hero && t.Value.OccupiedUnit.Health == 0).Count() > 0; }
 
     /// <summary>
     /// Called by the game manager to load the tiles based on the scriptable level rules
@@ -120,7 +128,15 @@ public class GridManager : MonoBehaviour
         }
         
         // put the camera at the center of our grid
-        _cam.transform.position = new Vector3((float)_width /2 - 0.5f, (float)_visibleRows / 2 - 1.75f, -10);
+        Vector3 center = new Vector3((float)_width /2 - 0.5f, (float)_visibleRows / 2 - 1.75f, -10);
+        _cam.transform.position = center;
+        Vector3 backgroundCenter = center;
+        backgroundCenter.z = 1.5f;
+        _levelBackground.transform.position = backgroundCenter;
+        Vector3 handAreaBackgroundPos = backgroundCenter;
+        handAreaBackgroundPos.y -= 4.5f;
+        handAreaBackgroundPos.z = 0f;
+        _handBackground.transform.position = handAreaBackgroundPos;
 
         GameManager.Instance.EndGameState(GameState.GenerateGrid);
     }
@@ -147,7 +163,33 @@ public class GridManager : MonoBehaviour
                 
             }
         }
+        DrawEnemiesAttackIndicators();
         GameManager.Instance.EndGameState(GameState.SpawnEnemies);
+    }
+
+    /// <summary>
+    /// Called by the game manager to load enemies based on the scriptable level rules
+    /// </summary>
+    public void LoadHazards()
+    {
+        for (int x = 0; x < _width; x++) {
+            for (int y = 0; y < _visibleRows; y++) {
+                // spawns an ice tile, for now
+                Vector2 position = new Vector2(x, y);
+                position += _boardOffset;
+                Vector2Int coord = new Vector2Int(x, y);
+                
+                // grab the prefab
+                ScriptableHazards hazard = _scriptableRows[y].Row.Tiles[x].Hazard;
+                if (hazard)
+                {
+                    // spawn the unit
+                    SpawnHazard(hazard, hazard.HazardPrefab, position, coord);
+                }
+                
+            }
+        }
+        GameManager.Instance.EndGameState(GameState.SpawnHazards);
     }
 
     public void LoadItems()
@@ -178,9 +220,16 @@ public class GridManager : MonoBehaviour
     private void SpawnItem(ScriptableItem scriptableItem, BaseItem item, Vector3 position, Vector2Int coord)
     {
         BaseItem prefab = Instantiate(item, position, Quaternion.identity);
-        prefab.Setup(scriptableItem.stat, scriptableItem.amount);
+        prefab.Setup(scriptableItem.stat, scriptableItem.amount, scriptableItem.Name);
         _tiles[coord].SetItem(prefab);
         
+        
+    }
+    private void SpawnHazard(ScriptableHazards scriptableHazards, BaseHazard hazard, Vector3 position, Vector2Int coord)
+    {
+        BaseHazard prefab = Instantiate(hazard, position, Quaternion.identity);
+        prefab.Configure(scriptableHazards);
+        _tiles[coord].SetHazard(prefab);
         
     }
 
@@ -229,6 +278,11 @@ public class GridManager : MonoBehaviour
             {
                 SpawnItem(tile.Item, tile.Item.ItemPrefab, newPosition, coord);
             }
+            
+            if (tile.Hazard != null)
+            {
+                SpawnHazard(tile.Hazard, tile.Hazard.HazardPrefab, newPosition, coord);
+            }
         }
 
         // update the state of the level
@@ -266,12 +320,13 @@ public class GridManager : MonoBehaviour
         return _tiles.Where(t => t.Value.isWalkable && !PotentialPlayerStartingPositions().Contains(t.Key)).OrderBy(o=>Random.value).First().Value;
     }
     
-    public async void TileWasTapped(int x, int y) {
+    public void TileWasTapped(int x, int y) {
         Vector2 tappedCoord = new Vector2(x, y);
         if (GameManager.Instance.GameState == GameState.PlaceHero) {
             if (PotentialPlayerStartingPositions().Contains(tappedCoord)) {
                 Debug.Log($"Tile at {x}, {y} was tapped");
                 BaseUnit hero = UnitManager.Instance.SpawnHeroUnit();
+                PlayerManager.Instance.SetPlayerStartingStats(hero);
                 _tiles[tappedCoord].SetUnit(hero);
                 hero.OccupiedTile = _tiles[tappedCoord];
 
@@ -281,12 +336,6 @@ public class GridManager : MonoBehaviour
                 // we are done placing the hero, move the game along
                 GameManager.Instance.EndGameState(GameState.PlaceHero);
             } else {
-                RemoveHighlightPlayerStartingPositions();
-                await Task.Delay(100);
-                HighlightPlayerStartingPositions();
-                await Task.Delay(50);
-                RemoveHighlightPlayerStartingPositions();
-                await Task.Delay(100);
                 HighlightPlayerStartingPositions();
             }
         } 
@@ -336,6 +385,12 @@ public class GridManager : MonoBehaviour
             }
             
         }
+        else
+        {
+            animationCompleteCallback.Invoke();
+        }
+        
+        
     }
     
     
@@ -377,11 +432,20 @@ public class GridManager : MonoBehaviour
     } 
 
 
-    private void MoveHero(GridMovement movement, Action animationFinishedCallback) {
+    /// <summary>
+    /// This function is responsible for resolving game rules after moving the hero.
+    /// It can either:
+    /// - initiated combat by sending a new CardRuleStep to the CardRuleManager
+    /// - or
+    /// - move the player on the grid 
+    /// </summary>
+    /// <param name="movement"></param>
+    /// <param name="animationFinishedCallback"></param>
+    private void MoveHero(GridMovement movement, bool playerWasBounced, Action animationFinishedCallback) {
         // current player
         Tile playerTile = GetHeroTile();
 
-        if (ValidMove(movement)) {
+        if (ValidMove(movement) || playerWasBounced) {
             Debug.Log($"GridManager: Valid movement.");
             waitingForInput = false;
 
@@ -440,11 +504,22 @@ public class GridManager : MonoBehaviour
         
     }
 
+    public bool CheckForWin()
+    {
+        return GetHeroTile() is GoalTile;
+    }
+    
+    public void TriggerWin()
+    {
+        WinLoseManager.Instance.GameWin();
+    }
+
     private void FinishMovement()
     {
+        Debug.Log("Did finish movement");
         currentlyMoving = false;
         // TODO: Remove hack that we call this from the grid manager
-        if (GetHeroTile() is GoalTile)
+        if (CheckForWin())
         {
             WinLoseManager.Instance.GameWin();
         }
@@ -493,6 +568,7 @@ public class GridManager : MonoBehaviour
                         DestroyBottomRow(BottomMostRowIndex);
                         // update the bottom most row
                         BottomMostRowIndex++;
+                        DrawEnemiesAttackIndicators();
                         completion.Invoke();
                     }
                 });
@@ -507,6 +583,7 @@ public class GridManager : MonoBehaviour
                         DestroyBottomRow(BottomMostRowIndex);
                         // update the bottom most row
                         BottomMostRowIndex++;
+                        DrawEnemiesAttackIndicators();
                         completion.Invoke();
                     }
                 });
@@ -522,10 +599,49 @@ public class GridManager : MonoBehaviour
         data.EndPosition = newPlayerTile.transform.position;
         _animator.Animate(playerUnit.gameObject, data, _moveToFXView, () => { completion.Invoke(); });
     }
-
-    async void DestroyBottomRow(int index)
+    
+    public void AnimateEnemyMovement(BaseUnit unit, Tile oldTile, Vector2 toCoord, Action completion)
     {
-        await Task.Delay(900);
+        AnimationData data = new AnimationData();
+        data.StartPosition = oldTile.transform.position;
+        data.EndPosition = _tiles[toCoord].transform.position;
+        _animator.Animate(unit.gameObject, data, _moveToFXView, () =>
+        {
+            // update data store
+            MoveUnit(unit, oldTile, toCoord);
+            // update the UI
+            DrawEnemyAttackIndicators(unit);
+            completion.Invoke();
+        });
+    }
+
+    public void DrawEnemyAttackIndicators(BaseUnit unit)
+    {
+        int width = _level.LevelRules.Width;
+        int minHeight = BottomMostRowIndex;
+        int maxHeight = _level.LevelRules.CurrentNumberRows;
+        unit.ToggleAttackIndicators(false);
+        for (int i = 0; i < unit.AttackVectors.Length; i++)
+        {
+            Vector2 checkCoord = unit.OccupiedTile.coord + unit.AttackVectors[i];
+            bool isInBounds = checkCoord.IsInBounds(width, minHeight, maxHeight);
+            if (isInBounds)
+            {
+                unit.ToggleAttackIndicator(unit.AttackVectors[i], _tiles[checkCoord].tileType != TileType.Wall);
+            }
+        }
+    }
+    public void DrawEnemiesAttackIndicators()
+    {
+        List<BaseUnit> enemies = GetEnemyUnits();
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            DrawEnemyAttackIndicators(enemies[i]);
+        }
+    }
+
+    private void DestroyBottomRow(int index)
+    {
         for (int i = 0; i < _width; i++)
         {
             Vector2 coord = new Vector2(i, index);
@@ -547,6 +663,47 @@ public class GridManager : MonoBehaviour
     public bool ShouldCollectItem()
     {
         return GetHeroTile().OccupiedItem != null;
+    }
+    
+    public bool ShouldResolveSpikes()
+    {
+        return GetHeroTile().OccupiedHazard != null && GetHeroTile().OccupiedHazard.HazardType == HazardType.Spikes;
+    }
+    
+    public bool ShouldResolveBounceTile()
+    {
+        return GetHeroTile().OccupiedHazard != null && GetHeroTile().OccupiedHazard.HazardType != HazardType.Spikes;
+    }
+    
+    public void ResolveHazard()
+    {
+        Vector2 coord = GetHeroTile().coord;
+        // We landed on an item to collect, good to give this to the player before combat
+        CardRuleStep newStep = new CardRuleStep();
+        newStep.state = CardRuleState.Hazard;
+        newStep.attackerUnit = GetHeroUnit();
+        newStep.hazard = _tiles[coord].OccupiedHazard;
+                
+        Debug.Log($"GridManager: Did step on hazard { coord } {_tiles[coord].OccupiedUnit}");
+        CardRuleManager.Instance.StartCardRuleStep(newStep);
+    }
+
+    public void ResolveHazard(BaseHazard harazrd, BaseUnit unit, Tile fromTile, Action completion)
+    {
+        if (harazrd.HazardType == HazardType.Movement)
+        {
+            // then we need something that moves the player and calls a completion
+            MoveHero(harazrd.Movements[0], true, completion);
+        } 
+        else if (harazrd.HazardType == HazardType.Spikes)
+        {
+            // then we need to damage the player and then cal the completion
+            unit.PlayTakeDamageAnimation(() =>
+            {
+                PlayerManager.Instance.PlayerTakesDamage(harazrd.Damage);
+                completion.Invoke();
+            });
+        }
     }
     
     public void CollectItemAfterCombat()
@@ -645,7 +802,7 @@ public class GridManager : MonoBehaviour
             movementArrowController.OnArrowTapped -= ArrowTapped;
             Destroy(movementArrowGameObject);
         }
-        MoveHero(gridMovement, () =>
+        MoveHero(gridMovement, false,() =>
         {
             FinishMovement();
         });

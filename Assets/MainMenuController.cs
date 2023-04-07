@@ -9,6 +9,7 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private GameObject _worldMapView;
     [SerializeField] private WorldMapController _worldMapController;
     private Vector3 _originalWorlMapPosition;
+    [SerializeField] private ProgressController _progressController;
 
     private void Awake()
     {
@@ -29,7 +30,8 @@ public class MainMenuController : MonoBehaviour
     }
     public void DidPressTutorialButton()
     {
-        
+        _progressController.DidStartTutorial();
+        ThinIceSceneManager.Instance.LoadTutorial();
     }
     
     public void DidPressBackButtonFromWorldMap()

@@ -9,6 +9,7 @@ public class ScriptableUnit : ScriptableObject
    public BaseUnit UnitPrefab;
 
    public int Health;
+
 }
 
 public enum Faction {

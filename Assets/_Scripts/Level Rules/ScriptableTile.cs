@@ -10,4 +10,5 @@ public class ScriptableTile : ScriptableObject
     public GameObject TilePrefab;
     public ScriptableItem Item;
     public ScriptableUnit Unit;
+    public ScriptableHazards Hazard;
 }

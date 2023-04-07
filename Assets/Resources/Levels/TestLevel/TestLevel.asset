@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4146832ad62f1449790ffe5011cbdb75, type: 3}
+  m_Name: TestLevel
+  m_EditorClassIdentifier: 
+  LevelNumber: 0
+  CurrentNumberRows: 5
+  Width: 4
+  StartingRows: 4
+  Rows:
+  - {fileID: 11400000, guid: 5c854bc673669424190e15268a1abd59, type: 2}
+  - {fileID: 11400000, guid: 2f45328377714314995e1ce373ace28c, type: 2}
+  - {fileID: 11400000, guid: 618ad2477ca80fc4583b70276ff82642, type: 2}
+  - {fileID: 11400000, guid: a8071bab176c4d64eb4e51fd3a9d50f4, type: 2}
+  - {fileID: 11400000, guid: 1230a274b4ec4d94baa1ed6d2bdc351c, type: 2}
+  - {fileID: 11400000, guid: 702de3492c46e3840a1b52f953ed30a5, type: 2}
+  isLevel: 1
+  isTutorial: 0
+  WorldMapLevelTitle: Play T Level 1
+  DeckImprovementModels: []

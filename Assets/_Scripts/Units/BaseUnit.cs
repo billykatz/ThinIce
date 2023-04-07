@@ -23,6 +23,15 @@ public class BaseUnit : MonoBehaviour
     [SerializeField] private PlayableDirector _playableDirector;
     [SerializeField] private PlayableAsset _moveDownAnimation;
     [SerializeField] private PlayableAsset _attackAnimation;
+    [SerializeField] private PlayableAsset _takesDamageAnimation;
+    
+    public Vector2[] AttackVectors;
+    public GameObject[] AttackIndicators;
+
+    
+    private Action _attackFinishedCallback;
+    private Action _attackHitCallback;
+    private Action _takesDamageCallback;
 
     
     public int Health {
@@ -184,12 +193,28 @@ public class BaseUnit : MonoBehaviour
         return new List<Vector2>();
     }
 
+    public void ToggleAttackIndicators(bool onOff)
+    {
+        for (int i = 0; i < AttackIndicators.Length; i++)
+        {
+            AttackIndicators[i].SetActive(onOff);
+        }
+    }
+
+    public void ToggleAttackIndicator(Vector2 attackVector, bool onOff)
+    {
+        for (int i = 0; i < AttackVectors.Length; i++)
+        {
+            if (attackVector == AttackVectors[i])
+            {
+                AttackIndicators[i].SetActive(onOff);
+            }
+        }
+    }
+
     public virtual List<Vector2> WantToMoveTo(Tile currentTile, Tile playerTile) {
         return new List<Vector2>();
     }
-
-    private Action _attackFinishedCallback;
-    private Action _attackHitCallback;
     public void PlayMoveDownAnimation()
     {
         _playableDirector.playableAsset = _moveDownAnimation;
@@ -199,6 +224,9 @@ public class BaseUnit : MonoBehaviour
     
     public void PlayAttackAnimation(Action attackHitCallback, Action attackFinishedCallback)
     {
+        
+        Debug.Log($"{gameObject.GetInstanceID()}  Play attack animation, is current callback null? {_attackFinishedCallback == null}");
+        Debug.Log($"{gameObject.GetInstanceID()}  ---------------- is parameter callback null? {attackFinishedCallback == null}");
         _playableDirector.playableAsset = _attackAnimation;
         _playableDirector.Play();
         _attackHitCallback = attackHitCallback;
@@ -206,13 +234,28 @@ public class BaseUnit : MonoBehaviour
         _playableDirector.stopped += DidStop;
     }
 
-    private void DidStop(PlayableDirector director)
+    public void PlayTakeDamageAnimation(Action completion)
     {
-        _playableDirector.stopped -= DidStop;
-        _attackFinishedCallback?.Invoke();
-        _attackFinishedCallback = null;
+        _playableDirector.playableAsset = _takesDamageAnimation;
+        _takesDamageCallback = completion;
+        _playableDirector.Play();
+        _playableDirector.stopped += DidStop;
     }
 
+    private void DidStop(PlayableDirector director)
+    {
+        Debug.Log($"{gameObject.GetInstanceID()} Animation did stop.  Is the attack finished null? {_attackFinishedCallback == null}");
+        _playableDirector.stopped -= DidStop;
+        
+        // order matters!!!!!
+        Action tempCallback = _attackFinishedCallback;
+        _attackFinishedCallback = null;
+        tempCallback?.Invoke();
+        
+        _takesDamageCallback?.Invoke();
+        _takesDamageCallback = null;
+    }
+    
     /// <summary>
     ///  called by a signal emitter on the timeline to let us know when the attack hit
     /// </summary>

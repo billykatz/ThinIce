@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -7,6 +9,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public CurrentLevelReference _level;
+    [SerializeField] private ProgressController _progressController;
 
     public GameState GameState;
 
@@ -24,55 +27,78 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.GenerateGrid);
     }
 
-    public async void EndGameState(GameState currentGameState) {
+    public void EndGameState(GameState currentGameState) {
         Debug.Log($"Game Manager: End Game State {currentGameState}");
-        await Task.Delay(100);
-        switch (currentGameState) {
-            case GameState.GenerateGrid:
-                await Task.Delay(300);
-                ChangeState(GameState.SpawnEnemies);
-                break;
-            case GameState.SpawnEnemies:
-                await Task.Delay(300);
-                ChangeState(GameState.SpawnItems);
-                break;
-            case GameState.SpawnHazards:
-                break;
-            case GameState.SpawnItems:
-                await Task.Delay(300);
-                ChangeState(GameState.PlaceHero);
-                break;
-            case GameState.PlaceHero:
-                PlayerManager.Instance.HeroUnitUpdated();
-                ChangeState(GameState.CreateDeck);
-                break;
-            case GameState.CreateDeck:
-                ChangeState(GameState.DrawHand);
-                break;
-            case GameState.DrawHand:
-                ChangeState(GameState.HeroTurnPlayCardOne);
-                break;
-            case GameState.HeroTurnPlayCardOne:
-                ChangeState(GameState.HeroTurnPlayCardTwo);
-                break;
-            case GameState.HeroTurnPlayCardTwo:
-                ChangeState(GameState.HeroTurnCleanUp);
-                break;
-            case GameState.HeroTurnCleanUp:
-                ChangeState(GameState.EnemyTurn);
-                break;
-            case GameState.EnemyTurn:
-                await Task.Delay(900);
-                ChangeState(GameState.EndTurn);
-                break;
-            case GameState.EndTurn:
-                ChangeState(GameState.DrawHand);
-                break;
-            case GameState.LevelWin:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(currentGameState), currentGameState, "You added a state and forgot to handle it here");
+        if (DeckManager.Instance.IsTutorial)
+        {
+            TutorialManager.Instance.EndGameState(currentGameState);
         }
+        StartCoroutine(ArtificalWaitForSeconds(0.1f, () =>
+        {
+            switch (currentGameState)
+            {
+                case GameState.GenerateGrid:
+                    StartCoroutine(ArtificalWaitForSeconds(0.3f, () =>
+                    {
+                        ChangeState(GameState.SpawnEnemies);
+                    }));
+                    break;
+                case GameState.SpawnEnemies:
+                    StartCoroutine(ArtificalWaitForSeconds(0.3f, () =>
+                    {
+                        ChangeState(GameState.SpawnItems);
+                    }));
+                    break;
+                case GameState.SpawnItems:
+                    StartCoroutine(ArtificalWaitForSeconds(0.3f, () =>
+                    {
+                        ChangeState(GameState.SpawnHazards);
+                    }));
+                    break;
+                case GameState.SpawnHazards:
+                    StartCoroutine(ArtificalWaitForSeconds(0.3f, () =>
+                    {
+                        ChangeState(GameState.PlaceHero);
+                    }));
+                    break;
+                case GameState.PlaceHero:
+                    PlayerManager.Instance.HeroUnitUpdated();
+                    ChangeState(GameState.CreateDeck);
+                    break;
+                case GameState.CreateDeck:
+                    ChangeState(GameState.DrawHand);
+                    break;
+                case GameState.DrawHand:
+                    ChangeState(GameState.HeroTurnPlayCardOne);
+                    break;
+                case GameState.HeroTurnPlayCardOne:
+                    ChangeState(GameState.HeroTurnPlayCardTwo);
+                    break;
+                case GameState.HeroTurnPlayCardTwo:
+                    ChangeState(GameState.HeroTurnCleanUp);
+                    break;
+                case GameState.HeroTurnCleanUp:
+                    ChangeState(GameState.EnemyTurn);
+                    break;
+                case GameState.EnemyTurn:
+                    ChangeState(GameState.EndTurn);
+                    break;
+                case GameState.EndTurn:
+                    ChangeState(GameState.DrawHand);
+                    break;
+                case GameState.LevelWin:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(currentGameState), currentGameState,
+                        "You added a state and forgot to handle it here");
+            }
+        }));
+    }
+
+    private IEnumerator ArtificalWaitForSeconds(float seconds, Action completion)
+    {
+        yield return new WaitForSeconds(seconds);
+        completion.Invoke();
     }
 
     
@@ -80,14 +106,20 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Game Manager: Start Game State {newState}");
         GameState = newState;
         MenuManager.Instance.ShowTurnPhase(newState);
+        if (DeckManager.Instance.IsTutorial)
+        {
+            TutorialManager.Instance.ChangeState(newState);
+        }
         switch (newState) {
             case GameState.GenerateGrid:
+                _progressController.WillGenerateGrid();
                 GridManager.Instance.LoadGrid();
                 break;
             case GameState.SpawnEnemies:
                 GridManager.Instance.LoadEnemies();
                 break;
             case GameState.SpawnHazards:
+                GridManager.Instance.LoadHazards();
                 break;
             case GameState.SpawnItems:
                 GridManager.Instance.LoadItems();

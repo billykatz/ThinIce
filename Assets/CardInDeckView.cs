@@ -72,6 +72,19 @@ public class CardInDeckView : MonoBehaviour
         _upgradeButton.GetComponent<ThinIceCanvasButton>()._eventSystem = eventSystem;
     }
 
+    public void DestroyCard()
+    {
+        Destroy(_cardGO);
+        Destroy(_upgradedCardGO);
+        Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        _didSelectButton = null;
+        _didDeselectButton = null;
+    }
+
     private void SetActiveButton(GameObject button)
     {
         _addButton.SetActive(false);
@@ -82,11 +95,19 @@ public class CardInDeckView : MonoBehaviour
 
     private void DidSelectButton()
     {
+        
+        if (gameObject == null)
+            return; 
+        
         _didSelectButton?.Invoke(_index);
     }
     
     private void DidDeselectButton()
     {
+        
+        if (gameObject == null)
+            return;
+        
         _didDeselectButton?.Invoke(_index);
     }
 
@@ -107,6 +128,9 @@ public class CardInDeckView : MonoBehaviour
     
     public void DidSelectRemove()
     {
+        if (gameObject == null)
+            return;
+        
         if (_removeCardOverlay.activeSelf)
         {
             // unremove
@@ -122,14 +146,41 @@ public class CardInDeckView : MonoBehaviour
 
     public void DidSelectUpgrade()
     {
-        ActivateOverlayBackground(_addOrUpgradeBackground);
-        _upgradedCardGO.SetActive(true);
-        DidSelectButton();
+        if (gameObject == null)
+            return;
+
+        if (_card.UpgradedVersionCard == null)
+            return;
+        
+        if (_addOrUpgradeBackground.activeSelf)
+        {
+            ResetOverlaysAndBackgrounds();
+            DidDeselectButton();
+        }
+        else
+        {
+            ActivateOverlayBackground(_addOrUpgradeBackground);
+            _upgradedCardGO.SetActive(true);
+            DidSelectButton();
+            
+        }
     }
     
     public void DidSelectAdd()
     {
-        ActivateOverlayBackground(_addOrUpgradeBackground);
-        DidSelectButton();
+        if (gameObject == null)
+            return;
+        
+        if (_addOrUpgradeBackground.activeSelf)
+        {
+            ResetOverlaysAndBackgrounds();
+            DidDeselectButton();
+        }
+        else
+        {
+            ActivateOverlayBackground(_addOrUpgradeBackground);
+            DidSelectButton();
+            
+        }
     }
 }

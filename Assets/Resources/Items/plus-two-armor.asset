@@ -15,3 +15,4 @@ MonoBehaviour:
   stat: 2
   amount: 2
   ItemPrefab: {fileID: 1440553999419205346, guid: 99c399948852a7a44b23b78725011d1b, type: 3}
+  Name: +2 Armor

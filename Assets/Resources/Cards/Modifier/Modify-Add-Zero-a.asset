@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57e6dd40ee30d4f718794fa2ad756e6f, type: 3}
+  m_Name: Modify-Add-Zero-a
+  m_EditorClassIdentifier: 
+  CardType: 1
+  BaseCard: {fileID: -7160619143617554130, guid: ccf68269ccc57474f94d16000fa0d9fd, type: 3}
+  UpgradedVersionCard: {fileID: 11400000, guid: 32d9f19e4dca2446e896d7a5e7291110, type: 2}
+  CardSprite: {fileID: 21300000, guid: 7fed4e1f860d34240a68b899cbdbbaad, type: 3}

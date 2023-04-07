@@ -27,20 +27,31 @@ public class WinLoseManager : MonoBehaviour
     }
 
     public void GameWin() {
+        
+        HandManager.Instance.DiscardHand();
         _levelOverParent.SetActive(true);
         _youWinElements.SetActive(true);
         _youLoseElements.SetActive(false);
     }
 
     public void GameLose() {
+        HandManager.Instance.DiscardHand();
         _levelOverParent.SetActive(true);
         _youWinElements.SetActive(false);
         _youLoseElements.SetActive(true);
     }
     
-    public void DidPressContinueButton() { 
-        // save the data to the player
-        _progressManager.DidCompleteLevel();
+    public void DidPressContinueButton() {
+        if (DeckManager.Instance.IsTutorial)
+        {
+            
+            _progressManager.DidCompleteTutorial();
+        }
+        else
+        {
+            // save the data to the player
+            _progressManager.DidCompleteLevel();
+        }
 
         // move to the next scene
         ThinIceSceneManager.Instance.LoadWorldMap();

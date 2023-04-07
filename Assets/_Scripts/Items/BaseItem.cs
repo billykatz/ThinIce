@@ -9,14 +9,16 @@ public class BaseItem : MonoBehaviour
     public Tile OccupiedTile;
     public ItemStat Stat;
     public int Amount;
+    public string Name;
     
 
     [SerializeField] private PlayableDirector _playableDirector;
     private Action _animationCompletedCallback;
-    public void Setup(ItemStat stat, int amount)
+    public void Setup(ItemStat stat, int amount, string name)
     {
         Stat = stat;
         Amount = amount;
+        Name = name;
     }
 
     private void OnEnable()

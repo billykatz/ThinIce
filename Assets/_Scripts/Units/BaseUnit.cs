@@ -29,6 +29,11 @@ public class BaseUnit : MonoBehaviour
     public GameObject[] AttackIndicators;
 
     
+    private Action _attackFinishedCallback;
+    private Action _attackHitCallback;
+    private Action _takesDamageCallback;
+
+    
     public int Health {
      get { return _health; }
      set
@@ -210,10 +215,6 @@ public class BaseUnit : MonoBehaviour
     public virtual List<Vector2> WantToMoveTo(Tile currentTile, Tile playerTile) {
         return new List<Vector2>();
     }
-
-    private Action _attackFinishedCallback;
-    private Action _attackHitCallback;
-    private Action _takesDamageCallback;
     public void PlayMoveDownAnimation()
     {
         _playableDirector.playableAsset = _moveDownAnimation;
@@ -223,6 +224,9 @@ public class BaseUnit : MonoBehaviour
     
     public void PlayAttackAnimation(Action attackHitCallback, Action attackFinishedCallback)
     {
+        
+        Debug.Log($"{gameObject.GetInstanceID()}  Play attack animation, is current callback null? {_attackFinishedCallback == null}");
+        Debug.Log($"{gameObject.GetInstanceID()}  ---------------- is parameter callback null? {attackFinishedCallback == null}");
         _playableDirector.playableAsset = _attackAnimation;
         _playableDirector.Play();
         _attackHitCallback = attackHitCallback;
@@ -240,13 +244,20 @@ public class BaseUnit : MonoBehaviour
 
     private void DidStop(PlayableDirector director)
     {
+        Debug.Log($"{gameObject.GetInstanceID()} Animation did stop.  Is the attack finished null? {_attackFinishedCallback == null}");
         _playableDirector.stopped -= DidStop;
-        _attackFinishedCallback?.Invoke();
+        
+        // order matters!!!!!
+        Action tempCallback = _attackFinishedCallback;
         _attackFinishedCallback = null;
-        _takesDamageCallback?.Invoke();
-        _takesDamageCallback = null;
-    }
+        tempCallback?.Invoke();
 
+
+        Action anotherTempCallback = _takesDamageCallback;
+        _takesDamageCallback = null;
+        anotherTempCallback.Invoke();
+    }
+    
     /// <summary>
     ///  called by a signal emitter on the timeline to let us know when the attack hit
     /// </summary>

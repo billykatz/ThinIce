@@ -31,11 +31,11 @@ public class WorldMapController : MonoBehaviour
     {
         if (_currentLevel.isLevel)
         {
-            if (_currentLevel.LevelNumber == 4)
-            {
-                _thanksForPlayingView.SetActive(true);
-                return;
-            }
+            // if (_currentLevel.LevelNumber == 4)
+            // {
+            //     _thanksForPlayingView.SetActive(true);
+            //     return;
+            // }
             _progressController.DidStartLevel();
             ThinIceSceneManager.Instance.LoadGameScene();
         }

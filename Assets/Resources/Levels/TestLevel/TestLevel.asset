@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TestLevel
   m_EditorClassIdentifier: 
   LevelNumber: 0
-  CurrentNumberRows: 4
+  CurrentNumberRows: 5
   Width: 4
   StartingRows: 4
   Rows:
@@ -21,10 +21,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2f45328377714314995e1ce373ace28c, type: 2}
   - {fileID: 11400000, guid: 618ad2477ca80fc4583b70276ff82642, type: 2}
   - {fileID: 11400000, guid: a8071bab176c4d64eb4e51fd3a9d50f4, type: 2}
+  - {fileID: 11400000, guid: 1230a274b4ec4d94baa1ed6d2bdc351c, type: 2}
+  - {fileID: 11400000, guid: 702de3492c46e3840a1b52f953ed30a5, type: 2}
   isLevel: 1
+  isTutorial: 0
   WorldMapLevelTitle: Play T Level 1
-  ShopInstructionText: 
-  ShopType: 0
-  CardsToAdd: []
-  NumberCardsToRemove: 0
-  NumberCardsToUpgrade: 0
+  DeckImprovementModels: []

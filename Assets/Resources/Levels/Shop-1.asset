@@ -27,7 +27,7 @@ MonoBehaviour:
     ShopInstructionText: Upgrade 1 Movement Card
     NumberCardsToAdd: 0
     NumberCardsToRemove: 0
-    NumberCardsToUpgrade: 1
+    NumberCardsToUpgrade: 2
     StatType: 
     StatAmount: 
     CardChoicesToAdd: []
@@ -37,12 +37,7 @@ MonoBehaviour:
     ShopInstructionText: Upgrade 1 Modifier Card
     NumberCardsToAdd: 0
     NumberCardsToRemove: 0
-    NumberCardsToUpgrade: 1
+    NumberCardsToUpgrade: 2
     StatType: 
     StatAmount: 
     CardChoicesToAdd: []
-  ShopInstructionText: Upgrade 2 cards
-  ShopType: 2
-  CardsToAdd: []
-  NumberCardsToRemove: 0
-  NumberCardsToUpgrade: 0

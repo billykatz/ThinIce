@@ -17,8 +17,8 @@ public class DeckImprovementModel
     public int NumberCardsToAdd;
     public int NumberCardsToRemove;
     public int NumberCardsToUpgrade;
-    public string StatType;
-    public string StatAmount;
+    public int StatMax;
+    public Sprite StatSprite;
     public ScriptableCard[] CardChoicesToAdd;
 
 }
@@ -32,6 +32,7 @@ public class DeckModificationController : MonoBehaviour
     [SerializeField] private GameObject _cardInModalView;
     [SerializeField] private TMP_Text _titleTextView;
     [SerializeField] private TMP_Text _instructionsTextView;
+    [SerializeField] private Image _statBoostImage;
     [SerializeField] private GameObject _deckManagementView;
     [SerializeField] private DeckManager _deckManager;
     [SerializeField] private CanvasGroup _deckManagmentCanvasGroup;
@@ -98,7 +99,17 @@ public class DeckModificationController : MonoBehaviour
         } else if (_shopType == ShopType.Upgrade)
         {
             ConfigureUpgrade(model);
+        } else if (_shopType == ShopType.StatBoost)
+        {
+            ConfigureStatBoost(model);
         }
+    }
+
+    public void ConfigureStatBoost(DeckImprovementModel model) 
+    {
+        ResetAllElements();
+        _statBoostImage.gameObject.SetActive(true);
+        _statBoostImage.sprite = model.StatSprite;
     }
 
     public void ConfigureGrid(List<ScriptableCard> scriptableCards)
@@ -186,6 +197,8 @@ public class DeckModificationController : MonoBehaviour
     
     public void ResetAllElements()
     {
+        
+        _statBoostImage.gameObject.SetActive(false);
         _cardIndexesRemoved = new List<int>();
         _cardIndexesUpgraded = new List<int>();
         _cardIndexesAdded = new List<int>();
@@ -249,6 +262,10 @@ public class DeckModificationController : MonoBehaviour
                 
                 DidCompleteShop();
             }
+        } else if (_shopType == ShopType.StatBoost)
+        {
+            _progressManager.UpdatePlayerStats(_deckImprovements[_deckImprovementIndex].StatMax);
+            DidCompleteShop();
         }
     }
 

@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public CurrentLevelReference _level;
+    [SerializeField] private ProgressController _progressController;
 
     public GameState GameState;
 
@@ -111,6 +112,7 @@ public class GameManager : MonoBehaviour
         }
         switch (newState) {
             case GameState.GenerateGrid:
+                _progressController.WillGenerateGrid();
                 GridManager.Instance.LoadGrid();
                 break;
             case GameState.SpawnEnemies:

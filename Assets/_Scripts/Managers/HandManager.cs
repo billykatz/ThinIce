@@ -101,6 +101,7 @@ public class HandManager : MonoBehaviour
             Vector3 newPos = GetWorldPositionOnPlane(MousePosition.action.ReadValue<Vector2>(), z);
             // Vector3 newPos = Camera.main.ScreenToWorldPoint();
             newPos.z = z;
+            newPos.z = z;
             _gameAnimator.CancelAnimation(cards[_draggedIndex].cardParent);
             cards[_draggedIndex].cardParent.transform.position = newPos;
             cards[_draggedIndex].cardParent.transform.rotation = Quaternion.identity;
@@ -568,7 +569,7 @@ public class HandManager : MonoBehaviour
         PlayerManager.Instance.PlayedCard(card, target);
 
         // let the player move their character
-        Debug.Log($"HandManager: {card}");
+        Debug.Log($"HandManager: Did play card {card}");
         CardRuleManager.Instance.PlayCard(card, target);
     }
 

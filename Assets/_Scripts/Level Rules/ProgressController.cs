@@ -17,6 +17,10 @@ public class ProgressController : ScriptableObject
     public bool CompletedTutorial;
     public bool JustForTesting;
 
+    public int playerMaxAttack;
+    public int playerMaxArmor;
+    public int playerMaxHealth;
+
     public bool _haveInitiatedStarterDeck;
 
     private void OnValidate()
@@ -28,6 +32,26 @@ public class ProgressController : ScriptableObject
     {
         _currentLevelReference.LevelRules = levels[_levelIndex];
     }
+    public void DebugResetStats()
+    {
+        playerMaxAttack = 4;
+        playerMaxArmor = 4;
+        playerMaxHealth = 4;
+    }
+    
+
+    public void WillGenerateGrid()
+    {
+        FindObjectOfType<PlayerManager>().SetPlayerMaxStats(playerMaxAttack, playerMaxArmor, playerMaxHealth);
+    }
+    
+    public void UpdatePlayerStats(int newMax)
+    {
+        playerMaxAttack = newMax;
+        playerMaxArmor = newMax;
+        playerMaxHealth = newMax;
+    }
+
     
     public ScriptableLevelRules CurrentLevel()
     {

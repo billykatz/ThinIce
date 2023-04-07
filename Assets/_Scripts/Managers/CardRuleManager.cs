@@ -41,7 +41,13 @@ public class CardRuleManager : MonoBehaviour
     /// complete playing the card and moving us to card rule step Finished
     /// </summary>
     public void DidCompleteMovement(bool checkForSpikes = true) {
-        Debug.Log("DidCompleteMovement");
+        Debug.Log($"DidCompleteMovement, check for spikes? {checkForSpikes}");
+
+        if (currentCard == null)
+        {
+            Debug.Log($"Calling did complete movement even though current card is null, whoops checking for spikes? {checkForSpikes}");
+            
+        }
 
         // After moving we check to see if we should collect something first.
         if (GridManager.Instance.ShouldCollectItem())
@@ -119,6 +125,7 @@ public class CardRuleManager : MonoBehaviour
                 break;
             case CardRuleState.Collect:
                 // move the player
+                Debug.Log("CardRuleManager: Collect");
                 GridManager.Instance.CollectItem(step.attackerUnit, step.attackerUnit.OccupiedTile, step.collectedItem.OccupiedTile, () =>
                     {
                         // after movement, play the collect animation
@@ -131,6 +138,8 @@ public class CardRuleManager : MonoBehaviour
 
                 break;
             case CardRuleState.Hazard:
+                
+                Debug.Log("CardRuleManager: Hazard");
                 GridManager.Instance.ResolveHazard(step.hazard, step.attackerUnit, step.attackerUnit.OccupiedTile,
                     () =>
                     {

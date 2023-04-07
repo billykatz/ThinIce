@@ -326,6 +326,7 @@ public class GridManager : MonoBehaviour
             if (PotentialPlayerStartingPositions().Contains(tappedCoord)) {
                 Debug.Log($"Tile at {x}, {y} was tapped");
                 BaseUnit hero = UnitManager.Instance.SpawnHeroUnit();
+                PlayerManager.Instance.SetPlayerStartingStats(hero);
                 _tiles[tappedCoord].SetUnit(hero);
                 hero.OccupiedTile = _tiles[tappedCoord];
 
@@ -515,6 +516,7 @@ public class GridManager : MonoBehaviour
 
     private void FinishMovement()
     {
+        Debug.Log("Did finish movement");
         currentlyMoving = false;
         // TODO: Remove hack that we call this from the grid manager
         if (CheckForWin())

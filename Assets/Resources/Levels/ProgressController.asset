@@ -20,8 +20,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
   - {fileID: 11400000, guid: 8b00eb781487f3143948129e10137598, type: 2}
   - {fileID: 11400000, guid: 29db72d035ed37442a68f13905697179, type: 2}
-  - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
-  - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
+  - {fileID: 11400000, guid: c29629b956f52d94e865f755589b7673, type: 2}
+  - {fileID: 11400000, guid: 6789d85a7fd54c54d91d25c1eb2f2d70, type: 2}
   - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
   - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
   - {fileID: 11400000, guid: 18b7b3bd661fe324e8a21a0737bd8a44, type: 2}
@@ -29,5 +29,8 @@ MonoBehaviour:
   TutorialLevel: {fileID: 11400000, guid: 68270f93872674c47bf30ddd81b01790, type: 2}
   _levelIndex: 0
   CompletedTutorial: 0
-  JustForTesting: 0
-  _haveInitiatedStarterDeck: 0
+  JustForTesting: 1
+  playerMaxAttack: 4
+  playerMaxArmor: 4
+  playerMaxHealth: 4
+  _haveInitiatedStarterDeck: 1

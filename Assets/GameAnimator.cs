@@ -62,6 +62,7 @@ public class GameAnimator : MonoBehaviour
 
     public void Stopped(FXView view)
     {
+        Debug.Log($"FXView did stop {view}");
         view.DidStop -= Stopped;
         Destroy(view.gameObject);
     }

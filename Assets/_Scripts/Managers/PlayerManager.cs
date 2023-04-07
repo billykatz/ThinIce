@@ -33,6 +33,19 @@ public class PlayerManager : MonoBehaviour
         previewUnit = Instantiate(_baseHeroPrefab, new Vector3(-100, -100, 0), Quaternion.identity).GetComponent<BaseUnit>();
     }
 
+    public void SetPlayerMaxStats(int attack, int armor, int health)
+    {
+        maxAttack = attack;
+        maxArmor = armor;
+        maxHp = health;
+    }
+    
+    public void SetPlayerStartingStats(BaseUnit hero)
+    {
+        hero.Attack = 1;
+        hero.Armor = 1;
+        hero.Health = maxHp;
+    }
     public void HeroUnitUpdated() {
         heroUnit = GridManager.Instance.GetHeroUnit();
     }

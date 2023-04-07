@@ -2832,6 +2832,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _level: {fileID: 11400000, guid: 9247815fb2fb5dd41ac521bf454787bb, type: 2}
+  _progressController: {fileID: 11400000, guid: 49dc4bc67c6926642b40f86c957d55cc, type: 2}
   GameState: 0
 --- !u!1 &1070555221
 GameObject:
